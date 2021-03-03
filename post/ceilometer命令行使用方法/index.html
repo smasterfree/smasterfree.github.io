@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>ceilometer命令行使用方法 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="ceilometer命令行常用的二级子命令有以下一些： meter-list List the user’s meters .获取监控维度列表 query-samples Query samples.筛选采样样本 resource-list List the resou" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/ceilometer%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.492eca8cb1cbabedee93d24e630da450f31907b60d7f7a455a6826f6478ff184.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="ceilometer命令行使用方法" />
+<meta property="og:description" content="ceilometer命令行常用的二级子命令有以下一些： meter-list List the user’s meters .获取监控维度列表 query-samples Query samples.筛选采样样本 resource-list List the resou" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/ceilometer%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-10-14T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2017-10-14T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="ceilometer命令行使用方法">
+<meta itemprop="description" content="ceilometer命令行常用的二级子命令有以下一些： meter-list List the user’s meters .获取监控维度列表 query-samples Query samples.筛选采样样本 resource-list List the resou"><meta itemprop="datePublished" content="2017-10-14T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2017-10-14T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="2078">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ceilometer命令行使用方法"/>
+<meta name="twitter:description" content="ceilometer命令行常用的二级子命令有以下一些： meter-list List the user’s meters .获取监控维度列表 query-samples Query samples.筛选采样样本 resource-list List the resou"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">ceilometer命令行使用方法</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-10-14 </span>
+        
+          <span class="more-meta"> 2078 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#命令行参数指定tips-by-罗丹">命令行参数指定tips (by 罗丹):</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>ceilometer命令行常用的二级子命令有以下一些：</p>
+<p><strong><a href="#meter-list">meter-list</a></strong> List the user’s meters .获取监控维度列表
+<strong><a href="#query-samples">query-samples</a></strong> Query samples.筛选采样样本
+<strong><a href="#resource-list">resource-list</a></strong> List the resources.获取监控资源列表
+<strong><a href="#resource-show">resource-show</a></strong> Show the resource.获取监控资源详情
+<strong><a href="#sample-create">sample-create</a></strong> Create a sample创建采样样本
+<strong><a href="#sample-list">sample-list</a></strong> List the samples (return OldSample objects if -m/–meter is set).获取采样样本列表
+<strong><a href="#sample-show">sample-show</a></strong> Show an sample.显示采样样本详情
+<strong><a href="#statistics">statistics</a></strong> List the statistics for a meter.获取监控维度统计数据</p>
+<h1 id="ceilometer-meter-list">ceilometer meter-list</h1>
+<p>首先创建要使用 <code>hw_qemu_guest_agent</code> 的镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-2-112:~$ glance image-show 06ec58df-fc10-4e25-88ac-6c6f1533de58
++--------------------------------+------------------------------------------+
+| Property                       | Value                                    |
++--------------------------------+------------------------------------------+
+| Property &#39;hw_qemu_guest_agent&#39; | yes                                      |
+| Property &#39;hypervisor_type&#39;     | qemu                                     |
+| Property &#39;os_type&#39;             | linux                                    |
+| Property &#39;support_inject_ip&#39;   | yes                                      |
+| checksum                       | 2bc9185deadfb28dcb881c4e0b7f9595         |
+| container_format               | ovf                                      |
+| created_at                     | 2016-02-03T09:31:18                      |
+| deleted                        | False                                    |
+| disk_format                    | qcow2                                    |
+| id                             | 06ec58df-fc10-4e25-88ac-6c6f1533de58     |
+| is_public                      | True                                     |
+| min_disk                       | 0                                        |
+| min_ram                        | 0                                        |
+| name                           | debian_7_x86_64_nce_release2_22362.qcow2 |
+| owner                          | 5116a55a1a91499986c20803a901f0a4         |
+| protected                      | False                                    |
+| size                           | 519897088                                |
+| status                         | active                                   |
+| updated_at                     | 2016-02-03T09:31:44                      |
++--------------------------------+------------------------------------------+
+</code></pre></td></tr></table>
+</div>
+</div><p>然后查到云主机的uuid</p>
+<p>通过这个查询，这个云主机有哪些 meter。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ceilometer meter-list -q resource=&#34;aed3992e-7f9a-4fab-88e5-727c0a700a4b&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>一般返回示例为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-2-112:~$ ceilometer meter-list -q resource=&#34;aed3992e-7f9a-4fab-88e5-727c0a700a4b&#34;
++--------------------------------------------------------------------------------+-------+------+---------------------------------------------------------------------------------------------------------------------+----------------------------------+----------------------------------+
+| Name                                                                           | Type  | Unit | Resource ID                                                                                                         | User ID                          | Project ID                       |
++--------------------------------------------------------------------------------+-------+------+---------------------------------------------------------------------------------------------------------------------+----------------------------------+----------------------------------+
+| netease.cpu.rate                                                               | gauge | %    | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate                                                               | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda.read.delay                                                    | gauge | ms   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda.read.delay                                                    | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda.read.rate                                                     | gauge | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda.read.rate                                                     | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda.read.req                                                      | gauge | Hz   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda.read.req                                                      | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda.write.delay                                                   | gauge | ms   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda.write.delay                                                   | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda.write.rate                                                    | gauge | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda.write.rate                                                    | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda.write.req                                                     | gauge | Hz   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda.write.req                                                     | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda1.read.delay                                                   | gauge | ms   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda1.read.delay                                                   | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda1.read.rate                                                    | gauge | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda1.read.rate                                                    | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda1.read.req                                                     | gauge | Hz   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda1.read.req                                                     | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda1.write.delay                                                  | gauge | ms   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda1.write.delay                                                  | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda1.write.rate                                                   | gauge | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda1.write.rate                                                   | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vda1.write.req                                                    | gauge | Hz   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vda1.write.req                                                    | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vdb.read.delay                                                    | gauge | ms   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vdb.read.delay                                                    | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vdb.read.rate                                                     | gauge | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vdb.read.rate                                                     | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vdb.read.req                                                      | gauge | Hz   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vdb.read.req                                                      | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vdb.write.delay                                                   | gauge | ms   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vdb.write.delay                                                   | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vdb.write.rate                                                    | gauge | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vdb.write.rate                                                    | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.disk.vdb.write.req                                                     | gauge | Hz   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.disk.vdb.write.req                                                     | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.fs.vda1.$!.total                                                       | gauge | byte | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.fs.vda1.$!.total                                                       | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.fs.vda1.$!.used                                                        | gauge | byte | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.fs.vda1.$!.used                                                        | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.loadavg.avg5_rate                                                      | gauge | -    | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.loadavg.avg5_rate                                                      | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.memory.total                                                           | gauge | kB   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.memory.total                                                           | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.memory.used                                                            | gauge | kB   | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.memory.used                                                            | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.memory.used.rate                                                       | gauge | %    | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.memory.used.rate                                                       | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.recv       | delta | Byte | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.recv       | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.recv.rate  | delta | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.recv.rate  | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.trans      | delta | Byte | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.trans      | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
+| netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.trans.rate | delta | Bps  | aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.nic.eth0.826f526e-6d7f-4073-9bb7-a4bf302835c5.10-180-194-55.trans.rate | 1e5607d739cc4c4fab1ba1ee9bbf1c17 | 067d4c55e93e42eca837d1c7a1a74ce8 |
++--------------------------------------------------------------------------------+-------+------+---------------------------------------------------------------------------------------------------------------------+----------------------------------+----------------------------------+
+hzhuangzhexiao@10-180-2-112:~$ 
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="sample-list">sample list</h1>
+<p>然后就是sample list的使用
+-m 指定是哪个meter
+-q 查询
+resource 指定刚才 meter-list里面查询出来的resource。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-2-112:~$ ceilometer sample-list -m  netease.cpu.rate  -q resource=&#34;aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate&#34; -l 10
++-------------------------------------------------------+------------------+-------+----------------+------+---------------------+
+| Resource ID                                           | Name             | Type  | Volume         | Unit | Timestamp           |
++-------------------------------------------------------+------------------+-------+----------------+------+---------------------+
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.700466977985 | %    | 2016-03-16T08:34:12 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.4329004329   | %    | 2016-03-16T08:33:42 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.800266755585 | %    | 2016-03-16T08:33:12 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.532268795742 | %    | 2016-03-16T08:32:42 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.801068090788 | %    | 2016-03-16T08:32:12 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.435365036839 | %    | 2016-03-16T08:31:42 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.714528751276 | %    | 2016-03-16T08:31:12 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.456323337679 | %    | 2016-03-16T08:30:43 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.90331214453  | %    | 2016-03-16T08:30:12 |
+| aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate | netease.cpu.rate | gauge | 0.366056572379 | %    | 2016-03-16T08:29:42 |
++-------------------------------------------------------+------------------+-------+----------------+------+---------------------+
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="ceilometer-statistics">ceilometer statistics</h1>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ceilometer statistics -m  netease.cpu.rate  -q resource=&#34;aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate;timestamp&lt;2016-03-16T08:34:37;timestamp&gt;2016-03-15T01:34:37&#34; 
+
+
+hzhuangzhexiao@10-180-2-112:~$ ceilometer statistics -m  netease.cpu.rate  -q resource=&#34;aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate;timestamp&lt;2016-03-16T08:34:37;timestamp&gt;2016-03-15T01:34:37&#34; 
+
++--------+---------------------+---------------------+-------+----------------+---------------+-------------+-------+----------+---------------------+---------------------+
+| Period | Period Start        | Period End          | Max   | Min            | Avg           | Sum         | Count | Duration | Duration Start      | Duration End        |
++--------+---------------------+---------------------+-------+----------------+---------------+-------------+-------+----------+---------------------+---------------------+
+| 0      | 2016-03-16T06:35:59 | 2016-03-16T08:34:12 | 100.0 | 0.066467264872 | 10.0118438734 | 2372.806998 | 237   | 7093.0   | 2016-03-16T06:35:59 | 2016-03-16T08:34:12 |
++--------+---------------------+---------------------+-------+----------------+---------------+-------------+-------+----------+---------------------+---------------------+
+</code></pre></td></tr></table>
+</div>
+</div><p>加上 <code>-p</code>参数，设置时间的粒度</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-2-112:~$ ceilometer statistics -m  netease.cpu.rate  -q resource=&#34;aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate;timestamp&lt;2016-03-16T08:34:37;timestamp&gt;2016-03-16T08:24:37&#34;  -p 60
+
+
+hzhuangzhexiao@10-180-2-112:~$ ceilometer statistics -m  netease.cpu.rate  -q resource=&#34;aed3992e-7f9a-4fab-88e5-727c0a700a4b.netease.cpu.rate;timestamp&lt;2016-03-16T08:34:37;timestamp&gt;2016-03-16T08:24:37&#34;  -p 60
++--------+---------------------+---------------------+----------------+----------------+----------------+---------------+-------+----------+---------------------+---------------------+
+| Period | Period Start        | Period End          | Max            | Min            | Avg            | Sum           | Count | Duration | Duration Start      | Duration End        |
++--------+---------------------+---------------------+----------------+----------------+----------------+---------------+-------+----------+---------------------+---------------------+
+| 60     | 2016-03-16T08:24:37 | 2016-03-16T08:25:37 | 2.66933600267  | 0.800266755585 | 1.73480137913  | 3.46960275825 | 2     | 30.0     | 2016-03-16T08:24:42 | 2016-03-16T08:25:12 |
+| 60     | 2016-03-16T08:25:37 | 2016-03-16T08:26:37 | 0.730654267685 | 0.5            | 0.615327133843 | 1.23065426769 | 2     | 30.0     | 2016-03-16T08:25:42 | 2016-03-16T08:26:12 |
+| 60     | 2016-03-16T08:26:37 | 2016-03-16T08:27:37 | 0.866089273817 | 0.535833891494 | 0.700961582656 | 1.40192316531 | 2     | 30.0     | 2016-03-16T08:26:42 | 2016-03-16T08:27:12 |
+| 60     | 2016-03-16T08:27:37 | 2016-03-16T08:28:37 | 0.867244829887 | 0.333333333333 | 0.60028908161  | 1.20057816322 | 2     | 30.0     | 2016-03-16T08:27:42 | 2016-03-16T08:28:12 |
+| 60     | 2016-03-16T08:28:37 | 2016-03-16T08:29:37 | 0.733333333333 | 0.633544514838 | 0.683438924086 | 1.36687784817 | 2     | 30.0     | 2016-03-16T08:28:42 | 2016-03-16T08:29:12 |
+| 60     | 2016-03-16T08:29:37 | 2016-03-16T08:30:37 | 0.90331214453  | 0.366056572379 | 0.634684358455 | 1.26936871691 | 2     | 30.0     | 2016-03-16T08:29:42 | 2016-03-16T08:30:12 |
+| 60     | 2016-03-16T08:30:37 | 2016-03-16T08:31:37 | 0.714528751276 | 0.456323337679 | 0.585426044478 | 1.17085208896 | 2     | 29.0     | 2016-03-16T08:30:43 | 2016-03-16T08:31:12 |
+| 60     | 2016-03-16T08:31:37 | 2016-03-16T08:32:37 | 0.801068090788 | 0.435365036839 | 0.618216563813 | 1.23643312763 | 2     | 30.0     | 2016-03-16T08:31:42 | 2016-03-16T08:32:12 |
+| 60     | 2016-03-16T08:32:37 | 2016-03-16T08:33:37 | 0.800266755585 | 0.532268795742 | 0.666267775664 | 1.33253555133 | 2     | 30.0     | 2016-03-16T08:32:42 | 2016-03-16T08:33:12 |
+| 60     | 2016-03-16T08:33:37 | 2016-03-16T08:34:37 | 0.700466977985 | 0.4329004329   | 0.566683705443 | 1.13336741089 | 2     | 30.0     | 2016-03-16T08:33:42 | 2016-03-16T08:34:12 |
++--------+---------------------+---------------------+----------------+----------------+----------------+---------------+-------+----------+---------------------+---------------------+
+hzhuangzhexiao@10-180-2-112:~$ 
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="命令行参数指定tips-by-罗丹">命令行参数指定tips (by 罗丹):</h3>
+<ol>
+<li>
+<p>在<code>-q</code>中指定多个过滤条件的方法：用分号连接，各个过滤条件之间是与的关系。
+若要用并关系或者按counter_volume取值查询，目前估计只能用<code>query-sample</code>
+这个CLI</p>
+<p><code>ceilometer …… -q &quot;resource=xxx ;  timestamp&lt;yyy&quot;</code></p>
+</li>
+<li>
+<p>目前只有在访问meter表的代码里用到get_meter方法中才支持通配, 即</p>
+<blockquote>
+<p><code>$ ceilometer meter-list -q resource=通配表达式</code></p>
+</blockquote>
+<p>其余的-q参数中虽然指定resource的值，但是最后没有落到get_meter方法来处理，还是无法通配。</p>
+</li>
+<li>
+<p>带    <code>-q &lt;QUERY&gt;</code>的后接参数不同命令支持的<code>-q</code>范围不一样，大抵因为访问的表不同。</p>
+</li>
+<li>
+<p><code>-q</code> 后接参数中的<code>resource=xxx</code>，其中的xxx是<code>uuid+维度名的形式</code></p>
+</li>
+<li>
+<p><code>-m</code> 后接的<code>meter_name</code>，只是维度名，不含uuid</p>
+</li>
+<li>
+<p>statistics指定多个groupby参数作为分组依据的方法：</p>
+<p><code>ceilometer statistics  …… -g &quot;project_id&quot;  -g &quot;user_id&quot;</code></p>
+</li>
+<li>
+<p>statistics对于cardinality公式的参数给法示例：    <code>ceilometer statistics -m cpu -a 'cardinality&lt;-project_id'</code></p>
+</li>
+<li>
+<p>query-samples    对于counter_volume<code>（具体的采样值）</code>的指定时，数值<code>不能加双引号不能加双引号不能加双引号</code>。</p>
+</li>
+<li>
+<p>search_offset这个过滤参数的含义：    该参数指定了以分钟为单位的偏移值，<strong>必须</strong>和timestamp参数一起搭配使用，举例如</p>
+</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">  ceilometer sample-list -q “timestamp&lt;xxx；search\_offset=9&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>那么就会把这个timestamp指定的时间之后的9分钟内的样本一起返回。</p>
+<p>参考文档
+<a href="https://wiki.openstack.org/wiki/Ceilometer/ComplexFilterExpressionsInAPIQueries">ceilometer query-sample 的参数使用方法</a>
+<a href="http://docs.openstack.org/developer/ceilometer/webapi/v2.html">ceilometer api v2文档 </a>
+ceilometer 常用命令行(by luodan)</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-10-14
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E6%8E%92%E6%9F%A5%E4%BA%91%E4%B8%BB%E6%9C%BA%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E5%A4%96%E7%BD%91ip%E5%B7%B2%E6%8C%82%E8%BD%BD%E4%BA%86%E5%A4%96%E7%BD%91port/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">排查云主机获取不到外网ip</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%89%E6%9D%BF%E6%96%A7/">
+            <span class="next-text nav-default">网络问题的三板斧</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
