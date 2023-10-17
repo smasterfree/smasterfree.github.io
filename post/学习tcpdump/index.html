@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>学习tcpdump - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="之前一直用gui的wireshark进行抓包，现在学习一下命令行的tcpdump，做个记录。 简介 tcpdump是一个抓包工具。它能够监听、记" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E5%AD%A6%E4%B9%A0tcpdump/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="学习tcpdump" />
+<meta property="og:description" content="之前一直用gui的wireshark进行抓包，现在学习一下命令行的tcpdump，做个记录。 简介 tcpdump是一个抓包工具。它能够监听、记" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E5%AD%A6%E4%B9%A0tcpdump/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2015-10-03T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2015-10-03T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="学习tcpdump">
+<meta itemprop="description" content="之前一直用gui的wireshark进行抓包，现在学习一下命令行的tcpdump，做个记录。 简介 tcpdump是一个抓包工具。它能够监听、记"><meta itemprop="datePublished" content="2015-10-03T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2015-10-03T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1204">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="学习tcpdump"/>
+<meta name="twitter:description" content="之前一直用gui的wireshark进行抓包，现在学习一下命令行的tcpdump，做个记录。 简介 tcpdump是一个抓包工具。它能够监听、记"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">学习tcpdump</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2015-10-03 </span>
+        
+          <span class="more-meta"> 1204 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#-nn选项">-nn选项：</a></li>
+    <li><a href="#-x选项">-X选项：</a></li>
+    <li><a href="#-t选项">-t选项</a></li>
+    <li><a href="#-f选项">-F选项</a></li>
+    <li><a href="#-c选项">-c选项：</a></li>
+    <li><a href="#是否-verbose">是否 verbose</a></li>
+    <li><a href="#-s选项">-s选项</a></li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#包大小过滤">包大小过滤</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#运算符">运算符</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#-i-参数">-i 参数</a></li>
+    <li><a href="#host">host</a></li>
+    <li><a href="#src-dst">src dst</a></li>
+    <li><a href="#port">port</a></li>
+    <li><a href="#参数的组合">参数的组合</a>
+      <ul>
+        <li><a href="#port端口范围">port端口范围</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>之前一直用gui的wireshark进行抓包，现在学习一下命令行的tcpdump，做个记录。</p>
+<h1 id="简介">简介</h1>
+<p>tcpdump是一个抓包工具。它能够监听、记录通过某一个主机进出的网络流量。并且可以保存到文件，或者再从文件读取抓下来的数据包。它保存下来的包也可以导入到wireshark里面，利用gui工具进行查看（一般说来在gui里面查看过滤比较方便）。当然了，很重要的一点是，抓取的时候你就能设置各种各样的过滤器，免得你在查看的时候如同大海捞针，在海量数据里面寻找有用信息。</p>
+<h1 id="使用">使用</h1>
+<p>首先，使用tcpdump要使用root登录或者sudo权限。这也很好理解，整台机器的流量都能看到了，要是任何用户都能看到，就没秘密可言了。</p>
+<p>tcpdump如果不加任何参数，他会抓网络设备中第一个设备的包（不包括lo），并且打印出每个包的简短信息。</p>
+<h2 id="-nn选项">-nn选项：</h2>
+<p>意思是说当tcpdump遇到协议号或端口号时，不要将这些号码转换成对应的协议名称或端口名称。比如，众所周知21端口是FTP端口，我们希望显示21，而非tcpdump自作聪明的将它显示成FTP。</p>
+<h2 id="-x选项">-X选项：</h2>
+<p>告诉tcpdump命令，需要把协议头和包内容都原原本本的显示出来（tcpdump会以16进制和ASCII的形式显示），这在进行协议分析时是绝对的利器。</p>
+<h2 id="-t选项">-t选项</h2>
+<p>输出不打印时间戳</p>
+<h2 id="-f选项">-F选项</h2>
+<p>指定过滤表达式所在的文件</p>
+<h2 id="-c选项">-c选项：</h2>
+<p>是Count的含义，这设置了我们希望tcpdump帮我们抓几个包。我设置的是1，所以tcpdump不会帮我再多抓哪怕一个包回来。</p>
+<h2 id="是否-verbose">是否 verbose</h2>
+<p>级别</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">-v
+-vv
+-vvv
+</code></pre></td></tr></table>
+</div>
+</div><p>没有-vvvv</p>
+<h2 id="-s选项">-s选项</h2>
+<p>限定包的大小。
+默认每个包存68 bytes。加上-s选项，调整这个参数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump host 1.2.3.4 -s 120
+</code></pre></td></tr></table>
+</div>
+</div><p>如果 -s 0，说明把存全量。</p>
+<h1 id="指定协议">指定协议</h1>
+<p>proto。可以包括tcp，udp，icmp等，但是可以不加proto。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump icmp
+
+</code></pre></td></tr></table>
+</div>
+</div><p>协议总共有如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">- ether – 链路层协议
+- fddi – 链路层协议
+- tr – 链路层协议
+- wlan – 链路层协议
+- ppp – 链路层协议
+- slip – 链路层协议
+- link – 链路层协议
+- ip
+- arp
+- rarp
+- tcp
+- udp
+- icmp
+- ip6
+- radio
+
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="包大小过滤">包大小过滤</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump less  32
+tcpdump greater  128
+
+</code></pre></td></tr></table>
+</div>
+</div><p>也可以这样使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump &gt;32
+tcpdump &lt;= 100
+
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="写入文件">写入文件</h1>
+<p>-w参数写入文件，-r参数从文件中读取</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump -i eth1  port 80 -w capture_file
+tcpdump -r capture_file 
+
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/27460-187930dd03b6913f.png" alt="Paste_Image.png"></p>
+<p>wireshark也可以导入查看</p>
+<p><img src="../images/27460-eb81619923548b0d.png" alt="Paste_Image.png"></p>
+<h1 id="富有创造力">富有创造力</h1>
+<h2 id="运算符">运算符</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">- and 运算符 使用 and 或者 &amp;&amp;
+- OR 使用 or 或者 ||
+- EXCEPT 使用not 或者 ！
+
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="过滤表达式">过滤表达式</h1>
+<p>过滤表达式大体可以分成三种过滤条件，“类型”、“方向”和“协议”</p>
+<p>详细可以看</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">man pcap-filter
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="-i-参数">-i 参数</h2>
+<p>指定eth0 还是 eth1</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump icmp  -i eth1
+
+</code></pre></td></tr></table>
+</div>
+</div><p>只抓icmp的包</p>
+<p><img src="../images/27460-4d220048cfc25e0a.png" alt="Paste_Image.png"></p>
+<p>-i any 监听所有</p>
+<h2 id="host">host</h2>
+<p>只抓某个host的包</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump host 1.2.3.4
+
+tcpdump host  101.68.136.139  -i any
+
+</code></pre></td></tr></table>
+</div>
+</div><p>因为ssh连着，会有很多的包</p>
+<h2 id="src-dst">src dst</h2>
+<p>指定目标地址，源地址</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump src 2.3.4.5 
+tcpdump dst 3.4.5.6
+
+</code></pre></td></tr></table>
+</div>
+</div><p>例如这个是百度服务器对ping的回应</p>
+<p><img src="../images/27460-1d0ebaebd4571492.png" alt="Paste_Image.png"></p>
+<h2 id="port">port</h2>
+<p>指定port</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump port 22 -i eth1
+
+</code></pre></td></tr></table>
+</div>
+</div><p>例如看ssh链接的信息，用22</p>
+<p>80端口
+<img src="../images/27460-17e24305efa6318c.png" alt="Paste_Image.png"></p>
+<h2 id="参数的组合">参数的组合</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump src port 1025 
+tcpdump dst port 389
+tcpdump src port 1025 and tcp
+tcpdump udp and src port 53
+
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="port端口范围">port端口范围</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump portrange  21-23
+
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="参考资料">参考资料</h1>
+<p><a href="https://danielmiessler.com/study/tcpdump/">https://danielmiessler.com/study/tcpdump/</a>
+<a href="http://www.alexonlinux.com/tcpdump-for-dummies">www.alexonlinux.com/tcpdump-for-dummies</a></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2015-10-03
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E9%83%A8%E7%BD%B2%E8%BF%B7%E6%80%9D/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">部署迷思</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

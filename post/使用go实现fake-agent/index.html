@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用 fake-agent 模拟大规模计算节点测试 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="需求 使用尽可能少的计算节点资源，模拟大规模测试环境。计算节点和网关之间管控面主要发送的是lldp in vxlan的管控心跳报文。 因此考虑写一个f" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E4%BD%BF%E7%94%A8go%E5%AE%9E%E7%8E%B0fake-agent/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用 fake-agent 模拟大规模计算节点测试" />
+<meta property="og:description" content="需求 使用尽可能少的计算节点资源，模拟大规模测试环境。计算节点和网关之间管控面主要发送的是lldp in vxlan的管控心跳报文。 因此考虑写一个f" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E4%BD%BF%E7%94%A8go%E5%AE%9E%E7%8E%B0fake-agent/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-01T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2021-10-01T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="使用 fake-agent 模拟大规模计算节点测试">
+<meta itemprop="description" content="需求 使用尽可能少的计算节点资源，模拟大规模测试环境。计算节点和网关之间管控面主要发送的是lldp in vxlan的管控心跳报文。 因此考虑写一个f"><meta itemprop="datePublished" content="2021-10-01T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2021-10-01T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1310">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用 fake-agent 模拟大规模计算节点测试"/>
+<meta name="twitter:description" content="需求 使用尽可能少的计算节点资源，模拟大规模测试环境。计算节点和网关之间管控面主要发送的是lldp in vxlan的管控心跳报文。 因此考虑写一个f"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用 fake-agent 模拟大规模计算节点测试</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-10-01 </span>
+        
+          <span class="more-meta"> 1310 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#需求">需求</a></li>
+    <li><a href="#测试拓扑">测试拓扑</a></li>
+    <li><a href="#发送lldp报文">发送lldp报文</a>
+      <ul>
+        <li><a href="#agent实现的方式">agent实现的方式</a></li>
+        <li><a href="#模拟方式">模拟方式</a></li>
+      </ul>
+    </li>
+    <li><a href="#接收lldp报文并解析">接收lldp报文并解析</a>
+      <ul>
+        <li><a href="#dump-其中一个网关">dump 其中一个网关</a></li>
+        <li><a href="#scapy--sniff使用方法">scapy  sniff使用方法</a></li>
+        <li><a href="#sniff-实时打印">sniff 实时打印</a></li>
+        <li><a href="#使用python解析">使用Python解析</a></li>
+        <li><a href="#解析速度对比">解析速度对比</a></li>
+      </ul>
+    </li>
+    <li><a href="#模拟虚拟机icmp报文">模拟虚拟机icmp报文</a></li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="需求">需求</h2>
+<p>使用尽可能少的计算节点资源，模拟大规模测试环境。计算节点和网关之间管控面主要发送的是lldp in vxlan的管控心跳报文。</p>
+<p>因此考虑写一个fake-agent来模拟计算节点发送的心跳报文，测试网关处理心跳报文能力，以及在此背景下重启、批量增删agent有无问题。</p>
+<h2 id="测试拓扑">测试拓扑</h2>
+<p><img src="../images/image-20210914141247773.png" alt="image-20210914141247773"></p>
+<h2 id="发送lldp报文">发送lldp报文</h2>
+<h3 id="agent实现的方式">agent实现的方式</h3>
+<p>agent 是通过ovs packet out进行发送到网关节点</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">packet-out <span class="nv">in_port</span><span class="o">=</span>LOCAL,packet<span class="o">=</span>0180c200000e02000000000288ccfe0c020000010000017ba46c7424fe0c020000020000017ba46c7424fe08020000030ab90226fe0802000004000000000000,actions<span class="o">=</span>set_field:10.187.10.87-&gt;tun_dst,set_field:0-&gt;tun_id,output:1
+packet-out <span class="nv">in_port</span><span class="o">=</span>LOCAL,packet<span class="o">=</span>0180c200000e02000000000288ccfe0c020000010000017ba46c7424fe0c020000020000017ba46c7424fe08020000030ab90226fe0802000004000000000000,actions<span class="o">=</span>set_field:10.182.6.71-&gt;tun_dst,set_field:0-&gt;tun_id,output:1
+packet-out <span class="nv">in_port</span><span class="o">=</span>LOCAL,packet<span class="o">=</span>0180c200000e02000000000288ccfe0c020000010000017ba46c7424fe0c020000020000017ba46c7424fe08020000030ab90226fe0802000004000000000000,actions<span class="o">=</span>set_field:10.185.2.234-&gt;tun_dst,set_field:0-&gt;tun_id,output:1
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="模拟方式">模拟方式</h3>
+<p>使用 python 或者golang 模拟。</p>
+<p>主要思路，构造lldp in vxlan报文。</p>
+<p>Python scapy构造包的方式:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="n">pkt</span> <span class="o">=</span> <span class="n">Ether</span><span class="p">()</span> <span class="o">/</span> <span class="n">IP</span><span class="p">()</span> <span class="o">/</span> <span class="n">UDP</span><span class="p">()</span> <span class="o">/</span> <span class="n">VXLAN</span><span class="p">()</span> <span class="o">/</span> <span class="n">Raw</span><span class="p">(</span><span class="n">lldp</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>go的构造方式:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// build packet:  Ethernet[IP[UDP[VXLAN[Ethernet[lldp]]]]]
+</span><span class="c1"></span><span class="nx">gopacket</span><span class="p">.</span><span class="nf">SerializeLayers</span><span class="p">(</span><span class="nx">buffer</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span>
+		<span class="nx">ethernetLayer</span><span class="p">,</span>
+		<span class="nx">ipLayer</span><span class="p">,</span>
+		<span class="nx">udpLayer</span><span class="p">,</span>
+		<span class="nx">vxlanLayer</span><span class="p">,</span>
+		<span class="nx">ethernetLayerInner</span><span class="p">,</span>
+		<span class="nx">gopacket</span><span class="p">.</span><span class="nf">Payload</span><span class="p">(</span><span class="nx">Payload</span><span class="p">),</span>
+	<span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>payload 构造:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">buildLLDPPayload</span><span class="p">(</span><span class="nx">ip</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+
+	<span class="nx">hexNow</span> <span class="o">:=</span> <span class="nf">time2hex</span><span class="p">()</span>
+	<span class="nx">typeLtime</span> <span class="o">:=</span> <span class="s">&#34;fe0c02000001&#34;</span>
+	<span class="nx">typeEtime</span> <span class="o">:=</span> <span class="s">&#34;fe0c02000002&#34;</span>
+	<span class="nx">typeAgent</span> <span class="o">:=</span> <span class="s">&#34;fe0802000003&#34;</span>
+	<span class="nx">typeEnd</span> <span class="o">:=</span> <span class="s">&#34;0000&#34;</span>
+	<span class="nx">agentip</span> <span class="o">:=</span> <span class="nf">ip2hex</span><span class="p">(</span><span class="nx">ip</span><span class="p">)</span>
+
+	<span class="nx">pkts</span> <span class="o">:=</span> <span class="nx">typeLtime</span> <span class="o">+</span> <span class="nx">hexNow</span> <span class="o">+</span> <span class="nx">typeEtime</span> <span class="o">+</span> <span class="nx">hexNow</span> <span class="o">+</span> <span class="nx">typeAgent</span> <span class="o">+</span> <span class="nx">agentip</span> <span class="o">+</span> <span class="nx">typeEnd</span>
+	<span class="k">return</span> <span class="nx">pkts</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/image-20210914160356355.png" alt="image-20210914160356355"></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python protocol  --bits 40  &#34;typeLtime :6 ,  hexnow: 8 ,typeEtime :6 , hexnow: 8,  typeAgent:6, agentip:4, typeEnd:2&#34;
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| typeLtime |      hexnow   | typeEtime |     hexnow    |  typeAgent| agent.| t.|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="接收lldp报文并解析">接收lldp报文并解析</h2>
+<h3 id="dump-其中一个网关">dump 其中一个网关</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">tcpdump  -eni bond0.102 <span class="s1">&#39;udp[28:2] = 0x88cc&#39;</span> and ip src 10.187.10.87
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="scapy--sniff使用方法">scapy  sniff使用方法</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">sniff</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="s2">&#34;host 10.185.2.234&#34;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="s2">&#34;bond0.102&#34;</span> <span class="p">)</span>
+<span class="o">&lt;</span><span class="n">Sniffed</span><span class="p">:</span> <span class="n">TCP</span><span class="p">:</span><span class="mi">0</span> <span class="n">UDP</span><span class="p">:</span><span class="mi">2</span> <span class="n">ICMP</span><span class="p">:</span><span class="mi">0</span> <span class="n">Other</span><span class="p">:</span><span class="mi">0</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">=</span><span class="n">_</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">nsummary</span><span class="p">()</span>
+<span class="mo">0000</span> <span class="n">Ether</span> <span class="o">/</span> <span class="n">IP</span> <span class="o">/</span> <span class="n">UDP</span> <span class="o">/</span> <span class="n">VXLAN</span> <span class="o">/</span> <span class="mo">02</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">02</span> <span class="o">&gt;</span> <span class="mo">01</span><span class="p">:</span><span class="mi">80</span><span class="p">:</span><span class="n">c2</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">0</span><span class="n">e</span> <span class="p">(</span><span class="mh">0x88cc</span><span class="p">)</span> <span class="o">/</span> <span class="n">Raw</span>
+<span class="mo">0001</span> <span class="n">Ether</span> <span class="o">/</span> <span class="n">IP</span> <span class="o">/</span> <span class="n">UDP</span> <span class="o">/</span> <span class="n">VXLAN</span> <span class="o">/</span> <span class="mo">02</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">02</span> <span class="o">&gt;</span> <span class="mo">01</span><span class="p">:</span><span class="mi">80</span><span class="p">:</span><span class="n">c2</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">0</span><span class="n">e</span> <span class="p">(</span><span class="mh">0x88cc</span><span class="p">)</span> <span class="o">/</span> <span class="n">Raw</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="o">&lt;</span><span class="n">Ether</span>  <span class="n">dst</span><span class="o">=</span><span class="n">fa</span><span class="p">:</span><span class="mi">6</span><span class="n">a</span><span class="p">:</span><span class="mi">1</span><span class="n">c</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="n">b8</span><span class="p">:</span><span class="mi">40</span> <span class="n">src</span><span class="o">=</span><span class="n">fa</span><span class="p">:</span><span class="mi">5</span><span class="n">f</span><span class="p">:</span><span class="mi">84</span><span class="p">:</span><span class="n">e9</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">76</span> <span class="nb">type</span><span class="o">=</span><span class="n">IPv4</span> <span class="o">|&lt;</span><span class="n">IP</span>  <span class="n">version</span><span class="o">=</span><span class="mi">4</span> <span class="n">ihl</span><span class="o">=</span><span class="mi">5</span> <span class="n">tos</span><span class="o">=</span><span class="mh">0x0</span> <span class="nb">len</span><span class="o">=</span><span class="mi">100</span> <span class="nb">id</span><span class="o">=</span><span class="mi">0</span> <span class="n">flags</span><span class="o">=</span> <span class="n">frag</span><span class="o">=</span><span class="mi">0</span> <span class="n">ttl</span><span class="o">=</span><span class="mi">64</span> <span class="n">proto</span><span class="o">=</span><span class="n">udp</span> <span class="n">chksum</span><span class="o">=</span><span class="mh">0x5fe4</span> <span class="n">src</span><span class="o">=</span><span class="mf">10.185</span><span class="o">.</span><span class="mf">2.234</span> <span class="n">dst</span><span class="o">=</span><span class="mf">10.185</span><span class="o">.</span><span class="mf">2.74</span> <span class="o">|&lt;</span><span class="n">UDP</span>  <span class="n">sport</span><span class="o">=</span><span class="mi">39799</span> <span class="n">dport</span><span class="o">=</span><span class="mi">4789</span> <span class="nb">len</span><span class="o">=</span><span class="mi">80</span> <span class="n">chksum</span><span class="o">=</span><span class="mh">0x251b</span> <span class="o">|&lt;</span><span class="n">VXLAN</span>  <span class="n">flags</span><span class="o">=</span><span class="n">Instance</span> <span class="n">reserved1</span><span class="o">=</span><span class="mi">0</span> <span class="n">vni</span><span class="o">=</span><span class="mh">0x0</span> <span class="n">reserved2</span><span class="o">=</span><span class="mh">0x0</span> <span class="o">|&lt;</span><span class="n">Ether</span>  <span class="n">dst</span><span class="o">=</span><span class="mo">01</span><span class="p">:</span><span class="mi">80</span><span class="p">:</span><span class="n">c2</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">0</span><span class="n">e</span> <span class="n">src</span><span class="o">=</span><span class="mo">02</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">02</span> <span class="nb">type</span><span class="o">=</span><span class="mh">0x88cc</span> <span class="o">|&lt;</span><span class="n">Raw</span>  <span class="n">load</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\xfe\x0c\x02\x00\x00\x01\x00\x00\x01</span><span class="s1">{</span><span class="se">\xa4\x93\x03\x96\xfe\x0c\x02\x00\x00\x02\x00\x00\x01</span><span class="s1">z</span><span class="se">\x18\x9c\xe9</span><span class="s1">o</span><span class="se">\xfe\x08\x02\x00\x00\x03\n\xb9\x02\xea\xfe\x08\x02\x00\x00\x04\x00\x00\x00\x00\x00\x00</span><span class="s1">&#39;</span> <span class="o">|&gt;&gt;&gt;&gt;&gt;&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="sniff-实时打印">sniff 实时打印</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># dump 内层 lldp报文</span>
+<span class="c1"># 相当于tcpdump命令：  tcpdump -eni bond0.101 &#39;udp[28:2] = 0x88cc&#39; and ip src 10.182.6.31</span>
+
+<span class="c1"># 打印所有内容</span>
+<span class="n">sniff</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="s2">&#34;udp[28:2] = 0x88cc and ip src 10.182.6.31&#34;</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="s2">&#34;bond0.101&#34;</span><span class="p">,</span> <span class="n">prn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">show</span><span class="p">())</span>
+
+<span class="c1"># 只打印 ip src dst load</span>
+<span class="n">sniff</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="s2">&#34;udp[28:2] = 0x88cc and ip src 10.182.6.31&#34;</span><span class="p">,</span>  <span class="n">iface</span><span class="o">=</span><span class="s2">&#34;bond0.101&#34;</span><span class="p">,</span> <span class="n">prn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">sprintf</span><span class="p">(</span><span class="s2">&#34;{IP:%IP.src% -&gt; %IP.dst%</span><span class="se">\n</span><span class="s2">}{Raw:%Raw.load%</span><span class="se">\n</span><span class="s2">}&#34;</span><span class="p">))</span>
+
+<span class="c1"># 解析内层信息</span>
+<span class="n">sniff</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="s2">&#34;udp[28:2] = 0x88cc and ip src 10.187.10.87&#34;</span><span class="p">,</span>  <span class="n">iface</span><span class="o">=</span><span class="s2">&#34;bond0.102&#34;</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span><span class="mi">1</span> <span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">IP</span><span class="p">][</span><span class="n">UDP</span><span class="p">][</span><span class="n">VXLAN</span><span class="p">]</span>
+<span class="o">&lt;</span><span class="n">VXLAN</span>  <span class="n">flags</span><span class="o">=</span><span class="n">Instance</span> <span class="n">reserved1</span><span class="o">=</span><span class="mi">0</span> <span class="n">vni</span><span class="o">=</span><span class="mh">0x0</span> <span class="n">reserved2</span><span class="o">=</span><span class="mh">0x0</span> <span class="o">|&lt;</span><span class="n">Ether</span>  <span class="n">dst</span><span class="o">=</span><span class="mo">01</span><span class="p">:</span><span class="mi">80</span><span class="p">:</span><span class="n">c2</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mi">0</span><span class="n">e</span> <span class="n">src</span><span class="o">=</span><span class="mo">02</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">02</span> <span class="nb">type</span><span class="o">=</span><span class="mh">0x88cc</span> <span class="o">|&lt;</span><span class="n">Raw</span>  <span class="n">load</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\xfe\x0c\x02\x00\x00\x01\x00\x00\x01</span><span class="s1">{</span><span class="se">\xa5\x9a\xa5\x1b\xfe\x0c\x02\x00\x00\x02\x00\x00\x01</span><span class="s1">{</span><span class="se">\xa5\x9a\x91\xca\xfe\x08\x02\x00\x00\x03\n\xbb\n</span><span class="s1">W</span><span class="se">\xfe\x08\x02\x00\x00\x04\x00\x00\x00\x00\x00\x00</span><span class="s1">&#39;</span> <span class="o">|&gt;&gt;&gt;</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">IP</span><span class="p">][</span><span class="n">UDP</span><span class="p">][</span><span class="n">VXLAN</span><span class="p">][</span><span class="n">Ether</span><span class="p">][</span><span class="n">Raw</span><span class="p">]</span><span class="o">.</span><span class="n">load</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="使用python解析">使用Python解析</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">load</span>
+<span class="s1">&#39;</span><span class="se">\xfe\x0c\x02\x00\x00\x01\x00\x00\x01</span><span class="s1">{</span><span class="se">\xa5\x9a\xa5\x1b\xfe\x0c\x02\x00\x00\x02\x00\x00\x01</span><span class="s1">{</span><span class="se">\xa5\x9a\x91\xca\xfe\x08\x02\x00\x00\x03\n\xbb\n</span><span class="s1">W</span><span class="se">\xfe\x08\x02\x00\x00\x04\x00\x00\x00\x00\x00\x00</span><span class="s1">&#39;</span>
+<span class="o">&gt;&gt;&gt;</span>
+
+<span class="n">header</span><span class="o">=</span> <span class="n">load</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">LocalTime_header</span> <span class="o">=</span> <span class="n">load</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">LocalTime</span><span class="o">=</span><span class="n">load</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span>
+
+<span class="c1">## pack time</span>
+<span class="n">current_time</span> <span class="o">=</span> <span class="nb">long</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+<span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&#34;!q&#34;</span><span class="p">,</span> <span class="n">current_time</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&#34;!q&#34;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\x00\x00\x01</span><span class="s1">{</span><span class="se">\xa5\x9a\xa5\x1b</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">1630570980635</span><span class="p">,)</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="n">datetimetime_in_millis</span> <span class="o">=</span> <span class="mi">1630570980635</span>
+<span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">datetimetime_in_millis</span><span class="p">)</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="解析速度对比">解析速度对比</h3>
+<p>python 解析太慢了，后来又用go重新写了一版，快很多。同时使用了一些优化技巧，以后可以再写一篇分享。</p>
+<p><strong>Python</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">root@pubt2-nova-vpc-node1:~/proton-heartbeat/big_cluster# <span class="nb">time</span> python vlan_check_sniff.py <span class="p">|</span>wc
+  <span class="m">16446</span>  <span class="m">230244</span> <span class="m">2154426</span>
+
+real    0m14.783s
+user    0m14.608s
+sys     0m0.220s
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>go</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">root@pubt2-nova-vpc-node1:~# <span class="nb">time</span> ./gopacket <span class="p">|</span> wc
+  <span class="m">16446</span>  <span class="m">180906</span> <span class="m">1624222</span>
+
+real    0m0.136s
+user    0m0.380s
+sys     0m0.068s
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="模拟虚拟机icmp报文">模拟虚拟机icmp报文</h2>
+<p>在做的时候我想既然可以模拟计算节点发送udp报文，那我也可以去模拟虚拟机给另一个节点发送icmp，以后可以做成云计算里面的探针。调试了一下果然行得通的。</p>
+<p>构造包</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">gopacket.SerializeLayers(buffer, options,
+		ethernetLayer,
+		ipLayer,
+		udpLayer,
+		vxlanLayer,
+		ethernetLayerInner,
+		ipLayerInner,
+		icmpLayer,
+		gopacket.Payload(payload),
+	)
+</code></pre></td></tr></table>
+</div>
+</div><p>发送</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">outgoingPacket</span> <span class="o">:=</span> <span class="nf">buildPacket</span><span class="p">(</span><span class="s">&#34;hzx719&#34;</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>dump下来是可以的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">./pcap bond0.101 vni_and_host_ip  <span class="m">5028</span> 192.168.0.5
+
+sudo tcpdump -ni bond0.101 <span class="s1">&#39;((udp[12:4]&amp;0xffffff00)&gt;&gt;8=5028)&amp;&amp;((udp[46:4]=0xc0a80005)||(udp[42:4]=0xc0a80005))&#39;</span>
+
+<span class="c1"># python sniff</span>
+sniff<span class="o">(</span><span class="nv">filter</span><span class="o">=</span><span class="s2">&#34;((udp[12:4]&amp;0xffffff00)&gt;&gt;8=5028)&amp;&amp;((udp[46:4]=0xc0a80005)||(udp[42:4]=0xc0a80005))&#34;</span> , <span class="nv">iface</span><span class="o">=</span><span class="s2">&#34;bond0.101&#34;</span>, <span class="nv">prn</span><span class="o">=</span>lambda x: x.show<span class="o">())</span>
+
+
+root@pubt2-nova-vpc-node1:~# tcpdump -ni bond0.101 <span class="s1">&#39;((udp[12:4]&amp;0xffffff00)&gt;&gt;8=5028)&amp;&amp;((udp[46:4]=0xc0a80005)||(udp[42:4]=0xc0a80005))&#39;</span>  -vvv -X
+tcpdump: listening on bond0.101, link-type EN10MB <span class="o">(</span>Ethernet<span class="o">)</span>, capture size <span class="m">262144</span> bytes
+09:49:40.941576 IP <span class="o">(</span>tos 0x0, ttl 64, id 0, offset 0, flags <span class="o">[</span>none<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 96<span class="o">)</span>
+    10.182.4.120.42974 &gt; 10.182.4.57.4789: <span class="o">[</span>udp sum ok<span class="o">]</span> VXLAN, flags <span class="o">[</span>I<span class="o">]</span> <span class="o">(</span>0x08<span class="o">)</span>, vni <span class="m">5028</span>
+IP <span class="o">(</span>tos 0x0, ttl 64, id 0, offset 0, flags <span class="o">[</span>DF<span class="o">]</span>, proto ICMP <span class="o">(</span>1<span class="o">)</span>, length 34<span class="o">)</span>
+    192.168.0.2 &gt; 192.168.0.5: ICMP <span class="nb">echo</span> request, id 0, seq 0, length <span class="m">14</span>
+        0x0000:  <span class="m">4500</span> <span class="m">0060</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">4011</span> 5c71 0ab6 <span class="m">0478</span>  E..<span class="sb">`</span>....@.<span class="se">\q</span>...x
+        0x0010:  0ab6 <span class="m">0439</span> a7de 12b5 004c <span class="m">7092</span> <span class="m">0800</span> <span class="m">0000</span>  ...9.....Lp.....
+        0x0020:  <span class="m">0013</span> a400 <span class="m">0000</span> <span class="m">0000</span> <span class="m">0000</span> <span class="m">0200</span> <span class="m">0000</span> <span class="m">0000</span>  ................
+        0x0030:  <span class="m">0800</span> <span class="m">4500</span> <span class="m">0022</span> <span class="m">0000</span> <span class="m">4000</span> <span class="m">4001</span> b983 c0a8  ..E..<span class="s2">&#34;..@.@.....
+</span><span class="s2">        0x0040:  0002 c0a8 0005 0800 e614 0000 0000 687a  ..............hz
+</span><span class="s2">        0x0050:  7837 3139 0000 0000 0000 0000 0000 0000  x719............
+</span><span class="s2">09:49:40.941791 IP (tos 0x0, ttl 64, id 0, offset 0, flags [none], proto UDP (17), length 84)
+</span><span class="s2">    10.182.4.57.48020 &gt; 10.182.4.120.4789: [no cksum] VXLAN, flags [I] (0x08), vni 5028
+</span><span class="s2">IP (tos 0x0, ttl 64, id 21342, offset 0, flags [none], proto ICMP (1), length 34)
+</span><span class="s2">    192.168.0.5 &gt; 192.168.0.2: ICMP echo reply, id 0, seq 0, length 14
+</span><span class="s2">        0x0000:  4500 0054 0000 0000 4011 5c7d 0ab6 0439  E..T....@.\}...9
+</span><span class="s2">        0x0010:  0ab6 0478 bb94 12b5 0040 0000 0800 0000  ...x.....@......
+</span><span class="s2">        0x0020:  0013 a400 0000 0000 0000 0200 0000 0000  ................
+</span><span class="s2">        0x0030:  0800 4500 0022 535e 0000 4001 a625 c0a8  ..E..&#34;</span>S^..@..%..
+        0x0040:  <span class="m">0005</span> c0a8 <span class="m">0002</span> <span class="m">0000</span> ee14 <span class="m">0000</span> <span class="m">0000</span> 687a  ..............hz
+        0x0050:  <span class="m">7837</span> <span class="m">3139</span>                                x719
+
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="结论">结论</h2>
+<p>使用这个fake-agent发现若干大规模问题。具体问题就不贴上来了。</p>
+<p>通过这种模拟方式，节省了大量物理机资源，给公司省了不少钱 😁</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2021-10-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/go%E8%A7%A3%E6%9E%90%E5%A4%A7%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">go 解析大文本文件9种优化方式</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/snat%E4%B8%8A%E4%BC%A0%E5%A4%B1%E8%B4%A5/">
+            <span class="next-text nav-default">过snat上传失败</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

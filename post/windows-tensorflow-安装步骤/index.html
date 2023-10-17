@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>安装windows  tensorflow 环境指南 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="安装显卡驱动程序 安装驱动程序 去英伟达官方网站搜 https://www.nvidia.com/Download/index.aspx 442.50-tesla-desktop-winserver-2019-2016-international 安装完之后gpu-z可以看到显卡信息，驱动版本等 安装 conda 我这边下载的是。 Anaconda3-2019.10-Windows-x86_64.exe 安装完成之后更新c" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/windows-tensorflow-%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="安装windows  tensorflow 环境指南" />
+<meta property="og:description" content="安装显卡驱动程序 安装驱动程序 去英伟达官方网站搜 https://www.nvidia.com/Download/index.aspx 442.50-tesla-desktop-winserver-2019-2016-international 安装完之后gpu-z可以看到显卡信息，驱动版本等 安装 conda 我这边下载的是。 Anaconda3-2019.10-Windows-x86_64.exe 安装完成之后更新c" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/windows-tensorflow-%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2020-05-10T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-05-10T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="安装windows  tensorflow 环境指南">
+<meta itemprop="description" content="安装显卡驱动程序 安装驱动程序 去英伟达官方网站搜 https://www.nvidia.com/Download/index.aspx 442.50-tesla-desktop-winserver-2019-2016-international 安装完之后gpu-z可以看到显卡信息，驱动版本等 安装 conda 我这边下载的是。 Anaconda3-2019.10-Windows-x86_64.exe 安装完成之后更新c"><meta itemprop="datePublished" content="2020-05-10T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-05-10T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1040">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="安装windows  tensorflow 环境指南"/>
+<meta name="twitter:description" content="安装显卡驱动程序 安装驱动程序 去英伟达官方网站搜 https://www.nvidia.com/Download/index.aspx 442.50-tesla-desktop-winserver-2019-2016-international 安装完之后gpu-z可以看到显卡信息，驱动版本等 安装 conda 我这边下载的是。 Anaconda3-2019.10-Windows-x86_64.exe 安装完成之后更新c"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">安装windows  tensorflow 环境指南</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-05-10 </span>
+        
+          <span class="more-meta"> 1040 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <ol>
+<li>安装显卡驱动程序</li>
+</ol>
+<p>安装驱动程序</p>
+<p>去英伟达官方网站搜 <a href="https://www.nvidia.com/Download/index.aspx">https://www.nvidia.com/Download/index.aspx</a></p>
+<p><img src="../images/image-20200511135319927.png" alt="image-20200511135319927"></p>
+<p>442.50-tesla-desktop-winserver-2019-2016-international</p>
+<p>安装完之后gpu-z可以看到显卡信息，驱动版本等</p>
+<p><img src="../images/image-20200511135414821.png" alt="image-20200511135414821"></p>
+<ol start="2">
+<li>安装 conda</li>
+</ol>
+<p>我这边下载的是。</p>
+<p>Anaconda3-2019.10-Windows-x86_64.exe</p>
+<ol start="3">
+<li>安装完成之后更新conda</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">conda update conda  -y
+conda update anaconda -y
+conda update python -y
+conda update --all -y
+
+</code></pre></td></tr></table>
+</div>
+</div><p>创建虚拟环境</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">conda create --name tf-gpu  -y 
+
+</code></pre></td></tr></table>
+</div>
+</div><p>激活虚拟环境</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">conda activate tf-gpu
+
+</code></pre></td></tr></table>
+</div>
+</div><p>安装  tensorflow-gpu</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">conda install tensorflow-gpu -y
+
+</code></pre></td></tr></table>
+</div>
+</div><p>安装完成之后查看cuda版本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(tf-gpu) C:\Users\Administrator&gt;nvcc --version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2019 NVIDIA Corporation
+Built on Wed_Oct_23_19:32:27_Pacific_Daylight_Time_2019
+Cuda compilation tools, release 10.2, V10.2.89
+
+</code></pre></td></tr></table>
+</div>
+</div><p>cudnn版本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2\include
+
+cat cudnn.h
+
+#if !defined(CUDNN_H_)
+
+#define CUDNN_H_
+#define CUDNN_MAJOR 7
+#define CUDNN_MINOR 6
+#define CUDNN_PATCHLEVEL 5
+
+即 cudnn  7.6.5
+</code></pre></td></tr></table>
+</div>
+</div><p>查看 tf 版本，是否启用了显卡</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(tf-gpu) C:\Users\Administrator&gt;python
+Python 3.7.7 (default, May  6 2020, 11:45:54) [MSC v.1916 64 bit (AMD64)] :: Anaconda, Inc. on win32
+Type &#34;help&#34;, &#34;copyright&#34;, &#34;credits&#34; or &#34;license&#34; for more information.
+&gt;&gt;&gt; import tensorflow as tf
+2020-05-11 11:25:20.231839: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cudart64_101.dll
+
+
+
+&gt;&gt;&gt; print( tf.constant( &#39;Hellow from TensorFlow &#39; + tf.__version__ ) )
+2020-05-11 11:25:30.518510: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry nvcuda.dll
+2020-05-11 11:25:30.900525: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 0 with properties:
+pciBusID: 0000:85:00.0 name: Tesla K80 computeCapability: 3.7
+coreClock: 0.8235GHz coreCount: 13 deviceMemorySize: 11.18GiB deviceMemoryBandwidth: 223.96GiB/s
+2020-05-11 11:25:30.906155: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 1 with properties:
+pciBusID: 0000:84:00.0 name: Tesla K80 computeCapability: 3.7
+coreClock: 0.8235GHz coreCount: 13 deviceMemorySize: 11.25GiB deviceMemoryBandwidth: 223.96GiB/s
+2020-05-11 11:25:30.911441: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cudart64_101.dll
+2020-05-11 11:25:31.116970: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cublas64_10.dll
+2020-05-11 11:25:31.307963: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cufft64_10.dll
+2020-05-11 11:25:31.372510: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry curand64_10.dll
+2020-05-11 11:25:31.534948: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cusolver64_10.dll
+2020-05-11 11:25:31.618697: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cusparse64_10.dll
+2020-05-11 11:25:31.986974: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cudnn64_7.dll
+2020-05-11 11:25:31.992125: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1697] Adding visible gpu devices: 0, 1
+2020-05-11 11:25:32.014869: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this Ten
+sorFlow binary was not compiled to use: AVX AVX2
+2020-05-11 11:25:32.224902: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 0 with properties:
+pciBusID: 0000:85:00.0 name: Tesla K80 computeCapability: 3.7
+coreClock: 0.8235GHz coreCount: 13 deviceMemorySize: 11.18GiB deviceMemoryBandwidth: 223.96GiB/s
+2020-05-11 11:25:32.230337: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1555] Found device 1 with properties:
+pciBusID: 0000:84:00.0 name: Tesla K80 computeCapability: 3.7
+coreClock: 0.8235GHz coreCount: 13 deviceMemorySize: 11.25GiB deviceMemoryBandwidth: 223.96GiB/s
+2020-05-11 11:25:32.235721: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cudart64_101.dll
+2020-05-11 11:25:32.238514: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cublas64_10.dll
+2020-05-11 11:25:32.241274: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cufft64_10.dll
+2020-05-11 11:25:32.244053: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry curand64_10.dll
+2020-05-11 11:25:32.246930: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cusolver64_10.dll
+2020-05-11 11:25:32.249898: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cusparse64_10.dll
+2020-05-11 11:25:32.252772: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic libra
+ry cudnn64_7.dll
+2020-05-11 11:25:32.257497: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1697] Adding visible gpu devices: 0, 1
+2020-05-11 11:25:39.209365: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1096] Device interconnect StreamExecutor with
+strength 1 edge matrix:
+2020-05-11 11:25:39.212377: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1102]      0 1
+2020-05-11 11:25:39.214185: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] 0:   N N
+2020-05-11 11:25:39.216004: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] 1:   N N
+2020-05-11 11:25:39.236707: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1241] Created TensorFlow device (/job:localhos
+t/replica:0/task:0/device:GPU:0 with 9996 MB memory) -&gt; physical GPU (device: 0, name: Tesla K80, pci bus id: 0000:85:00.0, c
+ompute capability: 3.7)
+2020-05-11 11:25:39.253338: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1241] Created TensorFlow device (/job:localhos
+t/replica:0/task:0/device:GPU:1 with 9146 MB memory) -&gt; physical GPU (device: 1, name: Tesla K80, pci bus id: 0000:84:00.0, c
+ompute capability: 3.7)
+tf.Tensor(b&#39;Hellow from TensorFlow 2.1.0&#39;, shape=(), dtype=string)
+
+</code></pre></td></tr></table>
+</div>
+</div><p>跑分，cpu、gpu 效率对比。</p>
+<p>可以使用下面的这个脚本，改了改知乎专栏那个对比脚本，兼容tf2</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">def</span> <span class="nf">performanceTest</span><span class="p">(</span><span class="n">device_name</span><span class="p">,</span><span class="n">size</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device_name</span><span class="p">):</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">([</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;W&#39;</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">([</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+        <span class="n">mul</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mul&#39;</span><span class="p">)</span>
+        <span class="n">sum_result</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+    
+    <span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">tfconfig</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">compat</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">ConfigProto</span><span class="p">(</span><span class="n">log_device_placement</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">compat</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">tfconfig</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sum_result</span><span class="p">)</span>
+        
+    <span class="n">takeTimes</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">startTime</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">device_name</span><span class="p">,</span> <span class="s2">&#34;矩阵大小：&#34;</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="s2">&#34;x&#34;</span><span class="p">,</span><span class="n">size</span><span class="p">,</span> <span class="s2">&#34; 时间:&#34;</span><span class="p">,</span><span class="n">takeTimes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">takeTimes</span>
+
+<span class="n">tf</span><span class="o">.</span><span class="n">compat</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">disable_eager_execution</span><span class="p">()</span>
+
+<span class="n">gpu_set</span> <span class="o">=</span> <span class="p">[];</span><span class="n">cpu_set</span> <span class="o">=</span> <span class="p">[];</span><span class="n">i_set</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20001</span><span class="p">,</span> <span class="mi">1000</span><span class="p">):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">performanceTest</span><span class="p">(</span><span class="s2">&#34;/gpu:0&#34;</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">performanceTest</span><span class="p">(</span><span class="s2">&#34;/cpu:0&#34;</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">gpu_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">cpu_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">i_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i_set</span><span class="p">,</span> <span class="n">gpu_set</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;gpu&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i_set</span><span class="p">,</span> <span class="n">cpu_set</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&#34;filename.png&#34;</span><span class="p">)</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/image-20200511135233428.png" alt="image-20200511135233428"></p>
+<p>gpu负载观测工具</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Program Files\NVIDIA Corporation\NVSMI
+</code></pre></td></tr></table>
+</div>
+</div><p>找到文件<code>nvidia-smi.exe</code>，把该文件拖到命令提示符窗口</p>
+<p><img src="../images/image-20200511151843744.png" alt="image-20200511151843744"></p>
+<p>windows 版本的watch</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">for /l %g in () do @(  &#34;C:\\Program Files\\NVIDIA Corporation\\NVSMI\\nvidia-smi.exe&#34;  &amp; timeout /t 2) 
+</code></pre></td></tr></table>
+</div>
+</div><p>其他可以参考</p>
+<ol>
+<li><a href="https://www.pugetsystems.com/labs/hpc/How-to-Install-TensorFlow-with-GPU-Support-on-Windows-10-Without-Installing-CUDA-UPDATED-1419/">https://www.pugetsystems.com/labs/hpc/How-to-Install-TensorFlow-with-GPU-Support-on-Windows-10-Without-Installing-CUDA-UPDATED-1419/</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/37924625">https://zhuanlan.zhihu.com/p/37924625</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/57050138">https://zhuanlan.zhihu.com/p/57050138</a></li>
+</ol>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-05-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/intellifuzztest-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IntelliFuzzTest 命令行测试工具</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/k8s-e2e%E9%83%A8%E7%BD%B2%E5%92%8C%E8%B0%83%E8%AF%95/">
+            <span class="next-text nav-default">k8s e2e测试部署和调试</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>api-接口-fuzz-测试初探 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="目标 在日常测试工作中，经常会有api接口的测试，除了正向流程的测试之外，我们经常还需要覆盖一些异常情况。 例如： 不合法字符串 字符串超长 应该是数" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/api-%E6%8E%A5%E5%8F%A3-fuzz-%E6%B5%8B%E8%AF%95%E5%88%9D%E6%8E%A2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="api-接口-fuzz-测试初探" />
+<meta property="og:description" content="目标 在日常测试工作中，经常会有api接口的测试，除了正向流程的测试之外，我们经常还需要覆盖一些异常情况。 例如： 不合法字符串 字符串超长 应该是数" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/api-%E6%8E%A5%E5%8F%A3-fuzz-%E6%B5%8B%E8%AF%95%E5%88%9D%E6%8E%A2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-11-14T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2018-11-14T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="api-接口-fuzz-测试初探">
+<meta itemprop="description" content="目标 在日常测试工作中，经常会有api接口的测试，除了正向流程的测试之外，我们经常还需要覆盖一些异常情况。 例如： 不合法字符串 字符串超长 应该是数"><meta itemprop="datePublished" content="2018-11-14T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2018-11-14T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="2112">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="api-接口-fuzz-测试初探"/>
+<meta name="twitter:description" content="目标 在日常测试工作中，经常会有api接口的测试，除了正向流程的测试之外，我们经常还需要覆盖一些异常情况。 例如： 不合法字符串 字符串超长 应该是数"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">api-接口-fuzz-测试初探</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-11-14 </span>
+        
+          <span class="more-meta"> 2112 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p><img src="../images/27460-ce1741170cf43090.jfif" alt="Alt pic"></p>
+<h1 id="目标">目标</h1>
+<p>在日常测试工作中，经常会有api接口的测试，除了正向流程的测试之外，我们经常还需要覆盖一些异常情况。</p>
+<p>例如：</p>
+<ul>
+<li>不合法字符串</li>
+<li>字符串超长</li>
+<li>应该是数字类型的，传入了字母</li>
+<li>参数为空</li>
+<li>传入了中文，标点符号等</li>
+<li>sql注入等等</li>
+</ul>
+<p>事实上，我们组的接口测试demo框架中，在dataprovider中也经常能够看到诸如下面的例子。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">@DataProvider(name = &#34;testIllegalName&#34;)
+	public static Object[][] testIllegalName(){
+
+    return new Object[][]{
+            
+            //name 
+            {null, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;abcdefghijilmnopqrstu&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34; &#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;12&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;-12&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;0.2&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;abcdefghij0123456789abcdefghij0123456789abcdefghij0123456789abcd.com&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;zxq.qa.com&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;zxq_qa.com&#34;, 400, &#34;域名为空或者域名非法&#34;},
+
+							
+		};
+	}
+</code></pre></td></tr></table>
+</div>
+</div><p>此处是看看接口在传入非期望值的时候，能不能够很好的处理类似请求。</p>
+<p>除此以外，还有一些和业务场景强相关的值类型，比如网络测试的时候，我们会关心cidr的格式；计费测试的时候，又特别关注数字的类型。</p>
+<p>一方面，给每个接口增加类似的异常接口测试相对比较无趣；另一方面，我们作为人，考虑问题，不管是开发还是测试，都难免挂一漏万，有一些边边角角的case没能考虑到。</p>
+<p>既然如此，我们能否统一抽象出来一种接口异常测试的框架，<strong>自动</strong> 注入各种类型的异常，然后将凡是服务没有捕获的，抛出trace, exception 的，记录下请求的payload，为后续验证覆盖提供支撑。</p>
+<h1 id="原理">原理</h1>
+<p>主要使用了模糊测试技术（fuzz testing, fuzzing）。其核心思想是自动或半自动的生成随机数据输入到一个程序中，并监视程序异常，如崩溃，断言(assertion)失败，以发现可能的程序错误，比如内存泄漏。（摘抄之维基百科）</p>
+<p>简单的模糊测试随机输入数据，而更加高效的模糊测试，需要理解对象结构或者协议。通过向数据内容，结构，消息，序列中引入一些异常，来人为的构造聪明的模糊测试。</p>
+<p>如果你持续关注文件系统或内核技术，你一定注意过这样一篇文章：Fuzzing filesystem with AFL。Vegard Nossum 和 Quentin Casasnovas 在 2016 年将用户态的 Fuzzing 工具 AFL（American Fuzzing Lop）迁移到内核态，并针对文件系统进行了测试。</p>
+<p>结果是相当惊人的。Btrfs，作为 SLES（SUSE Linux Enterprise Server）的默认文件系统，仅在测试中坚持了 5 秒钟就挂了。而 ext4 坚持时间最长，但也仅有 2 个小时而已。(<a href="https://zhuanlan.zhihu.com/p/28828826">https://zhuanlan.zhihu.com/p/28828826</a>)</p>
+<p>所以基于此，在api接口测试中引入模糊测试理论上也是可行的，而且是有效的。</p>
+<h1 id="举例">举例</h1>
+<p>经过一番调研和搜索之后，发现了以下这个项目在接口fuzz测试中，有比较好的上手体验。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pip install PyJFuzz
+git clone https://github.com/dzonerzy/PyJFAPI.git
+</code></pre></td></tr></table>
+</div>
+</div><p>我对 PyJFAPI 稍微进行了一些修改，包括日志记录，以及异常判断的地方，只记录服务器返回500错误的情况等。</p>
+<p>首先需要准本一个请求的模板。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cat request.text
+
+POST /v2.0/networks.json HTTP/1.1
+Host: pubbeta1-iaas.service.163.org
+X-Auth-Token: 6645b224a8314d0c89e09a011cbddf53
+Content-Type: application/json
+Accept: application/json
+
+
+***{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}***
+</code></pre></td></tr></table>
+</div>
+</div><p>这里是一个 post请求，定义了一些请求头和请求体。星号之间的请求json体，为异常注入点。
+它会自动分析你的json格式，生成各种 payload。理论上来说，你只需要给它提供一份接口的scheme就行(要是所有接口都可以从Swagger直接导出那就很方便了)。</p>
+<p>运行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python pjfapi.py -H pubbeta1-iaas.service.163.org  -P 9797  -T request.txt 
+</code></pre></td></tr></table>
+</div>
+</div><p>返回</p>
+<p><img src="../images/27460-b58dc7b4900212a8.png" alt="Alt pic"></p>
+<p>我们可以手工请求一下这些导致异常的payload。
+实例1：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(hzx_env) hzhuangzhexiao@pubbeta1-nova10:~$ curl -i http://pubbeta1-iaas.service.163.org:9797/v2.0/networks.json -X POST -H &#34;X-Auth-Token: 7d52816088e84e5392019ed00c2f386f&#34; -H &#34;Content-Type: application/json&#34; -H &#34;Accept: application/json&#34; -H &#34;User-Agent: python-protonclient&#34; -d &#39;{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.010.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}&#39;
+HTTP/1.1 500 
+Content-Type: application/json;charset=ISO-8859-1
+Content-Length: 9586
+Date: Tue, 14 Nov 2017 05:59:42 GMT
+Connection: close
+
+An unknown exception occurred.
+java.lang.IllegalArgumentException: &#39;20.010.0.0&#39; is not an IP string literal.
+	at com.google.common.net.InetAddresses.formatIllegalArgumentException(InetAddresses.java:1035)
+	at com.google.common.net.InetAddresses.forString(InetAddresses.java:154)
+	at com.netease.cns.proton.server.utils.HelperUtils.convertIpStringToInt(HelperUtils.java:107)
+	at com.netease.cns.proton.server.utils.HelperUtils.getIp4NetworkProtoBuf(HelperUtils.java:189)
+	at com.netease.cns.proton.server.utils.HelperUtils.getIp4NetworkProtoBuf(HelperUtils.java:194)
+</code></pre></td></tr></table>
+</div>
+</div><p>事实上，我们本来已经对这个cidr参数进行了一些异常值的测试。包括：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">&#34;cidr&#34;: &#34;20.256.0.0/16&#34;    不规范的类型
+&#34;cidr&#34;: &#34;20.ssss.0.0/16&#34;  部分为字符串
+&#34;cidr&#34;: &#34;ssssss&#34;   全为字符串
+&#34;cidr&#34;: &#34;&#34;          为空
+</code></pre></td></tr></table>
+</div>
+</div><p>等等。可以发现，还是有部分特殊情形没有考虑到。</p>
+<p>实例2</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(hzx_env) hzhuangzhexiao@pubbeta1-nova10:~$ curl -i http://pubbeta1-iaas.service.163.org:9797/v2.0/security-group-rules.json -X POST -H &#34;X-Auth-Token: af75ed821eeb4d5c9e88fb4ba804ff48&#34; -H &#34;Content-Type: application/json&#34; -H &#34;Accept: application/json&#34; -H &#34;User-Agent: python-protonclient&#34; -d &#39;{&#34;security_group_rule&#34;: {&#34;direction&#34;: &#34;ingress&#34;, &#34;protocol&#34;: &#34;tcp&#34;, &#34;ethertype&#34;: &#34;IPv4&#34;, &#34;port_range_max&#34;: &#34;6660&#34;, &#34;security_group_id&#34;: &#34;48b9cc1e-53f8-4f7e-8983-bffb209153f3&#34;, &#34;port_range_min&#34;: &#34;80&#34;, &#34;remote_ip_prefix&#34;: &#34;0.0.0.0/&#34;}}&#39;
+HTTP/1.1 500 
+Content-Type: application/json;charset=ISO-8859-1
+Content-Length: 6310
+Date: Tue, 14 Nov 2017 05:59:10 GMT
+Connection: close
+
+An unknown exception occurred.
+java.lang.ArrayIndexOutOfBoundsException: 1
+	at com.netease.cns.proton.server.service.SecurityGroupServiceImpl.validateIpPrefix(SecurityGroupServiceImpl.java:385)
+	at com.netease.cns.proton.server.service.SecurityGroupServiceImpl.createSecurityGroupRule(SecurityGroupServiceImpl.java:228)
+	at sun.reflect.GeneratedMethodAccessor385.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+
+</code></pre></td></tr></table>
+</div>
+</div><p>我把程序构造的部分异常打印出来，可以看到类型还是很丰富的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1D, &#34;admin_state_up&#34;_ true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test-1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_utrue}}
+{&#34;network-&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuup&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.1.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, : tru}e}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vp¸-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;ՠ: true}}
+{&#34;network&#34;: {&#34;cdr&#34;: &#34;20100..0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_stap&#34;::: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;:} true}}
+{&#34;neeeeeeeeeeeeeeeeeeeeeeeeeeeeeetwork&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_s,ate_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: }
+&#34;n{et���: r{&#34;cidr&#34;: &#34;0.}0.0/-34359738368&#34;, &#34;naD: true}}
+{&#34;network&#34;: }
+{&#34;[network&#34;: {&#34;cidr&#34;: &#34;20.-214748364800.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}{&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}{&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.1000.0/+.16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;: true}}
+{&#34;networ[k&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/-4080&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/-4080&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.-25500.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_stateeeeeeeeeeeeeeeeeeeee_up&#34;: true}}
+</code></pre></td></tr></table>
+</div>
+</div><p>pjfapi.py 脚本本身使用方法很简单。 -h 看下help为命令行参数的基本说明。</p>
+<p><img src="../images/27460-aa00a1c32e945983.png" alt="Alt pic"></p>
+<h1 id="结论">结论</h1>
+<p>本文简要的介绍了fuzz测试技术，以及将其应用到api接口测试中的实现，给出了一个具体的fuzz接口测试例子。它不一定能够完全替代掉人工的接口异常，但是可以作为一个很好的补充。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-11-14
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E8%BF%BD%E6%B1%82%E7%A5%9E%E4%B9%8E%E5%85%B6%E6%8A%80%E7%9A%84shell%E4%BD%BF%E7%94%A8%E4%B9%8B%E9%81%93/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">追求神乎其技的shell使用之道[视频]</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/pycharm-%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95tempest/">
+            <span class="next-text nav-default">pycharm-远程调试tempest</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

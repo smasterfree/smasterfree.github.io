@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>一个Bug带来的若干思考 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="不久之前(现在距离写下此文已经很久了)，对蜂巢计费进行测试的时候发现了一个Bug，定位解决的过程费了不少周折，所以记录一下，和大家分享。 背景" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E4%B8%80%E4%B8%AAbug%E5%B8%A6%E6%9D%A5%E7%9A%84%E8%8B%A5%E5%B9%B2%E6%80%9D%E8%80%83/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="一个Bug带来的若干思考" />
+<meta property="og:description" content="不久之前(现在距离写下此文已经很久了)，对蜂巢计费进行测试的时候发现了一个Bug，定位解决的过程费了不少周折，所以记录一下，和大家分享。 背景" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E4%B8%80%E4%B8%AAbug%E5%B8%A6%E6%9D%A5%E7%9A%84%E8%8B%A5%E5%B9%B2%E6%80%9D%E8%80%83/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2016-02-10T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2016-02-10T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="一个Bug带来的若干思考">
+<meta itemprop="description" content="不久之前(现在距离写下此文已经很久了)，对蜂巢计费进行测试的时候发现了一个Bug，定位解决的过程费了不少周折，所以记录一下，和大家分享。 背景"><meta itemprop="datePublished" content="2016-02-10T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2016-02-10T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="3242">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="一个Bug带来的若干思考"/>
+<meta name="twitter:description" content="不久之前(现在距离写下此文已经很久了)，对蜂巢计费进行测试的时候发现了一个Bug，定位解决的过程费了不少周折，所以记录一下，和大家分享。 背景"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">一个Bug带来的若干思考</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2016-02-10 </span>
+        
+          <span class="more-meta"> 3242 words </span>
+          <span class="more-meta"> 7 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#放大现象">放大现象</a></li>
+    <li><a href="#注意-diff-和-grep">注意 Diff 和 Grep</a></li>
+    <li><a href="#借助图表">借助图表</a></li>
+    <li><a href="#他山之石">他山之石</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>不久之前(现在距离写下此文已经很久了)，对蜂巢计费进行测试的时候发现了一个Bug，定位解决的过程费了不少周折，所以记录一下，和大家分享。</p>
+<h1 id="背景">背景</h1>
+<p>首先说一下这个Bug的背景，我们的蜂巢计费系统。</p>
+<p><a href="https://c.163.com/">蜂巢</a> 是网易新出的一个基于SSD的Docker服务。其基本实现是在网易自己的云计算平台上部署Docker容器，然后对外售卖这个服务。在这里，IaaS层对用户来说是透明的，用户不需要关心Docker到底跑在哪个云主机上。</p>
+<p>我们的计费系统构成主要分为三部分：</p>
+<ul>
+<li>底层输出各自用量日志；</li>
+<li>计费系统抓取日志，根据消息服务中间件进行日志汇总；</li>
+<li>计费模块根据租户实例用量信息，进行费用结算。
+最后以 RESTful API的形式提供给前端显示。</li>
+</ul>
+<p>大概类似下图1：
+<img src="../images/6ade7bea-a972-4060-9b3a-3ae93f00d769" alt="图1 计费数据流粗略图">  <!-- raw HTML omitted --></p>
+<h1 id="bug的发现">Bug的发现</h1>
+<p><img src="../images/5d73b568-18e2-4708-99cf-1e5cb6476a6b" alt="图2 情景配图a"></p>
+<p>蜂巢在创建容器的时候可以选择套餐或者非套餐。套餐的话最小容量一个月 29 块钱，包含 25G 流量，再赠送 25G 的流量。我要测试一下，套餐超出50G流量之后，是否按照 0.79 元 1G 进行扣费。</p>
+<p>这个说来简单，找一台云主机，启动一个<a href="https://iperf.fr/">iperf</a>作服务端，然后在套餐的容器里开一个iperf客户端，跑上一段时间就能把流量耗完了。为了测试快一点，我把带宽设置的大一点，400Mb每秒。</p>
+<p>这时候问题来了，首先是我按照设置的速度消耗流量，到了预期时间流量没消耗完。继续跑iperf，流量消耗完了之后开始扣钱，发现30G左右的流量只扣大约20G左右的钱，相当于流量单价打了个6.7折。</p>
+<p>作为用户肯定开心呀。但是作为公司这么赔钱做买卖可不行。那我们就要找问题。</p>
+<p><img src="../images/bf4bfdfc-5a52-4bcf-8e7d-5d792b51165f" alt="图3 情景配图b"></p>
+<p>很显然，curl一下接口，和前端显示的一致，说明不是前端的问题。那可能是计费模块的问题。</p>
+<p>于是找计费的同学核对了好几次。直接在数据库里查这个租户，当前容器的流量统计日志，根据流量计算的就是这么点钱，没错。既然结算这里没有问题，那么看数据对不对，检查容器的流量日志，数据加起来就消耗了 20G。</p>
+<p><img src="../images/4924f76d-89f5-4e1b-a73d-3746645dba35" alt="图3 情景配图c"></p>
+<p>难道是数据推送模块 ceilometer 的问题？ ceilometer 从 cns 那里取流量信息，打日志，计费模块的agent根据日志推送到计费的数据库进行计算。ceilometer 开发同学对我说，他是大自然数据的搬运工，不产生数据，只搬运数据，不可能错的。</p>
+<p>这倒也是，其实偷偷说一句，这个模块当初我测试过，的确是没有发现Bug。怎么会每次推送都少了点呢？</p>
+<p>这个时候其实我们还考虑过其他可能，例如<a href="https://www.wikiwand.com/en/Packet_loss">丢包</a>问题，比如你以为iperf的速率为 400Mb，但是实际只有 200Mb，丢了 50% 的包，但是这个也被排除了，因为最后看跑了多少流量同时看server端和client端两边的结果，是一致的。还有曾经怀疑过iperf的流量统计到底是否准确，如果它给出的统计结果本身就是不准确的呢？后来这个也被排除了，通过登录到云主机和容器，看两边网卡的ifconfig的统计值在测试前后做差得到的结果，是和iperf的统计值一致的。</p>
+<p>这就怪了，用了30G的流量，但是只扣了20G的钱。</p>
+<h1 id="bug的解决">Bug的解决</h1>
+<p><img src="../images/3461434e-80a4-4486-90af-5815a9fdeca7" alt="图4 情景配图d"></p>
+<p>直接剧透说结果吧。</p>
+<p>这是底层 Open vSwitch  2.30 版本的一个Bug，某一个统计接口用了一个 32 位的变量。而 CNS 推送给 ceilometer 的数据就是通过ovs-dpctl -t 10 -s show获取的，因此每次推送流量如果大于4G，就会产生溢出。</p>
+<p>既然是这个 32 位的问题，那么要解决还是比较容易的，换成 64 位的就可以了。但是直接要对 Open vSwitch 动刀还是有点风险，所以就换一条路，从物理机/proc/networks/dev这个地方去读取数值。</p>
+<p>经过验证，流量统计准确了。</p>
+<h1 id="bonus-tips">Bonus Tips</h1>
+<p>发现Bug是一回事，定位Bug的原因是另一回事。在此也送上一些Tips。</p>
+<p>感谢 <a href="https://www.zhihu.com/question/23019630">知乎的这个问答</a>，我从这里学到不少思想。</p>
+<h2 id="放大现象">放大现象</h2>
+<blockquote>
+<p>如果有些Bug现象不太明显，那么就想办法增大它的破坏性，把现象放大。</p>
+</blockquote>
+<p>在美剧<a href="https://www.wikiwand.com/zh-cn/%E8%B1%AA%E6%96%AF%E5%8C%BB%E7%94%9F">《豪斯医生》</a>中有一集，医生怀疑病人心肺有问题，就让病人去跑步机上跑步，加重心肺负担，从而放大症状。</p>
+<p>比如这个Bug当中，我们发现在带宽较大的情况下，流量丢失的就越明显。而在带宽较小的情况下，则不是那么明显。事后知道原因是因为 32 位溢出了之后很好解释，但是在不知道原因的时候，的确是很奇怪的。而且因为线上网络和 port qos 限速的原因，带宽的最大值有一个限制（400-500Mb），再往上就大不上去了。后来可以看到开发是直接在测试环境物理机上进行试验，才往这个方面去考虑。</p>
+<p>通过这个案例，也提醒我们，以后测试的时候可以考虑 32 位这个限制，和 4GB 相关的数值要敏感。说不定就会发现一个溢出的Bug。</p>
+<h2 id="注意-diff-和-grep">注意 Diff 和 Grep</h2>
+<p>这个技巧学来的时候，我都还不会用命令行下的工具:)不过就是初中那会儿的控制变量法嘛。不过后来在一个Blog里，有了更深的体会，虽然他在讲政治经济学，但我看到的是怎么Debug。</p>
+<p>就是在这篇 <a href="https://medium.com/@zhexiao/%E5%85%AD%E4%B8%AD%E5%85%A8%E4%BC%9A%E5%85%AC%E6%8A%A5%E7%9A%84%E7%BA%A2%E6%A5%BC%E6%A2%A6%E7%A0%94%E7%A9%B6-3b407ef9866f#.x78qz2eyq">《六中全会公报的红楼梦研究》</a>  （被墙了ค(TㅅT)）文章中，作者详细说明了如何使用 Grep 和 Diff 进行研究公报。他的结论能够让我们提早知道为啥下一个五年计划工作重心放在了反腐倡廉上。我强烈建议大家读一读，搞不好用在投资领域，可能就要少调十年Bug了。:)</p>
+<p>回到Bug上来，在调试和定位问题的时候，我们也能够利用 Diff 的思想，分别实验。这个Bug在公有云环境上有，在公共测试环境没有，那么就找找两个环境有什么区别。如果唯一区别是 Open vSwitch 版本不一致，那么很有可能是因为 Open vSwitch 的引起的Bug。那么就可以缩小范围，从Open vSwitch上找原因。</p>
+<p>当变得东西多了，该法演变为<a href="https://www.zhihu.com/question/23753917">二分定位法</a>。</p>
+<blockquote>
+<p>关键就是就是不断迭代缩小范围，最终定位问题的症结所在 。</p>
+</blockquote>
+<blockquote>
+<p>具体手段包括但不限于：注释掉部分代码、在不同位置插入试探性代码、对输入数据二分、对代码版本二分、对运行环境二分。</p>
+</blockquote>
+<blockquote>
+<p>只要是能复现的Bug，二分肯定能找到问题所在，要是有啥妙招那也可以用用，不过貌似没有妙招的时候多一点。 如果复现的方式比较复杂，耗时很长，那可能要专门写些程序或脚本来自动做二分。</p>
+</blockquote>
+<p>Git甚至特地加上了一个git bisect的子命令，专门用来在各个 Commit 之间进行二分搜索，其主要目的，也就是在找不同。</p>
+<p>比如 Intel 开源中心做内核开发的就是 <a href="https://segmentfault.com/a/1190000000535471">这么</a> 用程序来找Bug。</p>
+<blockquote>
+<p>这套测试工具特别擅长抓Regression Bug。基于 Git 里面的 bisect 命令，测试系统通过二分法定位各种Regression Bug。比如 3.13 内核没问题，到 3.14 出问题了，这两个版本之间有上万个 Commit，如果不知道是哪个 Commit 造成这个问题，连该找谁修复都是问题。这种漫无目的的Debug要求开发者非常专业，必须对内核各个方面都非常了解，才能感知和分析哪里出了问题。但用 bisect，相当于把计算机变成一个内核专家。bisect 可以迅速定位问题，找出有问题的 Commit，自动给作者和维护者发邮件。他们是该Bug最相关的人，往往第一眼就看出问题出在哪里，并了解如何修复最为妥善。</p>
+</blockquote>
+<h2 id="借助图表">借助图表</h2>
+<p>有一些Bug直接看数字很难体现，或者数字位数大了，人眼就不敏感。这个时候就应该祭出画图大法，将数字转化为图形。</p>
+<p>本科的时候学习控制理论，这其中就有一种思想是将超调、纯滞后等特性在图像上进行反映。工厂有经验的老师傅们，进行参数整定与优化的过程中，都是看着输出曲线，加以调整。</p>
+<p>一个系统有监控的时候，经常能够可以一眼看出有啥问题，没有监控的时候，就要翻日志来看了。借助Gnuplot或者 Excel，都能形象化看出一些变化。比如在客户端和服务端iperf以400Mb的带宽进行通信的15分钟里，有一段时间，流量瞬间小了下去。</p>
+<p><img src="../images/49aa087e-63d1-4c2d-bce1-4c647c0b3462" alt="图6 Bug修复前流量图"></p>
+<p>而在Bug修复后以 800Mb 速率进行 15 分钟左右的测试，可以看到，流量还是相对比较平稳，哪个有问题，一眼可以看出来。</p>
+<p><img src="../images/76ebcbec-b62c-418d-adb7-ef874adf98e0" alt="图7 Bug修复后流量图"></p>
+<h2 id="他山之石">他山之石</h2>
+<p>还有一招，就是问人啦。或者 Google，StackOverflow，或者求教身边的大牛。</p>
+<p>很多情况下，有经验的程序员可以一眼看出很多问题，比如野指针，传入参数为null，连接池未关闭等等。</p>
+<h1 id="尾声">尾声</h1>
+<blockquote>
+<p>但愿世间人物病，何妨架上药生尘。
+但愿世间无Bug，何妨我术为屠龙。</p>
+</blockquote>
+<p>然而世事不总遂人愿，因此学学调试技巧——一种让一个系统按照我们期望的方式运行的方法，还是很有意义的。君不见，生财之法，回春之术，经世之学，治国之道，无不都在 Debug！</p>
+<h1 id="更多阅读">更多阅读</h1>
+<p><a href="https://www.zhihu.com/question/21991014">最难调试修复的 bug 是怎样的？</a><br>
+<a href="https://www.zhihu.com/question/34787444">你碰到过的最难调试的 Bug 是什么样的？</a><br>
+<a href="http://www.quora.com/Software-Engineering/Whats-the-hardest-bug-youve-debugged">What’s the hardest bug you’ve debugged?</a></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2016-02-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/python%E6%96%87%E4%BB%B6%E7%BC%93%E5%AD%98/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">python 文件缓存</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E9%83%A8%E7%BD%B2%E8%BF%B7%E6%80%9D/">
+            <span class="next-text nav-default">部署迷思</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

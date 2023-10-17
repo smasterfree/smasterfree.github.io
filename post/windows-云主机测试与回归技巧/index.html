@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>windows-云主机测试与回归技巧 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="1.四大参数校验工具 cpu，内存，磁盘io，网络io。 部分参考了一下微软msdn的这篇文章Tools To Simulate CPU / Memory / Disk Load ####cpu 图形化工具 CPUSTRES.EXE 这个工具比" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/windows-%E4%BA%91%E4%B8%BB%E6%9C%BA%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%9E%E5%BD%92%E6%8A%80%E5%B7%A7/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="windows-云主机测试与回归技巧" />
+<meta property="og:description" content="1.四大参数校验工具 cpu，内存，磁盘io，网络io。 部分参考了一下微软msdn的这篇文章Tools To Simulate CPU / Memory / Disk Load ####cpu 图形化工具 CPUSTRES.EXE 这个工具比" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/windows-%E4%BA%91%E4%B8%BB%E6%9C%BA%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%9E%E5%BD%92%E6%8A%80%E5%B7%A7/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-12-24T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2017-12-24T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="windows-云主机测试与回归技巧">
+<meta itemprop="description" content="1.四大参数校验工具 cpu，内存，磁盘io，网络io。 部分参考了一下微软msdn的这篇文章Tools To Simulate CPU / Memory / Disk Load ####cpu 图形化工具 CPUSTRES.EXE 这个工具比"><meta itemprop="datePublished" content="2017-12-24T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2017-12-24T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="2206">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="windows-云主机测试与回归技巧"/>
+<meta name="twitter:description" content="1.四大参数校验工具 cpu，内存，磁盘io，网络io。 部分参考了一下微软msdn的这篇文章Tools To Simulate CPU / Memory / Disk Load ####cpu 图形化工具 CPUSTRES.EXE 这个工具比"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">windows-云主机测试与回归技巧</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-12-24 </span>
+        
+          <span class="more-meta"> 2206 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1四大参数校验工具">1.四大参数校验工具</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h3 id="1四大参数校验工具">1.四大参数校验工具</h3>
+<p>cpu，内存，磁盘io，网络io。</p>
+<p>部分参考了一下微软msdn的这篇文章<a href="https://blogs.msdn.microsoft.com/vijaysk/2012/10/26/tools-to-simulate-cpu-memory-disk-load/">Tools To Simulate CPU / Memory / Disk Load</a></p>
+<p>####cpu
+图形化工具 <a href="http://download.sysinternals.com/files/CPUSTRES.zip">CPUSTRES.EXE</a></p>
+<p>这个工具比较简单，直接选择用几个thread，选择一下priority和activity优先级，即可产生不同的压力。</p>
+<p><img src="../images/27460-941be0a585bf2ff8.png" alt="cpustres.png"></p>
+<p>命令行工具，consume.exe。</p>
+<p>consume 使用方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">consume RESOURCE [-time SECONDS]
+
+RESOURCE can be one of the following:
+
+-physical-memory
+-page-file
+-disk-space
+-cpu-time
+-kernel-pool
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="内存">内存</h4>
+<p>内存加压工具：
+testlimit.exe</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Testlimit64.exe -d -c 2048
+</code></pre></td></tr></table>
+</div>
+</div><p>即占用2G内存。</p>
+<p><img src="../images/27460-3807a8befa69b525.png" alt="testlimit.png"></p>
+<h4 id="磁盘io">磁盘io</h4>
+<p>直接参考使用 <code>fio</code>
+注意ioengine 使用windowsaio</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">fio.exe --direct=1 --iodepth=1  --rw=randrw  --rwmixread=70  --bs=16k --size=1g   --ioengine=windowsaio   --group_reporting    --name=file --runtime=300 --time_based --numjobs=1 --thread   --filename=bench
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="网络io">网络io</h4>
+<p>这个也可以使用和linux下相一致的 <code>iperf</code></p>
+<p>使用方式同linux。</p>
+<p>server端
+client端</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> iperf -u -c  223.252.223.153   -i 2 -b 40M  -t 600
+</code></pre></td></tr></table>
+</div>
+</div><p>###2.穿透vnc快捷键映射
+首先讲一下回归测试windows尽可能自动化，降低手工操作的思路：</p>
+<p>1.尽可能把测试工具，测试环境准备好（例如关闭防火墙），然后打一个镜像，使用这个镜像进行测试。
+2.但是因为需要在不同环境中进行回归，以及由于各种目的，需要测试一个纯净的镜像等需求（例如在基础镜像中进行了一些小的变更），导致未能满足要求1.
+3.所以考虑将测试工具打成一个压缩包，上传到对象存储上去。
+4.windows server2012使用浏览器下载十分繁琐，因为安全原因，需要很多鼠标点击操作关闭安全策略才能下载，正好调研发现powershell 自带一个<code>curl</code>，注意虽然和linux下<code>curl</code>不完全一样，但是能实现下载并保存为文件的需求。下文有描述通过 <code>scurl</code>键映射一键下载对应回归的工具包。</p>
+<p>实现穿透vnc快捷键映射的动机：
+1.windows不方便自动化。
+2.远程操作涉及到许多gui交互。（关闭防火墙等）
+3.vnc不能进行复制粘贴。</p>
+<p>目标，把gui操作尽可能的cli化（利用<code>powershell</code>）。</p>
+<p>例如：关闭防火墙
+1.手工鼠标点击操作极其复杂
+2.如果使用powershell</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+</code></pre></td></tr></table>
+</div>
+</div><p>挂载云硬盘操作
+1.鼠标点击操作极其复杂
+2.如果使用powershell</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Get-Disk | Where partitionstyle -eq &#39;raw&#39; | Initialize-Disk -PartitionStyle MBR -PassThru | New-Partition -AssignDriveLetter -UseMaximumSize | Format-Volume -FileSystem NTFS  -Confirm:$false
+</code></pre></td></tr></table>
+</div>
+</div><p>但是通过vnc，不能和宿主机进行复制黏贴，手输入那么大一串命令行不现实，而且容易出错。
+需要做一个键映射，类似vim中的map。将一个较长的命令映射成一个较短的字符串。</p>
+<p>考虑使用autohotkey实现。直接使用它的sendraw模块。将相关字符串已按键方式输出，正好输入到vnc中，进行操作。</p>
+<p>一个autohotkey demo 脚本。之前使用<code>f1-f10</code>键作为映射键。考虑到相关命令日积月累越来越长，于是使用短命令来映射，我是用<code>s</code>作为<code>leader key</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">::scurl::
+sendraw curl http://testnos1.nos-eastchina1.126.net/windows_tool.zip -OutFile wintool.zip
+sleep 10
+return
+
+::sdt::
+sendraw  http://testnos1.nos-eastchina1.126.net/windows_tool.zip 
+return
+
+::sfire::
+sendraw  Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+return
+
+;check MTU
+::smtu::
+sendraw netsh interface ipv4  show subinterfaces
+return
+
+::sfio::
+sendraw fio.exe --direct=1 --iodepth=1  --rw=randrw  --rwmixread=70  --bs=16k --size=1g   --ioengine=windowsaio   --group_reporting    --name=file --runtime=300 --time_based --numjobs=1 --thread   --filename=bench
+return
+
+::siperf::
+sendraw iperf -u -c  223.252.223.153   -i 2 -b 40M  -t 600
+return
+
+::svol::
+sendraw Get-Disk | Where partitionstyle -eq &#39;raw&#39; | Initialize-Disk -PartitionStyle MBR -PassThru | New-Partition -AssignDriveLetter -UseMaximumSize | Format-Volume -FileSystem NTFS  -Confirm:$false
+return
+
+::sping::
+sendraw ping 114.114.114.114
+return
+</code></pre></td></tr></table>
+</div>
+</div><p>操作效果如下：</p>
+<p><img src="../images/27460-05ff68caa4c2848a.gif" alt="ahk-inject-vnc.gif"></p>
+<p>###3.ansible批量执行
+如果需要批量进行多台windows云主机的测试，上述方法手工操作还是太多了，试想手工登录100台vnc然后进行某个操作，orz。</p>
+<p>windows云主机的批量处理工具貌似没有linux那么丰富？调研发现某个<a href="http://www.cnblogs.com/huang0925/p/4785191.html">博主</a>这么说，然而我并没有chef相关经验，而且ansible貌似在windows部署方面也有所进展了。我调通了一个例子，能够实现一部分自动化。</p>
+<blockquote>
+<p>凡是牵扯到工具选型的时候，如果你发现你处于一个非常纠结的地位，那可能是因为竞品工具没有一个能突出重围，导致你在它们各自的优缺点之间难以取舍。我也理解，工具选型要考虑的因素太多。这个项目的选型其实没经过太大波折，很快就决定使用Chef。原因我可以简单说一下，Puppet的API太不友好，ansible和salt对windows的支持程度未知，而根据我以前的经验，Chef对windows的支持还是比较成熟的。所以我们就快刀斩乱麻选择了Chef。</p>
+</blockquote>
+<p>使用方式
+ansible 分为server端和client端。这里client端即为被操作的windows云主机。而server端必须使用一台linux云主机，不支持windows!(囧)</p>
+<p>server安装完ansible并进行配置之后</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@debian:/opt/ansible# vi hosts.ini
+
+[windows]                                                                                                                                   
+59.111.122.255
+
+[windows:vars]
+ansible_ssh_user=Administrator
+ansible_ssh_pass=mypassword
+ansible_ssh_port=5986
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="client">client</h4>
+<p>windows云主机设置</p>
+<pre><code>1. 关闭防火墙  Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+2. 运行ConfigureRemotingForAnsible.ps1 这个文件
+</code></pre>
+<p>ad-hoc方式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@debian-test-master:/opt/ansible# ansible windows -i hosts.ini -m win_ping
+59.111.122.255 | SUCCESS =&gt; {
+    &#34;changed&#34;: false,
+    &#34;ping&#34;: &#34;pong&#34;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>查看主机基本状况</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@debian-test-master:/opt/ansible# ansible windows -i hosts.ini  -m setup
+59.111.100.25 | SUCCESS =&gt; {
+    &#34;ansible_facts&#34;: {
+        &#34;ansible_distribution&#34;: &#34;Microsoft Windows NT 6.3.9600.0&#34;,
+        &#34;ansible_distribution_version&#34;: &#34;6.3.9600.0&#34;,
+        &#34;ansible_fqdn&#34;: &#34;WIN-AQJ5DL6898A&#34;,
+        &#34;ansible_hostname&#34;: &#34;WIN-AQJ5DL6898A&#34;,
+        &#34;ansible_ip_addresses&#34;: [
+            &#34;10.173.32.16&#34;,
+            &#34;fe80::617c:a9ee:f457:cc63&#34;,
+            &#34;59.111.100.25&#34;,
+            &#34;fe80::7d2a:e355:45c6:495f&#34;
+        ],
+        &#34;ansible_os_family&#34;: &#34;Windows&#34;,
+        &#34;ansible_system&#34;: &#34;Win32NT&#34;,
+        &#34;ansible_totalmem&#34;: &#34;4294967296&#34;
+    },
+    &#34;changed&#34;: false
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>使用play-book</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@debian-test-master:~/ansible-examples/windows# ansible-playbook  -i hosts.ini ping.yml
+
+PLAY [Ping] ********************************************************************
+
+TASK [setup] *******************************************************************
+ok: [59.111.100.25]
+
+TASK [ping] ********************************************************************
+ok: [59.111.100.25]
+
+PLAY RECAP *********************************************************************
+59.111.100.25              : ok=2    changed=0    unreachable=0    failed=0   
+</code></pre></td></tr></table>
+</div>
+</div><p>传入文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+root@debian-test-master:~/ansible-examples/windows# ansible-playbook  -i hosts.ini copy.yml 
+
+PLAY [copy file] ***************************************************************
+
+TASK [copy file test] **********************************************************
+changed: [59.111.100.25]
+
+PLAY RECAP *********************************************************************
+59.111.100.25              : ok=1    changed=1    unreachable=0    failed=0   
+</code></pre></td></tr></table>
+</div>
+</div><p>其中copy.yml内容为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">  1 ---                                                                                                                                          
+  2 - name: copy file
+  3   hosts: all
+  4   gather_facts: false
+  5   tasks:
+  6     - name: copy file test
+  7       win_copy:
+  8          src: /root/sssgo
+  9          dest: c:\sssgo
+</code></pre></td></tr></table>
+</div>
+</div><p>windows端可以看到，文件已传入根目录
+<img src="../images/27460-30d644f7caafcd5c.png" alt="Alt pic"></p>
+<p>删除文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@debian-test-master:~/ansible-examples/windows# ansible windows   -m win_file -a &#39;path=c:\\sssgo  state=absent&#39;
+59.111.122.255 | SUCCESS =&gt; {
+    &#34;changed&#34;: true
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>即可看到文件被删除。</p>
+<p>具体玩法和linux下的类似。这样即可以达到批量控制windows云主机的目的。后续一些繁琐的测试可以通过写ansible playbook 自动化起来。当然，最好能够在windows命令行下找到对应的cli工具，或者自己写脚本或者工具实现。:)</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-12-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/pycharm-%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95tempest/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">pycharm-远程调试tempest</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/java-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%8A%80%E5%B7%A7/">
+            <span class="next-text nav-default">java-接口测试技巧</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>服务端稳定性测试的理论篇 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="当前我司业务发展蒸蒸日上，业务需求像洪水一样袭来。系统服务的稳定性重要作用不言而喻。本文主要就服务端的稳定性测试工作浅谈一下。 稳定性测试背景" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%A8%B3%E5%AE%9A%E6%80%A7%E6%B5%8B%E8%AF%95%E7%9A%84%E7%90%86%E8%AE%BA%E7%AF%87/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="服务端稳定性测试的理论篇" />
+<meta property="og:description" content="当前我司业务发展蒸蒸日上，业务需求像洪水一样袭来。系统服务的稳定性重要作用不言而喻。本文主要就服务端的稳定性测试工作浅谈一下。 稳定性测试背景" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%A8%B3%E5%AE%9A%E6%80%A7%E6%B5%8B%E8%AF%95%E7%9A%84%E7%90%86%E8%AE%BA%E7%AF%87/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-07-24T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2017-07-24T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="服务端稳定性测试的理论篇">
+<meta itemprop="description" content="当前我司业务发展蒸蒸日上，业务需求像洪水一样袭来。系统服务的稳定性重要作用不言而喻。本文主要就服务端的稳定性测试工作浅谈一下。 稳定性测试背景"><meta itemprop="datePublished" content="2017-07-24T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2017-07-24T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1600">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="服务端稳定性测试的理论篇"/>
+<meta name="twitter:description" content="当前我司业务发展蒸蒸日上，业务需求像洪水一样袭来。系统服务的稳定性重要作用不言而喻。本文主要就服务端的稳定性测试工作浅谈一下。 稳定性测试背景"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">服务端稳定性测试的理论篇</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-07-24 </span>
+        
+          <span class="more-meta"> 1600 words </span>
+          <span class="more-meta"> 4 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#稳定性测试背景及目标">稳定性测试背景及目标</a></li>
+    <li><a href="#稳定性测试执行策略及方法">稳定性测试执行策略及方法</a>
+      <ul>
+        <li><a href="#具体执行策略">具体执行策略</a></li>
+        <li><a href="#稳定性测试用例设计考虑维度">稳定性测试用例设计考虑维度</a></li>
+        <li><a href="#测试关注点">测试关注点</a></li>
+      </ul>
+    </li>
+    <li><a href="#常用测试工具介绍">常用测试工具介绍</a></li>
+    <li><a href="#典型服务端稳定性bug举例与分析">典型服务端稳定性bug举例与分析</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>当前我司业务发展蒸蒸日上，业务需求像洪水一样袭来。系统服务的稳定性重要作用不言而喻。本文主要就服务端的稳定性测试工作浅谈一下。</p>
+<p><img src="../images/27460-6e150a5ef584d0a3.png" alt="Alt pic"></p>
+<h2 id="稳定性测试背景及目标">稳定性测试背景及目标</h2>
+<p>稳定性测试主要测试系统的长时间稳定运行能力，通过对用户实际使用场景的负载及应用场景分析，模拟真实的用户使用场景，并进行长时间的稳定运行，以保证产品在长时间运行方面可能存在的潜在问题的及时发现和有效解决。</p>
+<p>##稳定性测试引入必要性分析</p>
+<p>首先，部分问题，如内存泄露、句柄泄露、死锁等，在常规功能测试中难以发现，需要通过压力的注入以及系统的运行达到一定的时间后，才能触发问题的产生，所以引入稳定性测试，可以有利于该类问题的及时发现和提前解决；同时，在系统正常上线之前，通过对真实环境的长时间模拟测试，也可以有效的验证系统在正式上线以后的稳定运行能力，为产品上线后的稳定性和鲁棒性提供一定的数据参考。</p>
+<p><img src="../images/27460-a978a40bb986f947.jfif" alt="Alt pic"></p>
+<h2 id="稳定性测试执行策略及方法">稳定性测试执行策略及方法</h2>
+<h3 id="具体执行策略">具体执行策略</h3>
+<ul>
+<li>测试时间：最好保证系统持续稳定性运行7<em>24小时，最小稳定运行时间为3</em>24小时。</li>
+<li>测试场景：参考业务的实际使用场景构建压力模型，模拟实际的场景运行（实际负载和并发量等），并且在测试中模拟实际日常的用户操作，操作中需要考虑并发因素，包括单操作并发和不同操作并发两种场景。</li>
+<li>测试负载选择策略：一般和线上的实际场景保持一致，如果没有线上数据的时候，采取梯度加压的方法来进行变化。</li>
+<li>稳定性测试是概率性的测试，就是说即使稳定性测试通过，也不能保证系统实际运行的时候不出问题。所以要尽可能的提高测试的可靠性。可以通过多次测试，延长测试时间，增大测试压力来提高测试的可靠性。</li>
+<li>稳定性测试的测试时间和压力存在一定的关系。在测试时间不能保证的情况下，可以通过增强压力以及增大测试对象数量来达到快速验证的目的，但是建议最小测试时间不要小于3*24小时。</li>
+</ul>
+<p><img src="../images/27460-4a5d5e9dde755129.png" alt="Alt pic"></p>
+<h3 id="稳定性测试用例设计考虑维度">稳定性测试用例设计考虑维度</h3>
+<ul>
+<li>时间</li>
+<li>大流量</li>
+<li>并发</li>
+<li>使用环境</li>
+<li>使用方法</li>
+<li>极端情况</li>
+</ul>
+<p>时间，产品能持续长时间工作吗？可能会导致的问题：内存泄漏，队列堆积，存储等慢速设备持续跟不上，Cache，Buffer累积性问题，内存溢出等。</p>
+<p>大流量，产品能处理这么大流量吗？可能导致的问题：系统崩溃，性能严重下降，资源耗尽，DB或磁盘空间满，触发系统的一些行为（流量控制等），依赖系统的一些异常等。</p>
+<p>并发，在一定并发量的情况下系统有无异常？可能导致的问题与上面两种类似。并发包括平均并发量；峰值并发量；均值为主，特定时间加入峰值；加压，使系统资源达到特定值，维持压力，持续运行等情形。</p>
+<p>使用环境：不同平台，网络，基础架构等。一般来说此为客户端稳定性测试需要考虑的验证点。</p>
+<p>使用方法：客户对相关应用的使用方式。具体到服务端来说，有被依赖方调用底层接口使用姿势等问题。</p>
+<p>极端情况：极端情况下，应用可以crash，但是不能丢数据等情形的验证。</p>
+<p><img src="../images/27460-a96127f6d5cf156d.png" alt="Alt pic"></p>
+<h3 id="测试关注点">测试关注点</h3>
+<ul>
+<li>观察系统在有负载的情况下业务运行是否正常，是否存在内存泄露、句柄泄露、数据一致性等问题导致系统出现崩溃、异常重启。</li>
+<li>是否存在系统长时间运行下，系统性能下降明显，响应时间快速增长，可用内存是否在减少，CPU利用率是否在上升等等都可以说明系统是否存在问题。</li>
+<li>其他项：包括CPU，MEM，disk i/o，网络，应用的日志，数据库状态，请求准确率，响应时间，吞吐量等。</li>
+</ul>
+<h2 id="常用测试工具介绍">常用测试工具介绍</h2>
+<p>压力工具方面，根据压力维度的不同主要分为CPU、内存、网络IO以及磁盘IO的压力工具，各种维度中的常用工具请参考如下内容。</p>
+<p><img src="../images/27460-96d7bffe5c54ed75.png" alt="Alt pic"></p>
+<h2 id="典型服务端稳定性bug举例与分析">典型服务端稳定性bug举例与分析</h2>
+<p>Bug：系统在长时间连续运行3天以后，虚拟机出现异常重启现象。
+分析：典型稳定性测试问题，该类问题一般需要在长时间的连续运行情况下才会触发，该问题主要由于系统中存在内存泄露现象导致，在连续运行3天以后，泄露达到了问题的触发点，导致虚拟机异常重启，一般该类问题的出现时间还与系统的负载有一定的关系，在系统负载很高的情况下，问题的触发几率会增大，同时发生的时间间隔也可能出现一定的缩短。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-07-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/lsof%E5%AD%A6%E4%B9%A0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">lsof-学习</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEsamba%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+            <span class="next-text nav-default">安装配置samba服务器</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

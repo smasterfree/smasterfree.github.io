@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>nats协议基础 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="nats 协议 nats 协议一共有上面几种。nats client 使用这些元语实现功能。 下面分类测试一下。 连接nats 启动nats服务 1 2 3 4 5 6 7 8 9 root@iaas-ci-report-db:~/nats# ./nats-server [565258] 2022/12/21 14:01:51.126635 [INF] Starting nats-server" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/2023/nats%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="nats协议基础" />
+<meta property="og:description" content="nats 协议 nats 协议一共有上面几种。nats client 使用这些元语实现功能。 下面分类测试一下。 连接nats 启动nats服务 1 2 3 4 5 6 7 8 9 root@iaas-ci-report-db:~/nats# ./nats-server [565258] 2022/12/21 14:01:51.126635 [INF] Starting nats-server" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/2023/nats%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-01-04T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2023-01-04T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="nats协议基础">
+<meta itemprop="description" content="nats 协议 nats 协议一共有上面几种。nats client 使用这些元语实现功能。 下面分类测试一下。 连接nats 启动nats服务 1 2 3 4 5 6 7 8 9 root@iaas-ci-report-db:~/nats# ./nats-server [565258] 2022/12/21 14:01:51.126635 [INF] Starting nats-server"><meta itemprop="datePublished" content="2023-01-04T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2023-01-04T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="427">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="nats协议基础"/>
+<meta name="twitter:description" content="nats 协议 nats 协议一共有上面几种。nats client 使用这些元语实现功能。 下面分类测试一下。 连接nats 启动nats服务 1 2 3 4 5 6 7 8 9 root@iaas-ci-report-db:~/nats# ./nats-server [565258] 2022/12/21 14:01:51.126635 [INF] Starting nats-server"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">nats协议基础</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-01-04 </span>
+        
+          <span class="more-meta"> 427 words </span>
+          <span class="more-meta"> 1 min read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#连接nats">连接nats</a></li>
+    <li><a href="#发布消息">发布消息</a></li>
+    <li><a href="#ping-pong">PING PONG</a></li>
+    <li><a href="#sub-关注主题">SUB 关注主题</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p><img src="../images/63a2a4ad6d46261b77926a55k8cVUbY401.png" alt="image.png"></p>
+<h1 id="nats-协议">nats 协议</h1>
+<p><img src="../images/63a2a445bab62f7e340de1eaZ5wCtova01.png" alt="image.png"></p>
+<p>nats 协议一共有上面几种。nats client 使用这些元语实现功能。</p>
+<p>下面分类测试一下。</p>
+<h2 id="连接nats">连接nats</h2>
+<p>启动nats服务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@iaas-ci-report-db:~/nats# ./nats-server
+<span class="o">[</span>565258<span class="o">]</span> 2022/12/21 14:01:51.126635 <span class="o">[</span>INF<span class="o">]</span> Starting nats-server
+<span class="o">[</span>565258<span class="o">]</span> 2022/12/21 14:01:51.126709 <span class="o">[</span>INF<span class="o">]</span>   Version:  2.9.9
+<span class="o">[</span>565258<span class="o">]</span> 2022/12/21 14:01:51.126714 <span class="o">[</span>INF<span class="o">]</span>   Git:      <span class="o">[</span>825949b<span class="o">]</span>
+<span class="o">[</span>565258<span class="o">]</span> 2022/12/21 14:01:51.126719 <span class="o">[</span>INF<span class="o">]</span>   Name:     NC2ID3ZIWIUXWWHN3X7YAFGBUPGMMOS6NKNIXBQBXBZFJ74LBPKIOB7V
+<span class="o">[</span>565258<span class="o">]</span> 2022/12/21 14:01:51.126724 <span class="o">[</span>INF<span class="o">]</span>   ID:       NC2ID3ZIWIUXWWHN3X7YAFGBUPGMMOS6NKNIXBQBXBZFJ74LBPKIOB7V
+<span class="o">[</span>565258<span class="o">]</span> 2022/12/21 14:01:51.127280 <span class="o">[</span>INF<span class="o">]</span> Listening <span class="k">for</span> client connections on 0.0.0.0:4222
+<span class="o">[</span>565258<span class="o">]</span> 2022/12/21 14:01:51.127588 <span class="o">[</span>INF<span class="o">]</span> Server is ready
+
+</code></pre></td></tr></table>
+</div>
+</div><p>使用client 连接nats</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">root@iaas-ci-report-db:~/nats# telnet 127.0.0.1 <span class="m">4222</span>
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is <span class="s1">&#39;^]&#39;</span>.
+INFO <span class="o">{</span><span class="s2">&#34;server_id&#34;</span>:<span class="s2">&#34;NC2ID3ZIWIUXWWHN3X7YAFGBUPGMMOS6NKNIXBQBXBZFJ74LBPKIOB7V&#34;</span>,<span class="s2">&#34;server_name&#34;</span>:<span class="s2">&#34;NC2ID3ZIWIUXWWHN3X7YAFGBUPGMMOS6NKNIXBQBXBZFJ74LBPKIO7V&#34;</span>,<span class="s2">&#34;version&#34;</span>:<span class="s2">&#34;2.9.9&#34;</span>,<span class="s2">&#34;proto&#34;</span>:1,<span class="s2">&#34;git_commit&#34;</span>:<span class="s2">&#34;825949b&#34;</span>,<span class="s2">&#34;go&#34;</span>:<span class="s2">&#34;go1.19.4&#34;</span>,<span class="s2">&#34;host&#34;</span>:<span class="s2">&#34;0.0.0.0&#34;</span>,<span class="s2">&#34;port&#34;</span>:4222,<span class="s2">&#34;headers&#34;</span>:true,<span class="s2">&#34;max_payload&#34;</span>:1048576,<span class="s2">&#34;clienttid&#34;</span>:4,<span class="s2">&#34;client_ip&#34;</span>:<span class="s2">&#34;127.0.0.1&#34;</span><span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="发布消息">发布消息</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">PUB hello 5
+hello
++OK
+</code></pre></td></tr></table>
+</div>
+</div><p>这边hello 相当于是主题。 5是payload 字节数。</p>
+<p><img src="../images/63a2a451bab62f96287b9e297vQmqMCO01.png" alt="image.png"></p>
+<p>如果payload size 错误，会发布失败。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">PUB greetings 12
+Hello World
+-ERR &#39;Unknown Protocol Operation&#39;
+-ERR &#39;Parser Error&#39;
+Connection closed by foreign host.
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="ping-pong">PING PONG</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">PING
+PONG
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/63a2a45acd05482b3b9fa404KD7svAk701.png" alt="image.png"></p>
+<p>如果连接失败，server不会回PONG</p>
+<p><img src="../images/63a2a461bab62f09ef844289YBNW7XKO01.png" alt="image.png"></p>
+<h2 id="sub-关注主题">SUB 关注主题</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ telnet 127.0.0.1 4222
+...
+SUB greetings 1
++OK
+</code></pre></td></tr></table>
+</div>
+</div><p>greetings 是关注的主题， 1 是订阅者id。这个id也可以是字符等。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Client #1 (consumer)</span>
+$ telnet 127.0.0.1 <span class="m">4222</span>
+...
+SUB greetings <span class="m">1</span>
++OK
+
+<span class="c1"># Client #2 (consumer)</span>
+$ telnet 127.0.0.1 <span class="m">4222</span>
+...
+SUB greetings any
++OK
+</code></pre></td></tr></table>
+</div>
+</div><p>发布者</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Client #3 (producer)</span>
+$ telnet 127.0.0.1 <span class="m">4222</span>
+...
+PUB greetings <span class="m">5</span>
+Hello
+</code></pre></td></tr></table>
+</div>
+</div><p>这是可以看到定义者</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># Client #1 (consumer)</span>
+$ telnet 127.0.0.1 <span class="m">4222</span>
+...
+SUB greetings <span class="m">1</span>
++OK
+MSG greetings <span class="m">1</span> <span class="m">5</span>
+Hello
+
+<span class="c1"># Client #2 (consumer)</span>
+$ telnet 127.0.0.1 <span class="m">4222</span>
+...
+SUB greetings any
++OK
+MSG greetings any <span class="m">5</span>
+Hello
+</code></pre></td></tr></table>
+</div>
+</div><p>这样就实现了1：N通讯。</p>
+<p><img src="../images/63a2a46b935599753d08cc3aJzLXuHVq01.png" alt="image.png"></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2023-01-04
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/2023/nats%E9%80%9A%E9%85%8D%E7%AC%A6%E7%9A%84%E4%BD%BF%E7%94%A8/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">nats通配符的使用</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E5%85%A8%E9%93%BE%E8%B7%AF%E7%9B%91%E6%8E%A7%E8%AE%BE%E8%AE%A1/main/">
+            <span class="next-text nav-default">全链路监控测试项目设计</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

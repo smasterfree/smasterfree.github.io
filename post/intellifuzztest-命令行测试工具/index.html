@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IntelliFuzzTest 命令行测试工具 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="安装 1 2 git clone ssh://git@g.hz.netease.com:22222/CloudQA/api-fuzz.git pip install -r requirements.txt 快速开始 将curl 请求体放进 request.txt 文件中，执行命令 1 python IntelliFuzzTest_cli.py request.txt 特点 支持请求body体变异 支持请求url path 变异 随机增删请求hea" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/intellifuzztest-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IntelliFuzzTest 命令行测试工具" />
+<meta property="og:description" content="安装 1 2 git clone ssh://git@g.hz.netease.com:22222/CloudQA/api-fuzz.git pip install -r requirements.txt 快速开始 将curl 请求体放进 request.txt 文件中，执行命令 1 python IntelliFuzzTest_cli.py request.txt 特点 支持请求body体变异 支持请求url path 变异 随机增删请求hea" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/intellifuzztest-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2020-05-24T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-05-24T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="IntelliFuzzTest 命令行测试工具">
+<meta itemprop="description" content="安装 1 2 git clone ssh://git@g.hz.netease.com:22222/CloudQA/api-fuzz.git pip install -r requirements.txt 快速开始 将curl 请求体放进 request.txt 文件中，执行命令 1 python IntelliFuzzTest_cli.py request.txt 特点 支持请求body体变异 支持请求url path 变异 随机增删请求hea"><meta itemprop="datePublished" content="2020-05-24T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-05-24T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="2223">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IntelliFuzzTest 命令行测试工具"/>
+<meta name="twitter:description" content="安装 1 2 git clone ssh://git@g.hz.netease.com:22222/CloudQA/api-fuzz.git pip install -r requirements.txt 快速开始 将curl 请求体放进 request.txt 文件中，执行命令 1 python IntelliFuzzTest_cli.py request.txt 特点 支持请求body体变异 支持请求url path 变异 随机增删请求hea"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IntelliFuzzTest 命令行测试工具</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-05-24 </span>
+        
+          <span class="more-meta"> 2223 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#安装">安装</a></li>
+    <li><a href="#快速开始">快速开始</a></li>
+    <li><a href="#特点">特点</a></li>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#原理">原理</a>
+      <ul>
+        <li><a href="#导出curl命令">导出curl命令</a></li>
+        <li><a href="#解析curl请求">解析curl请求</a></li>
+        <li><a href="#变异">变异</a></li>
+      </ul>
+    </li>
+    <li><a href="#demo">demo</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="安装">安装</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">git clone ssh://git@g.hz.netease.com:22222/CloudQA/api-fuzz.git
+pip install -r requirements.txt
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="快速开始">快速开始</h2>
+<p>将curl 请求体放进  request.txt 文件中，执行命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python IntelliFuzzTest_cli.py request.txt
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="特点">特点</h2>
+<ol>
+<li>支持请求body体变异</li>
+<li>支持请求url path 变异</li>
+<li>随机增删请求header</li>
+<li>支持post/get/delete/put方法</li>
+<li>可以直接根据curl命令进行变异</li>
+</ol>
+<h2 id="背景">背景</h2>
+<p>在日常测试工作中，经常会有api接口的测试，除了正向流程的测试之外，我们经常还需要覆盖一些异常情况。</p>
+<p>例如：</p>
+<ul>
+<li>不合法字符串</li>
+<li>字符串超长</li>
+<li>应该是数字类型的，传入了字母</li>
+<li>参数为空</li>
+<li>传入了中文，标点符号等</li>
+<li>sql注入等等</li>
+</ul>
+<p>事实上，我们组的接口测试demo框架中，在dataprovider中也经常能够看到诸如下面的例子。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">@DataProvider(name = &#34;testIllegalName&#34;)
+	public static Object[][] testIllegalName(){
+
+    return new Object[][]{
+            
+            //name 
+            {null, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;abcdefghijilmnopqrstu&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34; &#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;12&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;-12&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;0.2&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;abcdefghij0123456789abcdefghij0123456789abcdefghij0123456789abcd.com&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;zxq.qa.com&#34;, 400, &#34;域名为空或者域名非法&#34;},
+            {&#34;zxq_qa.com&#34;, 400, &#34;域名为空或者域名非法&#34;},
+
+							
+		};
+	}
+</code></pre></td></tr></table>
+</div>
+</div><p>此处是看看接口在传入非期望值的时候，能不能够很好的处理类似请求。</p>
+<p>除此以外，还有一些和业务场景强相关的值类型，比如网络测试的时候，我们会关心cidr的格式；计费测试的时候，又特别关注数字的类型。</p>
+<p>一方面，给每个接口增加类似的异常接口测试相对比较无趣；另一方面，我们作为人，考虑问题，不管是开发还是测试，都难免挂一漏万，有一些边边角角的case没能考虑到。</p>
+<p>既然如此，我们能否统一抽象出来一种接口异常测试的框架，<strong>自动</strong> 注入各种类型的异常，然后将凡是服务没有捕获的，抛出trace, exception 的，记录下请求的payload，为后续验证覆盖提供支撑。</p>
+<h2 id="原理">原理</h2>
+<p>主要使用了模糊测试技术（fuzz testing, fuzzing）。其核心思想是自动或半自动的生成随机数据输入到一个程序中，并监视程序异常，如崩溃，断言(assertion)失败，以发现可能的程序错误，比如内存泄漏。</p>
+<p>简单的模糊测试随机输入数据，而更加高效的模糊测试，需要理解对象<strong>结构</strong>或者<strong>协议</strong>。通过向数据内容，结构，消息，序列中引入一些异常，来人为的构造聪明的模糊测试。</p>
+<p>如果你持续关注文件系统或内核技术，你一定注意过这样一篇文章：Fuzzing filesystem with AFL。Vegard Nossum 和 Quentin Casasnovas 在 2016 年将用户态的 Fuzzing 工具 AFL（American Fuzzing Lop）迁移到内核态，并针对文件系统进行了测试。</p>
+<p>结果是相当惊人的。Btrfs，作为 SLES（SUSE Linux Enterprise Server）的默认文件系统，仅在测试中坚持了 5 秒钟就挂了。而 ext4 坚持时间最长，但也仅有 2 个小时而已。(<a href="https://zhuanlan.zhihu.com/p/28828826">https://zhuanlan.zhihu.com/p/28828826</a>)</p>
+<p>所以基于此，在api接口测试中引入模糊测试理论上也是可行的，而且是有效的。</p>
+<h3 id="导出curl命令">导出curl命令</h3>
+<p>我们选择curl命令作为我们程序的输入。为什么选择curl命令呢，因为许多工具支持导出到curl。例如，openstack k8s的cli client都支持导出到curl</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> nova --debug rename e9211f78-d01e-4fc7-ab85-0ae5ccb80c6a aaaa
+
+ kubectl --v=9  get pod  nginx-6c6dfb7d8d-2rb7z  -o yaml
+</code></pre></td></tr></table>
+</div>
+</div><p>此外，类似chrome以及postman等工具也支持导出到curl</p>
+<p><img src="../images/5e71bb4068d864ce44f719f9hOITgS5D01.png" alt="image-20200318135821312.png"></p>
+<p><img src="../images/5e71bb6a2dcade5978265d84AiX2abDF01.png" alt="image-20200318135824794.png"></p>
+<h3 id="解析curl请求">解析curl请求</h3>
+<p>对于一个curl请求，我们可以将其分解为几部分</p>
+<p><img src="../images/5e71bb752dcade5978265d88ApWWIrEC01.png" alt="image-20200318134418433.png"></p>
+<p>可以看到，一个curl请求主要包括</p>
+<ul>
+<li>
+<p>Request method ： 通常包括 POST、GET、 DELETE 、PUT等方法，黄色部分。</p>
+</li>
+<li>
+<p>Url path ： 白色部分。</p>
+</li>
+<li>
+<p>Header：红色部分。</p>
+</li>
+<li>
+<p>Body：绿色部分。通常是POST/PUT 类型请求中包含。</p>
+</li>
+</ul>
+<h3 id="变异">变异</h3>
+<p>通过以下流程，分别变异URL path，随机增删header，body体json变异等。然后将变异后的参数进行拼装成一个request请求。</p>
+<p><img src="../images/5e71bb7f68d8643c2f46f1778Z1twA6H01.png" alt="image-20200318134440476.png"></p>
+<p>对于header体，解析到一个OrderDict，进行随机增删。</p>
+<p><img src="../images/5e71bbe22dcade5978265d9cizlOvIGf01.png" alt="image-20200318140112429.png"></p>
+<p>对于body，随机变异json体。</p>
+<p><img src="../images/5e71bb8d2dcade5978265d8eOz8Abi2w01.png" alt="image-20200318140226022.png"></p>
+<p><img src="../images/5e71bb972dcadeab73c01ab2eyjXTjFE01.png" alt="image-20200318140312870.png"></p>
+<p>变异类型众多，在此不再赘述。</p>
+<h2 id="demo">demo</h2>
+<p>目前 IntelliFuzzTest  工具支持get/post /put/delete等类型的请求响应。</p>
+<p>例如更新云主机接口</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">curl  &#39;http://pubbeta1-ha.iaas.cn-east1.service.local:8774/v2/9ac08939bf67465c88cd638107e0a6d6/servers/e42f4c55-0aa2-40ef-80ba-9a12ff75f8e7&#39; -X PUT -H &#34;X-Auth-Project-Id: admin&#34; -H &#34;User-Agent: python-novaclient&#34; -H &#34;Content-Type: application/json&#34; -H &#34;Accept: application/json&#34; -H &#34;X-Auth-Token: c8e48bd22b0346539276c407e1ce1b47&#34; -d &#39;{&#34;server&#34;: {&#34;name&#34;: &#34;test1&#34;}}&#39;
+</code></pre></td></tr></table>
+</div>
+</div><p>将curl请求放入request.txt中。执行模糊测试</p>
+<p><img src="../images/5e71bba768d864ce44f71a0cvejuXHyf01.png" alt="image-20200221103909402.png"></p>
+<p>我们即可以看到一些服务端异常产生。</p>
+<p>我们看一眼服务端日志</p>
+<p><img src="../images/5e71bbb168d8643c2f46f17auhT8wNmP01.png" alt="image-20200221104213504.png"></p>
+<p>即可以看到是因为默写编码异常导致的错误。</p>
+<p>body体的json变异类型还是很丰富的。举例来说：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(hzx_env) hzhuangzhexiao@pubbeta1-nova10:~$ curl -i http://pubbeta1-iaas.service.163.org:9797/v2.0/security-group-rules.json -X POST -H &#34;X-Auth-Token: af75ed821eeb4d5c9e88fb4ba804ff48&#34; -H &#34;Content-Type: application/json&#34; -H &#34;Accept: application/json&#34; -H &#34;User-Agent: python-protonclient&#34; -d &#39;{&#34;security_group_rule&#34;: {&#34;direction&#34;: &#34;ingress&#34;, &#34;protocol&#34;: &#34;tcp&#34;, &#34;ethertype&#34;: &#34;IPv4&#34;, &#34;port_range_max&#34;: &#34;6660&#34;, &#34;security_group_id&#34;: &#34;48b9cc1e-53f8-4f7e-8983-bffb209153f3&#34;, &#34;port_range_min&#34;: &#34;80&#34;, &#34;remote_ip_prefix&#34;: &#34;0.0.0.0/&#34;}}&#39;
+HTTP/1.1 500 
+Content-Type: application/json;charset=ISO-8859-1
+Content-Length: 6310
+Date: Tue, 14 Nov 2017 05:59:10 GMT
+Connection: close
+
+An unknown exception occurred.
+java.lang.ArrayIndexOutOfBoundsException: 1
+	at com.netease.cns.proton.server.service.SecurityGroupServiceImpl.validateIpPrefix(SecurityGroupServiceImpl.java:385)
+	at com.netease.cns.proton.server.service.SecurityGroupServiceImpl.createSecurityGroupRule(SecurityGroupServiceImpl.java:228)
+	at sun.reflect.GeneratedMethodAccessor385.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+
+</code></pre></td></tr></table>
+</div>
+</div><p>打印出变异的body体：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1D, &#34;admin_state_up&#34;_ true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test-1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_utrue}}
+{&#34;network-&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuup&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.1.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, : tru}e}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vp¸-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;ՠ: true}}
+{&#34;network&#34;: {&#34;cdr&#34;: &#34;20100..0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_stap&#34;::: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;:} true}}
+{&#34;neeeeeeeeeeeeeeeeeeeeeeeeeeeeeetwork&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_s,ate_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: }
+&#34;n{et���: r{&#34;cidr&#34;: &#34;0.}0.0/-34359738368&#34;, &#34;naD: true}}
+{&#34;network&#34;: }
+{&#34;[network&#34;: {&#34;cidr&#34;: &#34;20.-214748364800.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}{&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}{&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.1000.0/+.16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;&#34;admin_state_up&#34;&#34;admin_state_up&#34;: true}}
+{&#34;networ[k&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/-4080&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.100.0.0/-4080&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_state_up&#34;: true}}
+{&#34;network&#34;: {&#34;cidr&#34;: &#34;20.-25500.0.0/16&#34;, &#34;name&#34;: &#34;hzx-vpc-test1&#34;, &#34;admin_stateeeeeeeeeeeeeeeeeeeee_up&#34;: true}}
+</code></pre></td></tr></table>
+</div>
+</div><p>GET类型请求可以对url path进行模糊注入。</p>
+<p><img src="../images/5e71bbc068d864ce44f71a11l9eobh1Z01.png" alt="image-20200221104527575.png"></p>
+<p>另外，还支持对请求的header进行随机增删，模拟请求等。</p>
+<p>请戳 <a href="https://g.hz.netease.com/CloudQA/api-fuzz">https://g.hz.netease.com/CloudQA/api-fuzz</a>  进行试用。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-05-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/k8s-etcd%E9%9B%86%E7%BE%A4%E8%84%91%E8%A3%82%E4%BF%AE%E5%A4%8D/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">k8s etcd集群脑裂修复</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/windows-tensorflow-%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/">
+            <span class="next-text nav-default">安装windows  tensorflow 环境指南</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

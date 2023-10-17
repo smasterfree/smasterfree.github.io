@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>ltp 稳定性测试部署和验证方法 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="以下描述一下ltp稳定性测试部署方案及测试方法。开发同学可以按如下方式进行部署和测试。完成自测后交付测试。 只要流程： 云主机部署ltp测试脚本" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/ltp%E9%83%A8%E7%BD%B2%E6%80%BB%E7%BB%93/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="ltp 稳定性测试部署和验证方法" />
+<meta property="og:description" content="以下描述一下ltp稳定性测试部署方案及测试方法。开发同学可以按如下方式进行部署和测试。完成自测后交付测试。 只要流程： 云主机部署ltp测试脚本" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/ltp%E9%83%A8%E7%BD%B2%E6%80%BB%E7%BB%93/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-05-10T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2019-05-10T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="ltp 稳定性测试部署和验证方法">
+<meta itemprop="description" content="以下描述一下ltp稳定性测试部署方案及测试方法。开发同学可以按如下方式进行部署和测试。完成自测后交付测试。 只要流程： 云主机部署ltp测试脚本"><meta itemprop="datePublished" content="2019-05-10T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2019-05-10T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="687">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ltp 稳定性测试部署和验证方法"/>
+<meta name="twitter:description" content="以下描述一下ltp稳定性测试部署方案及测试方法。开发同学可以按如下方式进行部署和测试。完成自测后交付测试。 只要流程： 云主机部署ltp测试脚本"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">ltp 稳定性测试部署和验证方法</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-10 </span>
+        
+          <span class="more-meta"> 687 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#debian系统配置脚本">debian系统配置脚本</a></li>
+        <li><a href="#centos-系统设置开机自启动脚本">centos 系统设置开机自启动脚本</a></li>
+      </ul>
+    </li>
+    <li><a href="#检验云主机是否active">检验云主机是否active</a></li>
+    <li><a href="#暂停云主机脚本">暂停云主机脚本</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>以下描述一下<code>ltp</code>稳定性测试部署方案及测试方法。开发同学可以按如下方式进行部署和测试。完成自测后交付测试。</p>
+<p>只要流程：</p>
+<ol>
+<li>云主机部署ltp测试脚本（安装<code>supervisor</code>自动拉起等）</li>
+<li>创建该云主机的快照。</li>
+<li>都以该快照创建云主机，占满对应的计算节点。</li>
+<li>用另一同子网内的云主机，检测ltp测试云主机是否为active。</li>
+<li>排查down云主机的原因等。</li>
+</ol>
+<h3 id="debian系统配置脚本">debian系统配置脚本</h3>
+<p>cat ltp-deploy.sh</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apt-get update; apt-get install htop fping supervisor -y
+wget  https://fat.nos-eastchina1.126.net/ltp-bin2.tar.gz
+tar -xf  ltp*.tar.gz
+
+echo &#34;cd /root/ltp/testscripts/
+./ltpstress.sh  -d /tmp   -t 1000  -n -p -l /tmp/ltplog.12431 &#34;  &gt; /root/ltp.sh
+
+cat &lt;&lt;EOT &gt;&gt; /etc/supervisor/supervisord.conf
+[program:ltp]
+command=sh /root/ltp.sh
+autorestart=true
+user=root
+EOT
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="centos-系统设置开机自启动脚本">centos 系统设置开机自启动脚本</h3>
+<p>配置Supervisor开机启动：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">vi  /usr/lib/systemd/system/supervisord.service
+
+[Unit]
+Description=Supervisor daemon
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/supervisord -c /etc/supervisord.conf
+ExecReload=/usr/bin/supervisorctl reload
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
+</code></pre></td></tr></table>
+</div>
+</div><p>配置开机自启</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">systemctl enable supervisord
+</code></pre></td></tr></table>
+</div>
+</div><p>验证一下是否为开机启动：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">systemctl is-enabled supervisord
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="检验云主机是否active">检验云主机是否active</h2>
+<p>在同子网内另新建一台云主机，作为检验各个测试机是否为acive的机器。（直接在ltp机器上跑fping会比较卡）</p>
+<p>验证云主机是否active脚本。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@ltp-stress2-txlnsu-2018-05-08-1646-dongguan1:~# fping -i 1 -q -t 100 -r 1  -s -g 192.168.0.0/24
+
+     254 targets
+      31 alive
+     223 unreachable
+       0 unknown addresses
+
+     223 timeouts (waiting for response)
+     477 ICMP Echos sent
+      31 ICMP Echo Replies received
+       0 other ICMP received
+
+ 1.11 ms (min round trip time)
+ 4.27 ms (avg round trip time)
+ 14.3 ms (max round trip time)
+        0.658 sec (elapsed real time)
+</code></pre></td></tr></table>
+</div>
+</div><p>将active云主机记录保存：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">fping -i 1  -g 192.168.0.0/24 | grep alive |  sort &gt; 0-0-31alive.list
+</code></pre></td></tr></table>
+</div>
+</div><p>对结果进行diff</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@ltp-stress2-txlnsu-2018-05-08-1646-dongguan1:~# diff 16-0-61alive.list 16-0-62alive.list 
+52a53
+&gt; 192.168.16.2 is alive
+</code></pre></td></tr></table>
+</div>
+</div><p>然后在计算节点 过滤出对应的云主机即可</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">nova list | grep  192.168.16.2 
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="暂停云主机脚本">暂停云主机脚本</h2>
+<p>该脚本在发现云主机console log中出现blk_flush_plug_list 后，暂停云主机。
+在计算节点上运行。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@pubbeta1-nova10:~$ cat check_vm_blk_flush_plug_list.sh 
+
+for time in $(seq 1 10000)
+do 
+    for i in $( nova list | grep ltp-stress| awk &#39;{print $2}&#39;) 
+    do 
+        echo $i  
+        nova console-log $i |tail -200 | grep  blk_flush_plug_list 
+        if [ $? -eq 0 ]; then
+           nova suspend $i
+        else
+            echo &#34;not find blk_flush_plug_list&#34;
+        fi
+
+    done
+done 
+</code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-05-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/proton-tempest-plugin%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">proton-tempest-plugin安装使用及远程调试说明</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E8%BF%BD%E6%B1%82%E7%A5%9E%E4%B9%8E%E5%85%B6%E6%8A%80%E7%9A%84shell%E4%BD%BF%E7%94%A8%E4%B9%8B%E9%81%93/">
+            <span class="next-text nav-default">追求神乎其技的shell使用之道[视频]</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

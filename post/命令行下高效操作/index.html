@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>命令行下高效操作 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="在计算机体系结构领域里，缓存是唯一称得上伟大的思想，其他的一切发明和技术不过是在不同场景下应用这一思想而已。 &amp;mdash; Bill Joy 我在日常学习过程中，发现在" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E9%AB%98%E6%95%88%E6%93%8D%E4%BD%9C/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="命令行下高效操作" />
+<meta property="og:description" content="在计算机体系结构领域里，缓存是唯一称得上伟大的思想，其他的一切发明和技术不过是在不同场景下应用这一思想而已。 &mdash; Bill Joy 我在日常学习过程中，发现在" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%8B%E9%AB%98%E6%95%88%E6%93%8D%E4%BD%9C/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2016-05-18T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2016-05-18T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="命令行下高效操作">
+<meta itemprop="description" content="在计算机体系结构领域里，缓存是唯一称得上伟大的思想，其他的一切发明和技术不过是在不同场景下应用这一思想而已。 &mdash; Bill Joy 我在日常学习过程中，发现在"><meta itemprop="datePublished" content="2016-05-18T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2016-05-18T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1291">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="命令行下高效操作"/>
+<meta name="twitter:description" content="在计算机体系结构领域里，缓存是唯一称得上伟大的思想，其他的一切发明和技术不过是在不同场景下应用这一思想而已。 &mdash; Bill Joy 我在日常学习过程中，发现在"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">命令行下高效操作</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2016-05-18 </span>
+        
+          <span class="more-meta"> 1291 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#fasdhttpsgithubcomclvvfasd"><a href="https://github.com/clvv/fasd">fasd</a></a></li>
+    <li><a href="#hstrhttpsgithubcomdvorkahstr"><a href="https://github.com/dvorka/hstr">hstr</a></a></li>
+    <li><a href="#makerhttpsgithubcompindexismarker"><a href="https://github.com/pindexis/marker">maker</a></a></li>
+    <li><a href="#fzfhttpsgithubcomjunegunnfzf"><a href="https://github.com/junegunn/fzf">fzf</a></a></li>
+    <li><a href="#以上提及工具地址">以上提及工具地址</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p><img src="../images/27460-37f496d352acfd4c.gif" alt="Alt pic"></p>
+<blockquote>
+<p>在计算机体系结构领域里，缓存是唯一称得上伟大的思想，其他的一切发明和技术不过是在不同场景下应用这一思想而已。                          &mdash; Bill Joy</p>
+</blockquote>
+<p>我在日常学习过程中，发现在<code>ssh</code>到云主机上进行操作的过程中，最多的操作就是在切换目录，查看一些配置文件，以及运行某一些命令。</p>
+<p>在这个过程中我发现了一些低效率的操作，比如cd到各个不同的目录，然后在vi查看文件。因此，我在考察了一些工具之后（<code>unix</code>自带的<code>pushd+popd</code>，以及第三方<code>autojump</code>，<code>z</code>等），发现<code>fasd</code>工具还是挺好用的。</p>
+<h2 id="fasdhttpsgithubcomclvvfasd"><a href="https://github.com/clvv/fasd">fasd</a></h2>
+<p>Fasd主要是利用了一种<a href="http://www.wikiwand.com/en/Frecency">frecency</a>算法来排列你访问的文件和目录，即frequency和recency。一图胜前言，以下是我在~/devstack目录下输入快捷键<code>zz</code></p>
+<p><img src="../images/f0bb66b9-6594-465a-9b39-3b77dc7e71c7" alt="Alt pic"></p>
+<p>它按照我访问的频次和时间顺序进行加权，给出一个排列，我在输入4，即切换到<code>nova</code>的<code>log</code>目录下。</p>
+<p>我在输入命令v，给出为访问文件的频次，输入之前的序号即打开<code>vim</code>进行编辑。</p>
+<p>以上是针对目录和文件的操作。日常操作另一大块是命令的执行。</p>
+<p><img src="../images/ef994f9f-dfe2-4775-9af6-8966501a36d2" alt="Alt pic"></p>
+<p>我们每天都在不停的按 <code>ctrl+r</code> 来对history中命令进行复用。或者在<code>bashrc</code>里面设置<code>alias</code>简化复杂命令。前者不够直观，后者比较麻烦。</p>
+<p>因此推荐 <code>hstr</code> 和 <code>marker</code> 两个工具。</p>
+<h2 id="hstrhttpsgithubcomdvorkahstr"><a href="https://github.com/dvorka/hstr">hstr</a></h2>
+<p>利用hstr，可以在命令行下输入hh &lt;命令前缀&gt; ，它会打开一个过滤器，可以交互选择。比如 hh nova，所有历史命令nova 开头的即被过滤出来，可以用方向键上下选择，或者继续输入过滤。</p>
+<p>我们通过如下方式在 ubuntu上安装它：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo add-apt-repository ppa:ultradvorka/ppa
+sudo apt-get update
+sudo apt-get install hh
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/30f9737b-d504-4957-8ef1-65e799bb9cad" alt="Alt pic"></p>
+<h2 id="makerhttpsgithubcompindexismarker"><a href="https://github.com/pindexis/marker">maker</a></h2>
+<p>Marker可以视为命令行的snippet工具。它有如下特点：</p>
+<p>1.模糊匹配
+2.Aliases自定义
+3.命令行模板
+4.支持众多的shell， 例如 Bash  Zshell.
+上述命令常用的，可在命令行下使用<code>ctrl+k</code> 加入你的管理中，并设置alias。下次在使用时，利用<code>ctrl+@</code>展开复用。</p>
+<p>安装方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">mkdir ~/.marker &amp;&amp; cd ~/.marker
+git clone https://github.com/pindexis/marker .
+./install.py
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/b8573e39-4356-4c7b-bf6f-91d59f711274" alt="Alt pic"></p>
+<h2 id="fzfhttpsgithubcomjunegunnfzf"><a href="https://github.com/junegunn/fzf">fzf</a></h2>
+<p>后来又过了一段时间，我和云主机打交道的次数也越来越多，偷懒的天性让我进一步思考，有没有改进的空间？毕竟，<a href="http://www.wikiwand.com/en/Larry_Wall">Larry Wall</a>大神曾经说过：</p>
+<blockquote>
+<p>好的程序员有3种美德： 懒惰、急躁和傲慢（Laziness, Impatience and hubris）。</p>
+</blockquote>
+<p>以及apple的高级工程师 <a href="http://worrydream.com/">Bret Victor</a> 曾经在一个<a href="http://vimeo.com/36579366">视频</a>中提到的原则，创造者需要对自己的创造的东西有实时的反馈。</p>
+<p>结合以上的两个思想，我巧遇到了<code>fzf</code>，并把它和<code>fasd</code>结合起来。以下是几个demo：</p>
+<ul>
+<li>在第一个demo中，我经常访问的目录列表已被fasd记录，我每次切换目录的时候，并不需要通过cd以及无穷无尽的tab来补全了。直接用z来触发目录列表，然后直接输目录名字，跳转完成！</li>
+</ul>
+<p><img src="../images/27460-bfac0d24c8b5dcf7.gif" alt="Alt pic"></p>
+<ul>
+<li>这是存储经常编辑文件列表，直接用v触发，然后通过fzf模糊搜索过滤，回车即用vim打开编辑。</li>
+</ul>
+<p><img src="../images/27460-58f856fcb08df8bc.gif" alt="Alt pic"></p>
+<ul>
+<li>这是历史命令， 再也不需要不停的按 <code>ctrl+r</code>一个一个找了，输入关键词，就可以用方向键上下选择。而且因为支持模糊搜索，命令记不清也没关系，只要出现在历史记录中，都能找到。（记得把历史记录<code>HISTSIZE</code>改的大一点哦）。</li>
+</ul>
+<p><img src="../images/27460-534c6c971414efe1.gif" alt="Alt pic"></p>
+<p>以上我抛砖引玉，分享一些自己的小心得，他们的确大大提高了我的工作效率，希望对大家有帮助。</p>
+<h2 id="以上提及工具地址">以上提及工具地址</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">https://github.com/clvv/fasd
+https://github.com/dvorka/hstr
+https://github.com/pindexis/marker
+https://github.com/junegunn/fzf
+</code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2016-05-18
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E7%9C%8B%E6%97%A5%E5%BF%97%E6%8A%80%E5%B7%A7%E4%B8%80%E5%88%99/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">看日志技巧一则</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/python%E6%96%87%E4%BB%B6%E7%BC%93%E5%AD%98/">
+            <span class="next-text nav-default">python 文件缓存</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

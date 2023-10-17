@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>15分钟神器gnu-parallel-入门观止 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="这个cpu是多核的。 一般两核是这样工作的的： 四核是这样工作的： 16核是这样工作的： 好了不黑了。再黑intel要打我了。 在某个周末的早上百无聊" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/15%E5%88%86%E9%92%9F%E7%A5%9E%E5%99%A8gnu-parallel-%E5%85%A5%E9%97%A8%E8%A7%82%E6%AD%A2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="15分钟神器gnu-parallel-入门观止" />
+<meta property="og:description" content="这个cpu是多核的。 一般两核是这样工作的的： 四核是这样工作的： 16核是这样工作的： 好了不黑了。再黑intel要打我了。 在某个周末的早上百无聊" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/15%E5%88%86%E9%92%9F%E7%A5%9E%E5%99%A8gnu-parallel-%E5%85%A5%E9%97%A8%E8%A7%82%E6%AD%A2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-12-24T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2019-12-24T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="15分钟神器gnu-parallel-入门观止">
+<meta itemprop="description" content="这个cpu是多核的。 一般两核是这样工作的的： 四核是这样工作的： 16核是这样工作的： 好了不黑了。再黑intel要打我了。 在某个周末的早上百无聊"><meta itemprop="datePublished" content="2019-12-24T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2019-12-24T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="2398">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="15分钟神器gnu-parallel-入门观止"/>
+<meta name="twitter:description" content="这个cpu是多核的。 一般两核是这样工作的的： 四核是这样工作的： 16核是这样工作的： 好了不黑了。再黑intel要打我了。 在某个周末的早上百无聊"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">15分钟神器gnu-parallel-入门观止</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-12-24 </span>
+        
+          <span class="more-meta"> 2398 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#why">why</a></li>
+    <li><a href="#how">how</a>
+      <ul>
+        <li><a href="#传参数模式">传参数模式</a></li>
+        <li><a href="#--pipe模式">&ndash;pipe模式</a></li>
+      </ul>
+    </li>
+    <li><a href="#bonus">bonus</a></li>
+    <li><a href="#原理时间">原理时间</a></li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p><img src="../images/27460-ee660de07e72ea33.png" alt="logo-gray+black300.png"></p>
+<blockquote>
+<p>这个cpu是多核的。</p>
+</blockquote>
+<p>一般两核是这样工作的的：</p>
+<p><img src="../images/27460-9dd8b869956cd3e4.gif" alt="two core"></p>
+<p>四核是这样工作的：</p>
+<p><img src="../images/27460-1b1abefc1c82e52a.gif" alt="four core"></p>
+<p>16核是这样工作的：</p>
+<p><img src="../images/27460-3ced9fe6d2f23ca1.png" alt="16 core"></p>
+<p>好了不黑了。再黑intel要打我了。</p>
+<p>在某个周末的早上百无聊赖之际，花了半天时间过了一遍<code>gnu parallel</code>的<code>man page</code>和<code>tutorial</code>。哈哈，我得说这半天时间花的应该挺值，因为感觉以后它能为我节省的时间不止半天吧。</p>
+<p>本文并不会尝试去翻译 <a href="http://www.gnu.org/s/parallel">gnu parallel</a>的man page或者tutorial。因为现成的翻译已经有了，可以看<a href="http://os.51cto.com/art/201310/414303.htm">这里</a>，或者<a href="http://www.voidcn.com/blog/huozhanfeng/article/p-3006344.html">这里</a>。</p>
+<p>但是我前几次看到 parallel诡异的几个<code>::: </code>以及奇奇怪怪的 <code>{}{#}{.}{\}</code>占位符之后就打起了退堂鼓，如此丑陋的语法令人无爱啊。还好直接看了一下几个example压压惊，动手试一把，才发现实乃神器也。</p>
+<p>本文主要的目的是<strong>安利（lure）<strong>你使用这个工具，并且告诉你</strong>为啥</strong>（why）使用和<strong>如何</strong>（how）使用。</p>
+<h2 id="why">why</h2>
+<p>使用gnu parallel的目的只要一个，就是为了快！</p>
+<p>安装快</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(wget -O - pi.dk/3 || curl pi.dk/3/) | bash
+</code></pre></td></tr></table>
+</div>
+</div><p>作者说10秒装好。在国内实际情况可能不够。但是也不用太久。其实就是一个1万多行perl单文件脚本（是的，你没看错，所有模块都在这个文件里，这是一个特色~）。我之后都是写fabric脚本直接拷贝到各个节点机。再chmod一下执行权限。</p>
+<p>然后是执行快，它将你的程序并行利用系统的多核执行：</p>
+<p>上图：</p>
+<p><img src="../images/27460-bd59576dee0a9fe2.png" alt="Paste_Image.png"></p>
+<p><code>grep</code> 一个  1G 大小的log。</p>
+<p>使用<code>parallel </code>  ，和不使用parallel直接<code>grep</code>。结果显而易见，相差 20 倍。这比用啥 ack，ag优化效果明显多了。</p>
+<p>备注：这是在一个48 核服务器上执行的结果。</p>
+<h2 id="how">how</h2>
+<p>最简单的方法就是类比<code> xargs</code>。在xargs里面有一个参数 <code>-P</code>，可以利用多核。</p>
+<p>举个例子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ time echo {1..5} |xargs -n 1  sleep
+
+real	0m15.005s
+user	0m0.000s
+sys	0m0.000s
+</code></pre></td></tr></table>
+</div>
+</div><p>这一条xargs把每个echo的数作为参数传给sleep ，所以一共sleep了 1+2+3+4+5=15秒。</p>
+<p>如果使用 -P 参数分给5个核，每个核各sleep 1,2,3,4,5秒，所以执行完之后总共sleep的5秒。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ time echo {1..5} |xargs -n 1 -P 5 sleep
+
+real	0m5.003s
+user	0m0.000s
+sys	0m0.000s
+</code></pre></td></tr></table>
+</div>
+</div><p>铺垫结束。一般情况下，parallel的第一种模式，就是替换掉 xargs -P.</p>
+<p>比如压缩一下所有的html文件。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">find . -name &#39;*.html&#39; | parallel gzip --best
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="传参数模式">传参数模式</h3>
+<p>第一种模式是利用 parallel传参数。管道前面进来的作为参数传给后面的命令，并行执行</p>
+<p>比如</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">huang$ seq 5 | parallel echo pre_placehoder_{}
+pre_placehoder_1
+pre_placehoder_2
+pre_placehoder_3
+pre_placehoder_4
+pre_placehoder_5
+</code></pre></td></tr></table>
+</div>
+</div><p>其中<code>{}</code>是占位符，用来占位传入参数的位置。</p>
+<p>在云计算操作中，经常有批量操作，比如建立10个云硬盘</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">seq 10 | parallel  cinder create 10 --display-name test_{}
+</code></pre></td></tr></table>
+</div>
+</div><p>建立50个云主机</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">seq 50 | parallel nova boot --image    image_id  --flavor 1 --availability-zone  az_id   --nic vnetwork=private   --vnc-password 000000  vm-test_{}
+</code></pre></td></tr></table>
+</div>
+</div><p>批量删除云主机</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">nova list | grep some_pattern| awk &#39;{print $2}&#39; | parallel nova delete
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="改写-for-loop">改写 for loop</h4>
+<p>可以看到，我其实是把很多需要写循环的地方用parallel替换了，顺带享受了并行带来的快捷。</p>
+<p>这个道理是这样的，在进行for循环的时候，是最有可能并行化的，因为被放在循环中的各个对象是上下文无关的。</p>
+<p>普世抽象，shell的循环：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">  (for x in `cat list` ; do
+    do_something $x
+  done) | process_output
+</code></pre></td></tr></table>
+</div>
+</div><p>可以直接写成</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> cat list | parallel do_something | process_output
+</code></pre></td></tr></table>
+</div>
+</div><p>如果loop 里面内容太多了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> (for x in `cat list` ; do
+    do_something $x
+    [... 100 lines that do something with $x ...]
+  done) | process_output
+
+</code></pre></td></tr></table>
+</div>
+</div><p>那么最好写成一个脚本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">  doit() {
+    x=$1
+    do_something $x
+    [... 100 lines that do something with $x ...]
+  }
+  export -f doit
+  cat list | parallel doit
+</code></pre></td></tr></table>
+</div>
+</div><p>而且还能避免掉很多麻烦的转义。</p>
+<h3 id="--pipe模式">&ndash;pipe模式</h3>
+<p>另一种模式就是 <code>parallel --pipe</code></p>
+<p>这时管道前面的不是作为参数，而是标准输入传给后面的命令</p>
+<p>例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> cat my_large_log   |parallel --pipe grep pattern 
+</code></pre></td></tr></table>
+</div>
+</div><p>如果不加 <code>--pipe</code> ，相当于 mylog中的每一行都变成 <code>grep pattern line</code>的命令展开了。而加入了<code>--pipe</code>，则和 <code>cat mylog   | grep pattern</code>  没有区别，只是分配到各个核上去执行了。</p>
+<p>好了，基本概念就讲完了！其他的都只是各个参数具体使用，比如到底用几个核啊，place_holder的替换啊，各种花样传参数啊，并行执行但是保证结果顺序输出(-k)，以及神奇的跨节点并行计算啊，看看man page就知道了。</p>
+<h2 id="bonus">bonus</h2>
+<p>手边有了一个转换成并行的小工具，除了让你日常执行快一点之外，还有一个好处，就是<strong>测并发</strong>。</p>
+<p>很多接口在并发操作下会出现一些bug，比如有一些判断数据库里面没有加锁，是在代码层面判断的，结果并发请求下去，每个请求在到达服务器的时候是判断通过，一起写了之后就超出限制了。之前写for循环因为是串行执行的，并不会触发这些问题。但是你要真正测并发的话，又要写脚本，或者利用python的<code>mulitiprocessing</code>封装一下。但我手边有了parallel，又在bashrc里面就加了以下两个alias</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">alias p=&#39;parallel&#39;
+alias pp=&#39;parallel --pipe -k&#39;   
+</code></pre></td></tr></table>
+</div>
+</div><p>这样制造并发太方便了，只需要管道后面加个p , 我就时时刻刻可以制造并发来观察响应。</p>
+<p>举个例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">seq 50 | p -n0 -q  curl &#39;example.com&#39;
+</code></pre></td></tr></table>
+</div>
+</div><p>以你核的个数并发请求。-n0的意思是seq输出不作为参数传给后面的命令。</p>
+<p>##八卦时间：gnu界的祥林嫂</p>
+<p>作为一个自由软件八卦爱好者，每次我发现一个新奇的软件总会去 google一下 <code>关键词 site:https://news.ycombinator.com </code>和<code>关键词 site:http://www.reddit.com/</code>。看看风评如何，并且往往还能在讨论中有意外收获。</p>
+<p>然后我再hacker news上看到了一段吐槽，主要就是说每次触发执行parallel都会弹出一段文字和你说，要是你把这个工具用在学术上的话（很多生命科学相关的都在用这个工具的），要引用他的论文，不然的话你就付他10000欧元吧。我因此学到一个词，叫Nagware，特指通过啰啰嗦嗦像唐僧那样烦你要你付钱的软件。虽然我认为真用到了的确也应该引用一下文章，但是，如同这位同学说的：</p>
+<blockquote>
+<p>I agree it&rsquo;s a great tool, except for the nagware messages and their  content. Imagine if the author of <code>cd</code> or <code>ls</code> had the same attitude&hellip;</p>
+</blockquote>
+<p>另外，该作者真是灰常喜欢别人引用他的软件，以致于在NEWS里面我还看到了：</p>
+<p><img src="../images/27460-dcb6e3387869e038.png" alt="Paste_Image.png"></p>
+<h2 id="原理时间">原理时间</h2>
+<p>直接摘抄一下作者在 stackoverflow 的回答</p>
+<blockquote>
+<p>GNU Parallel is a general parallelizer and makes is easy to run jobs in parallel on the same machine or on multiple machines you have ssh access to.</p>
+</blockquote>
+<p>If you have 32 different jobs you want to run on 4 CPUs, a straight forward way to parallelize is to run 8 jobs on each CPU:</p>
+<p><img src="../images/27460-5b784effa2396844.png" alt="Paste_Image.png"></p>
+<p>GNU Parallel instead spawns a new process when one finishes - keeping the CPUs active and thus saving time:</p>
+<p><img src="../images/27460-2901afa31279f8ff.png" alt="Paste_Image.png"></p>
+<h2 id="结论">结论</h2>
+<p>本文主要安利了一个 <strong>真 - 并行</strong> 工具，解释了其主要的两种模式，附赠了一个技巧，八卦了gnu界不为人知的另一面。希望对你有用。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-12-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/ftp%E4%B8%BA%E5%95%A5%E5%8D%A1%E4%BA%8630%E7%A7%92/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">ftp为啥卡了30秒</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/openstack-1.0-neutron%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8%E5%B7%A5%E5%85%B7/">
+            <span class="next-text nav-default">openstack 1.0 neutron集成测试使用工具</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

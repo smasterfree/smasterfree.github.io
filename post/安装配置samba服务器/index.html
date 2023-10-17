@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>安装配置samba服务器 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="目的，在windows上可以直接改windows上的文件。比如可以用顺手的 sublime text， 或者gvim等文本编辑器之间编辑服务器上的文件。 安装U" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEsamba%E6%9C%8D%E5%8A%A1%E5%99%A8/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="安装配置samba服务器" />
+<meta property="og:description" content="目的，在windows上可以直接改windows上的文件。比如可以用顺手的 sublime text， 或者gvim等文本编辑器之间编辑服务器上的文件。 安装U" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEsamba%E6%9C%8D%E5%8A%A1%E5%99%A8/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-01-04T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2017-01-04T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="安装配置samba服务器">
+<meta itemprop="description" content="目的，在windows上可以直接改windows上的文件。比如可以用顺手的 sublime text， 或者gvim等文本编辑器之间编辑服务器上的文件。 安装U"><meta itemprop="datePublished" content="2017-01-04T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2017-01-04T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1390">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="安装配置samba服务器"/>
+<meta name="twitter:description" content="目的，在windows上可以直接改windows上的文件。比如可以用顺手的 sublime text， 或者gvim等文本编辑器之间编辑服务器上的文件。 安装U"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">安装配置samba服务器</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-01-04 </span>
+        
+          <span class="more-meta"> 1390 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#安装ubuntu-samba服务器">安装Ubuntu samba服务器</a></li>
+    <li><a href="#创建samba配置文件">创建samba配置文件</a></li>
+    <li><a href="#创建samba用户">创建samba用户</a></li>
+    <li><a href="#重启samba服务">重启samba服务</a></li>
+    <li><a href="#客户端访问测试">客户端访问测试</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>目的，在windows上可以直接改windows上的文件。比如可以用顺手的 sublime text， 或者gvim等文本编辑器之间编辑服务器上的文件。</p>
+<h2 id="安装ubuntu-samba服务器">安装Ubuntu samba服务器</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo apt-get install samba
+
+$ sudo apt-get install smbclient # Linux客户端测试用
+</code></pre></td></tr></table>
+</div>
+</div><p>简单点的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apt-get install samba samba-common samba-client
+
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="创建samba配置文件">创建samba配置文件</h2>
+<ol>
+<li>备份原配置文件</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
+</code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>创建共享目录</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo mkdir -p /home/share
+</code></pre></td></tr></table>
+</div>
+</div><p>一般来说，该目录的权限为755，将其改为777之后，Owner之外的其他用户才有权限写入。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo chmod 777 /home/share
+</code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>修改配置文件</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo vim /etc/samba/smb.conf
+</code></pre></td></tr></table>
+</div>
+</div><p>在smb.conf最后添加：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[share]
+
+        path = /home/share
+
+        browseable = yes
+
+        writable = yes
+
+        comment = smb share test
+</code></pre></td></tr></table>
+</div>
+</div><p>另外，总结一下常见的samba配置及说明：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[share] # 该共享的共享名
+
+        comment = smb share test # 该共享的备注
+
+        path = /home/share # 共享路径
+
+        allow hosts = host(subnet) # 设置该Samba服务器允许的工作组或者域
+
+        deny hosts = host(subnet) # 设置该Samba服务器拒绝的工作组或者域
+
+        available = yes|no # 设置该共享目录是否可用
+
+        browseable = yes|no # 设置该共享目录是否可显示
+
+        writable = yes|no # 指定了这个目录缺省是否可写，也可以用readonly = no来设置可写
+
+        public = yes|no # 指明该共享资源是否能给游客帐号访问，guest ok = yes其实和public = yes是一样的
+
+        user = user, @group # user设置所有可能使用该共享资源的用户，也可以用@group代表group这个组的所有成员，不同的项目之间用空格或者逗号隔开
+
+        valid users = user, @group # 指定能够使用该共享资源的用户和组
+
+        invalid users = user, @group # 指定不能够使用该共享资源的用户和组
+
+        read list = user, @group # 指定只能读取该共享资源的用户和组
+
+        write list = user, @group # 指定能读取和写该共享资源的用户和组
+
+        admin list = user, @group # 指定能管理该共享资源（包括读写和权限赋予等）的用户和组
+
+        hide dot files = yes|no # 指明是否像UNIX那样隐藏以“.”号开头的文件
+
+        create mode = 0755 # 指明新建立的文件的属性，一般是0755
+
+        directory mode = 0755 # 指明新建立的目录的属性，一般是0755
+
+        sync always = yes|no # 指明对该共享资源进行写操作后是否进行同步操作
+
+        short preserve case = yes|no # 指明是否区分文件名大小写
+
+        preserve case = yes|no # 指明是否保持大小写
+
+        case sensitive = yes|no # 指明是否对大小写敏感，一般选no，不然可能引起错误
+
+        mangle case = yes|no # 指明混合大小写
+
+        default case = upper|lower # 指明缺省的文件名是全部大写还是小写
+
+        force user = testuser # 强制把建立文件的属主是谁。如果我有一个目录，让guest可以写，那么guest就可以删除，如果我用force user= testuser强制建立文件的属主是testuser，同时限制create mask = 0755，这样guest就不能删除了
+
+        wide links = yes|no # 指明是否允许共享外符号连接，比如共享资源里面有个连接指向非共享资源里面的文件或者目录，如果设置wide links = no将使该连接不可用
+
+        max connections = 100 # 设定最大同时连接数
+
+        delete readonly = yes|no # 指明能否删除共享资源里面已经被定义为只读的文件
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="创建samba用户">创建samba用户</h2>
+<p>注意，创建samba用户之前，必须先确保有一个同名的Linux用户，否则samba用户会创建失败。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">useradd smbuser
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo smbpasswd -a smbuser
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="重启samba服务">重启samba服务</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">service samba restart 
+# or
+service smb restart
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="客户端访问测试">客户端访问测试</h2>
+<ul>
+<li>Linux客户端访问测试</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">$ smbclient -L //localhost/share
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Windows客户端访问测试</li>
+</ul>
+<p>可以访问如下地址：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">\\IP或者主机名\share
+</code></pre></td></tr></table>
+</div>
+</div><p>如果public = no，此时需要输入samba用户密码；如果public = yes，则作为nobody用户直接访问。</p>
+<p>另外，在Windows客户端使用net use * /del /y这条命令可以清理访问缓存。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-01-04
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%A8%B3%E5%AE%9A%E6%80%A7%E6%B5%8B%E8%AF%95%E7%9A%84%E7%90%86%E8%AE%BA%E7%AF%87/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">服务端稳定性测试的理论篇</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E4%BA%91%E8%AE%A1%E7%AE%97%E4%BF%9D%E9%9A%9C%E7%B3%BB%E7%BB%9Fsla%E4%B9%8B%E7%BA%BF%E4%B8%8A%E6%89%93%E6%A1%A9/">
+            <span class="next-text nav-default">云计算保障系统SLA之线上打桩</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

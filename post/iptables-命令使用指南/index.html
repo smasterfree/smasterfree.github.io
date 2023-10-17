@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>iptables 命令使用指南 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="中文翻译，iptables 命令使用指南，by example 的 cheatsheet。 https://github.com/smasterfree/iptables-essentials Table Of Content Tools to help you configure Iptables Manuals/Howtos/Tutorials How it works? Iptables Rules 保存规则 * Debian Based * RedHat Based 列出所有规则（ve" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/iptables-%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="iptables 命令使用指南" />
+<meta property="og:description" content="中文翻译，iptables 命令使用指南，by example 的 cheatsheet。 https://github.com/smasterfree/iptables-essentials Table Of Content Tools to help you configure Iptables Manuals/Howtos/Tutorials How it works? Iptables Rules 保存规则 * Debian Based * RedHat Based 列出所有规则（ve" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/iptables-%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2020-04-03T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2020-04-03T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="iptables 命令使用指南">
+<meta itemprop="description" content="中文翻译，iptables 命令使用指南，by example 的 cheatsheet。 https://github.com/smasterfree/iptables-essentials Table Of Content Tools to help you configure Iptables Manuals/Howtos/Tutorials How it works? Iptables Rules 保存规则 * Debian Based * RedHat Based 列出所有规则（ve"><meta itemprop="datePublished" content="2020-04-03T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-03T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="3358">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="iptables 命令使用指南"/>
+<meta name="twitter:description" content="中文翻译，iptables 命令使用指南，by example 的 cheatsheet。 https://github.com/smasterfree/iptables-essentials Table Of Content Tools to help you configure Iptables Manuals/Howtos/Tutorials How it works? Iptables Rules 保存规则 * Debian Based * RedHat Based 列出所有规则（ve"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">iptables 命令使用指南</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-04-03 </span>
+        
+          <span class="more-meta"> 3358 words </span>
+          <span class="more-meta"> 7 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#table-of-content">Table Of Content</a>
+      <ul>
+        <li><a href="#tools-to-help-you-configure-iptables">Tools to help you configure Iptables</a></li>
+        <li><a href="#manualshowtostutorials">Manuals/Howtos/Tutorials</a></li>
+        <li><a href="#iptables-rules">Iptables Rules</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>中文翻译，iptables 命令使用指南，by example 的 cheatsheet。</p>
+<p><a href="https://github.com/smasterfree/iptables-essentials">https://github.com/smasterfree/iptables-essentials</a></p>
+<h2 id="table-of-content">Table Of Content</h2>
+<ul>
+<li><a href="#tools-to-help-you-configure-iptables">Tools to help you configure Iptables</a></li>
+<li><a href="#manualshowtostutorials">Manuals/Howtos/Tutorials</a></li>
+<li><a href="#how-it-works">How it works?</a></li>
+<li><a href="#iptables-rules">Iptables Rules</a>
+<ul>
+<li><a href="#%E4%BF%9D%E5%AD%98%E8%A7%84%E5%88%99">保存规则</a>
+* <a href="#debian-based">Debian Based</a>
+* <a href="#redhat-based">RedHat Based</a></li>
+<li><a href="#%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E8%A7%84%E5%88%99verbose">列出所有规则（verbose）</a></li>
+<li><a href="#%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E8%A7%84%E5%88%99%E5%B8%A6%E8%A1%8C%E5%8F%B7">列出所有规则，带行号</a></li>
+<li><a href="#%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89active%E8%A7%84%E5%88%99">列出所有active规则</a></li>
+<li><a href="#%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89-input-chain-%E8%A7%84%E5%88%99%E8%A1%A8%E6%A0%BC%E5%BD%A2%E5%BC%8F">列出所有 INPUT chain 规则（表格形式）</a></li>
+<li><a href="#%E5%88%97%E5%87%BA-input-chain-%E8%AF%A6%E6%83%85">列出 INPUT chain 详情</a></li>
+<li><a href="#%E5%88%97%E5%87%BApacket%E4%B8%AA%E6%95%B0%E5%A4%A7%E5%B0%8F%E7%AD%89%E4%BF%A1%E6%81%AF">列出packet个数，大小等信息</a></li>
+<li><a href="#%E5%88%97%E5%87%BA-inputoutput-%E8%A7%84%E5%88%99%E5%B8%A6%E8%A1%8C%E5%8F%B7">列出 INPUT，OUTPUT 规则，带行号</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E8%A7%84%E5%88%99%E9%80%9A%E8%BF%87%E8%A1%8C%E5%8F%B7">删除规则（通过行号）</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E8%A7%84%E5%88%99%E9%80%9A%E8%BF%87%E8%AF%A6%E6%83%85">删除规则（通过详情）</a></li>
+<li><a href="#%E6%B8%85%E7%A9%BA%E6%89%80%E6%9C%89%E8%A7%84%E5%88%99">清空所有规则（！）</a></li>
+<li><a href="#%E6%B8%85%E7%A9%BA%E6%89%80%E6%9C%89chains">清空所有chains</a></li>
+<li><a href="#%E6%B8%85%E7%A9%BA%E5%8D%95%E4%B8%AAchain">清空单个chain</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5%E4%B8%80%E6%9D%A1%E8%A7%84%E5%88%99">加入一条规则</a></li>
+<li><a href="#%E5%85%81%E8%AE%B8-loopback-%E8%BF%9E%E6%8E%A5">允许 loopback 连接</a></li>
+<li><a href="#%E5%85%81%E8%AE%B8-established-and-related-incoming-connections">允许 Established and Related Incoming Connections</a></li>
+<li><a href="#%E5%85%81%E8%AE%B8-established-outgoing-connections">允许 Established Outgoing Connections</a></li>
+<li><a href="#%E6%8A%8Aeth1-%E7%9A%84%E6%B5%81%E9%87%8F%E8%BD%AC%E5%88%B0-eth0">把eth1 的流量转到 eth0</a></li>
+<li><a href="#%E4%B8%A2%E6%8E%89-invalid-packets">丢掉 Invalid Packets</a></li>
+<li><a href="#%E4%B8%A2%E5%BC%83%E6%9F%90%E4%B8%AAip%E7%9A%84%E6%B5%81%E9%87%8F">丢弃某个ip的流量</a></li>
+<li>[reject某个ip（reject 和drop的不同，reject会发rst包，drop只能等超时了）](#reject某个ipreject-和drop的不同reject会发rst包drop只能等 超时了)</li>
+<li><a href="#%E4%B8%A2%E6%8E%89%E4%B8%80%E4%B8%AA%E7%BD%91%E5%8D%A1%E6%89%80%E6%9C%89%E6%B5%81%E9%87%8F">丢掉一个网卡所有流量</a></li>
+<li><a href="#%E5%85%81%E8%AE%B8%E6%89%80%E6%9C%89%E7%9A%84ssh%E7%AB%AF%E5%8F%A322%E7%AB%AF%E5%8F%A3">允许所有的ssh端口（22端口）</a></li>
+<li><a href="#%E5%85%81%E8%AE%B8%E6%9D%A5%E8%87%AA%E6%9F%90%E4%B8%AAip%E6%88%96%E8%80%85%E5%AD%90%E7%BD%91%E7%9A%84-incoming-ssh-%E8%BF%9E%E6%8E%A5">允许来自某个ip或者子网的 Incoming SSH 连接</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8Cssh%E5%87%BA%E6%96%B9%E5%90%91">放行ssh出方向</a></li>
+<li><a href="#%E5%85%81%E8%AE%B8%E6%9D%A5%E8%87%AA%E6%9F%90%E4%B8%AAip%E6%88%96%E8%80%85%E5%AD%90%E7%BD%91%E7%9A%84-rsync-%E7%AB%AF%E5%8F%A3">允许来自某个ip或者子网的 rsync 端口</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C%E6%89%80%E6%9C%8980%E7%AB%AF%E5%8F%A3%E5%85%A5%E6%96%B9%E5%90%91">放行所有80端口入方向</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C%E6%89%80%E6%9C%89https">放行所有https</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C80-%E5%92%8C-443">放行80 和 443</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C-mysql-3306">放行 mysql 3306</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C-eth1%E7%9A%84mysql">放行 eth1的mysql</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8Cpostgresql">放行PostgreSQL</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C-eth1%E7%9A%84postgresql">放行 eth1的PostgreSQL</a></li>
+<li><a href="#block-25%E7%AB%AF%E5%8F%A3%E5%87%BA">block 25端口出</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C25%E7%AB%AF%E5%8F%A3-%E5%85%A5">放行25端口 入</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C%E6%89%80%E6%9C%89%E7%9A%84imap">放行所有的IMAP</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C%E6%89%80%E6%9C%89%E7%9A%84iamps">放行所有的IAMPS</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C%E6%89%80%E6%9C%89%E7%9A%84pop3">放行所有的pop3</a></li>
+<li><a href="#%E6%94%BE%E8%A1%8C%E6%89%80%E6%9C%89%E7%9A%84pop3s">放行所有的pop3s</a></li>
+<li><a href="#%E4%B8%A2%E6%8E%89%E6%89%80%E6%9C%89%E5%9C%A8%E5%A4%96%E7%BD%91%E7%BD%91%E5%8D%A1%E4%B8%8A%E5%87%BA%E7%8E%B0%E7%9A%84%E7%A7%81%E6%9C%89%E7%BD%91%E6%B5%81%E9%87%8F%E4%B8%8D%E5%BA%94%E8%AF%A5%E5%87%BA%E7%8E%B0">丢掉所有在外网网卡上出现的私有网流量（不应该出现）</a></li>
+<li><a href="#%E4%B8%A2%E6%8E%89%E6%89%80%E6%9C%89%E7%9A%84%E5%87%BA%E6%96%B9%E5%90%91-facebook-%E6%B5%81%E9%87%8F%E5%9F%BA%E4%BA%8E%E5%9F%9F%E5%90%8D">丢掉所有的出方向 facebook 流量（基于域名）</a></li>
+<li><a href="#%E5%AF%B9%E4%B8%A2%E5%8C%85%E7%9A%84%E6%B5%81%E9%87%8F%E6%89%93log%E5%AE%A1%E8%AE%A1">对丢包的流量打log审计</a></li>
+<li><a href="#%E5%AF%B9%E4%B8%A2%E5%8C%85%E5%AE%A1%E8%AE%A1%E9%99%90%E5%88%B6%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F">对丢包审计，限制日志大小</a></li>
+<li><a href="#%E9%92%88%E5%AF%B9mac%E5%9C%B0%E5%9D%80%E7%9A%84%E6%94%BE%E8%A1%8C%E4%B8%A2%E5%8C%85%E7%AD%96%E7%95%A5">针对mac地址的放行、丢包策略</a></li>
+<li><a href="#%E9%92%88%E5%AF%B9icmp%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%94%BE%E8%A1%8C%E4%B8%A2%E5%8C%85%E7%AD%96%E7%95%A5">针对icmp协议的放行、丢包策略</a></li>
+<li><a href="#%E4%B8%80%E6%AC%A1%E5%A4%84%E7%90%86%E5%A4%9A%E4%B8%AAports">一次处理多个ports</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8random-%E6%88%96%E8%80%85-nth-%E8%BF%9B%E8%A1%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5">使用random 或者 nth* 进行负载均衡策略</a></li>
+<li><a href="#%E9%99%90%E5%88%B6%E8%BF%9E%E6%8E%A5%E6%95%B0">限制连接数</a></li>
+<li><a href="#maintaining-a-list-of-recent-connections-to-match-against">Maintaining a List of recent Connections to Match Against</a></li>
+<li><a href="#matching-against-a-string-in-a-packets-data-payload">Matching Against a string* in a Packet&rsquo;s Data Payload</a></li>
+<li><a href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E8%A7%84%E5%88%99">基于时间规则</a></li>
+<li><a href="#packet-matching-based-on-ttl-values">Packet Matching Based on TTL Values</a></li>
+<li><a href="#%E9%98%B2%E6%AD%A2%E6%9C%89%E4%BA%BA%E5%9C%A8%E7%83%A7%E7%AB%AF%E5%8F%A3">防止有人在烧端口</a></li>
+<li><a href="#ssh%E9%98%B2%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3">ssh防暴力破解</a></li>
+<li><a href="#%E9%98%B2%E6%AD%A2-syn-flood-%E6%94%BB%E5%87%BB">防止 syn flood 攻击</a>
+<ul>
+<li><a href="#mitigating-syn-floods-with-synproxy">Mitigating SYN Floods With SYNPROXY</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B9%B2%E6%8E%89%E4%B8%8D%E6%98%AF%E9%80%9A%E8%BF%87syn%E5%8C%85%E5%BB%BA%E7%AB%8B%E7%9A%84tcp">干掉不是通过syn包建立的tcp</a></li>
+<li><a href="#force-fragments-packets-check">Force Fragments packets check</a></li>
+<li><a href="#xmas-packets">XMAS packets</a></li>
+<li><a href="#drop-all-null-packets">Drop all NULL packets</a></li>
+<li><a href="#block-uncommon-mss-values">Block Uncommon MSS Values</a></li>
+<li><a href="#block-packets-with-bogus-tcp-flags">Block Packets With Bogus TCP Flags</a></li>
+<li><a href="#block-packets-from-private-subnets-spoofing">Block Packets From Private Subnets (Spoofing)</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="tools-to-help-you-configure-iptables">Tools to help you configure Iptables</h3>
+<!-- raw HTML omitted -->
+<h3 id="manualshowtostutorials">Manuals/Howtos/Tutorials</h3>
+<!-- raw HTML omitted -->
+<h3 id="iptables-rules">Iptables Rules</h3>
+<h4 id="保存规则">保存规则</h4>
+<p>save rules</p>
+<h6 id="debian-based">Debian Based</h6>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">netfilter-persistent save
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="redhat-based">RedHat Based</h6>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">service iptables save
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="列出所有规则verbose">列出所有规则（verbose）</h4>
+<p>List out all of the active iptables rules with verbose</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -n -L -v
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="列出所有规则带行号">列出所有规则，带行号</h4>
+<p>List out all of the active iptables rules with numeric lines and verbose</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -n -L -v --line-numbers
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="列出所有active规则">列出所有active规则</h4>
+<p>Print out all of the active iptables rules</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -S
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="列出所有-input-chain-规则表格形式">列出所有 INPUT chain 规则（表格形式）</h4>
+<p>List Rules as Tables for INPUT chain</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -L INPUT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="列出-input-chain-详情">列出 INPUT chain 详情</h4>
+<p>Print all of the rule specifications in the INPUT chain</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -S INPUT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="列出packet个数大小等信息">列出packet个数，大小等信息</h4>
+<p>Show Packet Counts and Aggregate Size</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -L INPUT -v
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="列出-inputoutput-规则带行号">列出 INPUT，OUTPUT 规则，带行号</h4>
+<p>To display INPUT or OUTPUT chain rules with numeric lines and verbose</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -L INPUT -n -v
+iptables -L OUTPUT -n -v --line-numbers
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="删除规则通过行号">删除规则（通过行号）</h4>
+<p>Delete Rule by Chain and Number</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -D INPUT <span class="m">10</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="删除规则通过详情">删除规则（通过详情）</h4>
+<p>Delete Rule by Specification</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -D INPUT -m conntrack --ctstate INVALID -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="清空所有规则">清空所有规则（！）</h4>
+<p>Flush All Rules, Delete All Chains, and Accept All</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+
+iptables -t nat -F
+iptables -t mangle -F
+iptables -F
+iptables -X
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="清空所有chains">清空所有chains</h4>
+<p>Flush All Chains</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -F
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="清空单个chain">清空单个chain</h4>
+<p>Flush a Single Chain</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -F INPUT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="加入一条规则">加入一条规则</h4>
+<p>Insert Firewall Rules</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -I INPUT <span class="m">2</span> -s 202.54.1.2 -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="允许-loopback-连接">允许 loopback 连接</h4>
+<p>Allow Loopback Connections</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="允许-established-and-related-incoming-connections">允许 Established and Related Incoming Connections</h4>
+<p>Allow Established and Related Incoming Connections</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="允许-established-outgoing-connections">允许 Established Outgoing Connections</h4>
+<p>Allow Established Outgoing Connections</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="把eth1-的流量转到-eth0">把eth1 的流量转到 eth0</h4>
+<p>Internal to External</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="丢掉-invalid-packets">丢掉 Invalid Packets</h4>
+<p>Drop Invalid Packets</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="丢弃某个ip的流量">丢弃某个ip的流量</h4>
+<p>Block an IP Address</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -s 192.168.252.10 -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="reject某个ipreject-和drop的不同reject会发rst包drop只能等超时了">reject某个ip（reject 和drop的不同，reject会发rst包，drop只能等超时了）</h4>
+<p>Block and IP Address and Reject</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -s 192.168.252.10 -j REJECT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="丢掉一个网卡所有流量">丢掉一个网卡所有流量</h4>
+<p>Block Connections to a Network Interface</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i eth0 -s 192.168.252.10 -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="允许所有的ssh端口22端口">允许所有的ssh端口（22端口）</h4>
+<p>Allow All Incoming SSH</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">22</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">22</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="允许来自某个ip或者子网的-incoming-ssh-连接">允许来自某个ip或者子网的 Incoming SSH 连接</h4>
+<p>Allow Incoming SSH from Specific IP address or subnet</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp -s 192.168.240.0/24 --dport <span class="m">22</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">22</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行ssh出方向">放行ssh出方向</h4>
+<p>Allow Outgoing SSH</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A OUTPUT -p tcp --dport <span class="m">22</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --sport <span class="m">22</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="允许来自某个ip或者子网的-rsync-端口">允许来自某个ip或者子网的 rsync 端口</h4>
+<p>Allow Incoming Rsync from Specific IP Address or Subnet</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp -s 192.168.240.0/24 --dport <span class="m">873</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">873</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行所有80端口入方向">放行所有80端口入方向</h4>
+<p>Allow All Incoming HTTP</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">80</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">80</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行所有https">放行所有https</h4>
+<p>Allow All Incoming HTTPS</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">443</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">443</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行80-和-443">放行80 和 443</h4>
+<p>Allow All Incoming HTTP and HTTPS</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行-mysql-3306">放行 mysql 3306</h4>
+<p>Allow MySQL from Specific IP Address or Subnet</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp -s 192.168.240.0/24 --dport <span class="m">3306</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">3306</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行-eth1的mysql">放行 eth1的mysql</h4>
+<p>Allow MySQL to Specific Network Interface</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i eth1 -p tcp --dport <span class="m">3306</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth1 -p tcp --sport <span class="m">3306</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行postgresql">放行PostgreSQL</h4>
+<p>PostgreSQL from Specific IP Address or Subnet</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp -s 192.168.240.0/24 --dport <span class="m">5432</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">5432</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行-eth1的postgresql">放行 eth1的PostgreSQL</h4>
+<p>Allow PostgreSQL to Specific Network Interface</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i eth1 -p tcp --dport <span class="m">5432</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -o eth1 -p tcp --sport <span class="m">5432</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="block-25端口出">block 25端口出</h4>
+<p>Block Outgoing SMTP Mail</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A OUTPUT -p tcp --dport <span class="m">25</span> -j REJECT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行25端口-入">放行25端口 入</h4>
+<p>Allow All Incoming SMTP</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">25</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">25</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行所有的imap">放行所有的IMAP</h4>
+<p>Allow All Incoming IMAP</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">143</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">143</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行所有的iamps">放行所有的IAMPS</h4>
+<p>Allow All Incoming IMAPS</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">993</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">993</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行所有的pop3">放行所有的pop3</h4>
+<p>Allow All Incoming POP3</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">110</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">110</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="放行所有的pop3s">放行所有的pop3s</h4>
+<p>Allow All Incoming POP3S</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport <span class="m">995</span> -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport <span class="m">995</span> -m conntrack --ctstate ESTABLISHED -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="丢掉所有在外网网卡上出现的私有网流量不应该出现">丢掉所有在外网网卡上出现的私有网流量（不应该出现）</h4>
+<p>Drop Private Network Address On Public Interface</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i eth1 -s 192.168.0.0/24 -j DROP
+iptables -A INPUT -i eth1 -s 10.0.0.0/8 -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="丢掉所有的出方向-facebook-流量基于域名">丢掉所有的出方向 facebook 流量（基于域名）</h4>
+<p>Drop All Outgoing to Facebook Networks</p>
+<p>Get Facebook AS:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">whois -h v4.whois.cymru.com <span class="s2">&#34; -v </span><span class="k">$(</span>host facebook.com <span class="p">|</span> grep <span class="s2">&#34;has address&#34;</span> <span class="p">|</span> cut -d <span class="s2">&#34; &#34;</span> -f4<span class="k">)</span><span class="s2">&#34;</span> <span class="p">|</span> tail -n1 <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Drop:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="k">for</span> i in <span class="k">$(</span>whois -h whois.radb.net -- <span class="s1">&#39;-i origin AS32934&#39;</span> <span class="p">|</span> grep <span class="s2">&#34;^route:&#34;</span> <span class="p">|</span> cut -d <span class="s2">&#34;:&#34;</span> -f2 <span class="p">|</span> sed -e <span class="s1">&#39;s/^[ \t]*//&#39;</span> <span class="p">|</span> sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 <span class="p">|</span> cut -d <span class="s2">&#34;:&#34;</span> -f2 <span class="p">|</span> sed <span class="s1">&#39;s/$/;/&#39;</span><span class="k">)</span> <span class="p">;</span> <span class="k">do</span>
+
+  iptables -A OUTPUT -s <span class="s2">&#34;</span><span class="nv">$i</span><span class="s2">&#34;</span> -j REJECT
+
+<span class="k">done</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="对丢包的流量打log审计">对丢包的流量打log审计</h4>
+<p>Log and Drop Packets</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i eth1 -s 10.0.0.0/8 -j LOG --log-prefix <span class="s2">&#34;IP_SPOOF A: &#34;</span>
+iptables -A INPUT -i eth1 -s 10.0.0.0/8 -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><p>By default everything is logged to <code>/var/log/messages</code> file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">tail -f /var/log/messages
+grep --color <span class="s1">&#39;IP SPOOF&#39;</span> /var/log/messages
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="对丢包审计限制日志大小">对丢包审计，限制日志大小</h4>
+<p>Log and Drop Packets with Limited Number of Log Entries</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i eth1 -s 10.0.0.0/8 -m limit --limit 5/m --limit-burst <span class="m">7</span> -j LOG --log-prefix <span class="s2">&#34;IP_SPOOF A: &#34;</span>
+iptables -A INPUT -i eth1 -s 10.0.0.0/8 -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="针对mac地址的放行丢包策略">针对mac地址的放行、丢包策略</h4>
+<p>Drop or Accept Traffic From Mac Address</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -m mac --mac-source 00:0F:EA:91:04:08 -j DROP
+iptables -A INPUT -p tcp --destination-port <span class="m">22</span> -m mac --mac-source 00:0F:EA:91:04:07 -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="针对icmp协议的放行丢包策略">针对icmp协议的放行、丢包策略</h4>
+<p>Block or Allow ICMP Ping Request</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+iptables -A INPUT -i eth1 -p icmp --icmp-type echo-request -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="一次处理多个ports">一次处理多个ports</h4>
+<p>Specifying Multiple Ports with <code>multiport</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -i eth0 -p tcp -m state --state NEW -m multiport --dports ssh,smtp,http,https -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="使用random-或者-nth-进行负载均衡策略">使用random 或者 nth* 进行负载均衡策略</h4>
+<p>Load Balancing with <code>random*</code> or <code>nth*</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">_ips</span><span class="o">=(</span><span class="s2">&#34;172.31.250.10&#34;</span> <span class="s2">&#34;172.31.250.11&#34;</span> <span class="s2">&#34;172.31.250.12&#34;</span> <span class="s2">&#34;172.31.250.13&#34;</span><span class="o">)</span>
+
+<span class="k">for</span> ip in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">_ips</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">;</span> <span class="k">do</span>
+  iptables -A PREROUTING -i eth0 -p tcp --dport <span class="m">80</span> -m state --state NEW -m nth --counter <span class="m">0</span> --every <span class="m">4</span> --packet <span class="m">0</span> <span class="se">\
+</span><span class="se"></span>    -j DNAT --to-destination <span class="si">${</span><span class="nv">ip</span><span class="si">}</span>:80
+<span class="k">done</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>or</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">_ips</span><span class="o">=(</span><span class="s2">&#34;172.31.250.10&#34;</span> <span class="s2">&#34;172.31.250.11&#34;</span> <span class="s2">&#34;172.31.250.12&#34;</span> <span class="s2">&#34;172.31.250.13&#34;</span><span class="o">)</span>
+
+<span class="k">for</span> ip in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">_ips</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">;</span> <span class="k">do</span>
+  iptables -A PREROUTING -i eth0 -p tcp --dport <span class="m">80</span> -m state --state NEW -m random --average <span class="m">25</span> <span class="se">\
+</span><span class="se"></span>    -j DNAT --to-destination <span class="si">${</span><span class="nv">ip</span><span class="si">}</span>:80
+<span class="k">done</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="限制连接数">限制连接数</h4>
+<p>Restricting the Number of Connections with <code>limit</code> and <code>iplimit*</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A FORWARD -m state --state NEW -p tcp -m multiport --dport http,https -o eth0 -i eth1 <span class="se">\
+</span><span class="se"></span>    -m limit --limit 20/hour --limit-burst <span class="m">5</span> -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><p>or</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp -m state --state NEW --dport http -m iplimit --iplimit-above <span class="m">5</span> -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="maintaining-a-list-of-recent-connections-to-match-against">Maintaining a List of recent Connections to Match Against</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A FORWARD -m recent --name portscan --rcheck --seconds <span class="m">100</span> -j DROP
+iptables -A FORWARD -p tcp -i eth0 --dport <span class="m">443</span> -m recent --name portscan --set -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="matching-against-a-string-in-a-packets-data-payload">Matching Against a <code>string*</code> in a Packet&rsquo;s Data Payload</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A FORWARD -m string --string <span class="s1">&#39;.com&#39;</span> -j DROP
+iptables -A FORWARD -m string --string <span class="s1">&#39;.exe&#39;</span> -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="基于时间规则">基于时间规则</h4>
+<p>Time-based Rules with <code>time*</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A FORWARD -p tcp -m multiport --dport http,https -o eth0 -i eth1 <span class="se">\
+</span><span class="se"></span>    -m <span class="nb">time</span> --timestart 21:30 --timestop 22:30 --days Mon,Tue,Wed,Thu,Fri -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="packet-matching-based-on-ttl-values">Packet Matching Based on TTL Values</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -s 1.2.3.4 -m ttl --ttl-lt <span class="m">40</span> -j REJECT
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="防止有人在烧端口">防止有人在烧端口</h4>
+<p>Protection against port scanning</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -N port-scanning
+iptables -A port-scanning -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst <span class="m">2</span> -j RETURN
+iptables -A port-scanning -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="ssh防暴力破解">ssh防暴力破解</h4>
+<p>SSH brute-force protection</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --set
+iptables -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --update --seconds <span class="m">60</span> --hitcount <span class="m">10</span> -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="防止-syn-flood-攻击">防止 syn flood 攻击</h4>
+<p>Syn-flood protection</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -N syn_flood
+
+iptables -A INPUT -p tcp --syn -j syn_flood
+iptables -A syn_flood -m limit --limit 1/s --limit-burst <span class="m">3</span> -j RETURN
+iptables -A syn_flood -j DROP
+
+iptables -A INPUT -p icmp -m limit --limit  1/s --limit-burst <span class="m">1</span> -j ACCEPT
+
+iptables -A INPUT -p icmp -m limit --limit 1/s --limit-burst <span class="m">1</span> -j LOG --log-prefix PING-DROP:
+iptables -A INPUT -p icmp -j DROP
+
+iptables -A OUTPUT -p icmp -j ACCEPT
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="mitigating-syn-floods-with-synproxy">Mitigating SYN Floods With SYNPROXY</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -t raw -A PREROUTING -p tcp -m tcp --syn -j CT --notrack
+iptables -A INPUT -p tcp -m tcp -m conntrack --ctstate INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale <span class="m">7</span> --mss <span class="m">1460</span>
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="干掉不是通过syn包建立的tcp">干掉不是通过syn包建立的tcp</h4>
+<p>Block New Packets That Are Not SYN</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><p>or</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -t mangle -A PREROUTING -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="force-fragments-packets-check">Force Fragments packets check</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -f -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="xmas-packets">XMAS packets</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="drop-all-null-packets">Drop all NULL packets</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="block-uncommon-mss-values">Block Uncommon MSS Values</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -t mangle -A PREROUTING -p tcp -m conntrack --ctstate NEW -m tcpmss ! --mss 536:65535 -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="block-packets-with-bogus-tcp-flags">Block Packets With Bogus TCP Flags</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,ACK FIN -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,URG URG -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,FIN FIN -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,PSH PSH -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL ALL -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="block-packets-from-private-subnets-spoofing">Block Packets From Private Subnets (Spoofing)</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">_subnets</span><span class="o">=(</span><span class="s2">&#34;224.0.0.0/3&#34;</span> <span class="s2">&#34;169.254.0.0/16&#34;</span> <span class="s2">&#34;172.16.0.0/12&#34;</span> <span class="s2">&#34;192.0.2.0/24&#34;</span> <span class="s2">&#34;192.168.0.0/16&#34;</span> <span class="s2">&#34;10.0.0.0/8&#34;</span> <span class="s2">&#34;0.0.0.0/8&#34;</span> <span class="s2">&#34;240.0.0.0/5&#34;</span><span class="o">)</span>
+
+<span class="k">for</span> _sub in <span class="s2">&#34;</span><span class="si">${</span><span class="nv">_subnets</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">;</span> <span class="k">do</span>
+  iptables -t mangle -A PREROUTING -s <span class="s2">&#34;</span><span class="nv">$_sub</span><span class="s2">&#34;</span> -j DROP
+<span class="k">done</span>
+iptables -t mangle -A PREROUTING -s 127.0.0.0/8 ! -i lo -j DROP
+</code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-04-03
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/k8s-e2e%E9%83%A8%E7%BD%B2%E5%92%8C%E8%B0%83%E8%AF%95/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">k8s e2e测试部署和调试</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/ftp%E4%B8%BA%E5%95%A5%E5%8D%A1%E4%BA%8630%E7%A7%92/">
+            <span class="next-text nav-default">ftp为啥卡了30秒</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

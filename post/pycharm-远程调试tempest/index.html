@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>pycharm-远程调试tempest - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="本地windows 下面 tempest pip依赖不好装（比较麻烦，有些需要编译啥的）。所以考虑远端运行，本地只是用来调试。 project 解释器里面增加： 远程linux" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/pycharm-%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95tempest/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="pycharm-远程调试tempest" />
+<meta property="og:description" content="本地windows 下面 tempest pip依赖不好装（比较麻烦，有些需要编译啥的）。所以考虑远端运行，本地只是用来调试。 project 解释器里面增加： 远程linux" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/pycharm-%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95tempest/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2018-06-24T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2018-06-24T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="pycharm-远程调试tempest">
+<meta itemprop="description" content="本地windows 下面 tempest pip依赖不好装（比较麻烦，有些需要编译啥的）。所以考虑远端运行，本地只是用来调试。 project 解释器里面增加： 远程linux"><meta itemprop="datePublished" content="2018-06-24T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2018-06-24T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="536">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="pycharm-远程调试tempest"/>
+<meta name="twitter:description" content="本地windows 下面 tempest pip依赖不好装（比较麻烦，有些需要编译啥的）。所以考虑远端运行，本地只是用来调试。 project 解释器里面增加： 远程linux"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">pycharm-远程调试tempest</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-06-24 </span>
+        
+          <span class="more-meta"> 536 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>本地windows 下面 tempest pip依赖不好装（比较麻烦，有些需要编译啥的）。所以考虑远端运行，本地只是用来调试。</p>
+<p>project 解释器里面增加：</p>
+<p><img src="../images/27460-ebc8862d78a30603-1590804507348.png" alt="Paste_Image.png"></p>
+<p><img src="../images/27460-ebdb9e23425495ac-1590804510711.png" alt="Paste_Image.png"></p>
+<p>远程linux 的信息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@cnsrc-cns-tempest-ci:~/tempest_netease/tempest-ci/tempest# ip a
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1400 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e💿d1:a4 brd ff:ff:ff:ff:ff:ff
+    inet 10.180.65.60/23 brd 10.180.65.255 scope global eth0
+    inet6 fe80::f816:3eff:fecd:d1a4/64 scope link 
+       valid_lft forever preferred_lft forever
+3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:f2:57:f4 brd ff:ff:ff:ff:ff:ff
+    inet 115.236.127.192/24 brd 115.236.127.255 scope global eth1
+    inet6 fe80::f816:3eff:fef2:57f4/64 scope link 
+       valid_lft forever preferred_lft forever
+root@cnsrc-cns-tempest-ci:~/tempest_netease/tempest-ci/tempest# 
+
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/27460-619f6afc75d5b6ca-1590804514310.png" alt="Paste_Image.png"></p>
+<p>下面这个配置很重要, Local Path 是本地 py 文件存储的地方(默认为当前工程所在地方), Remote Path 为远程 Linux 的目录,编辑本地的 py 文件后,在调试时,远程的 python 环境不会直接运行你本地文件夹的 py 文件,而是访问 Linux 自己的目录,这个目录就是这里设置的,接下来就是配置这连个文件夹同步即可.</p>
+<p><img src="../images/27460-c287c53dffa4f485-1590804517208.png" alt="Paste_Image.png"></p>
+<p><img src="../images/27460-56848b6e2d062613-1590804520119.png" alt="Paste_Image.png"></p>
+<p>调试一下</p>
+<p><img src="../images/27460-ac46293340683301-1590804523291.png" alt="Paste_Image.png"></p>
+<p>配置sftp选项，相当于两边目录同步之类的
+<img src="../images/27460-1331805831828120-1590804526360.png" alt="Paste_Image.png"></p>
+<p>配置mapping
+<img src="../images/27460-6a184f5062e813c9-1590804529616.png" alt="Paste_Image.png"></p>
+<p>option里面，配置这个选项，本地选上 ctrl +s就是保存并同步到远端。</p>
+<p><img src="../images/27460-91ee60f38bb9c40d-1590804533847.png" alt="Paste_Image.png"></p>
+<p>上传代码也可以手工上传。</p>
+<p><img src="../images/27460-33c5148d08595e3f-1590804536888.png" alt="Paste_Image.png"></p>
+<p>测试一下，命令行下执行：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@cnsrc-cns-tempest-ci:~/tempest_netease/tempest-ci/tempest# nosetests -sv tempest/api/network/test_ports.py:PortsTestJSON.test_create_update_port_with_second_ip
+tempest.api.network.test_ports.PortsTestJSON.test_create_update_port_with_second_ip[gate,smoke] ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 17.497s
+
+OK
+root@cnsrc-cns-tempest-ci:~/tempest_netease/tempest-ci/tempest# 
+</code></pre></td></tr></table>
+</div>
+</div><p>pycharm端的runner配置为，即nose设置</p>
+<p>选择对应的文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">D:\demo\tempest-ci\tempest\tempest\api\network\test_ports.py
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/27460-339c9ceb6a3d01f6-1590804541544.png" alt="Paste_Image.png"></p>
+<p>跑过的话效果如下：（直接远端跑tempest代码）</p>
+<p><img src="../images/27460-f92c2691b5aac8ad-1590804544770.png" alt="Paste_Image.png"></p>
+<p>如果测试某一个具体的方法，可以这样指定：</p>
+<p><img src="../images/27460-9c025d58f7ab7b8c-1590804550217.png" alt="Paste_Image.png"></p>
+<p>打断点，debug也可以使用了。</p>
+<p><img src="../images/27460-aecd3c1da831184f-1590804553015.png" alt=""></p>
+<p>good！</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2018-06-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/api-%E6%8E%A5%E5%8F%A3-fuzz-%E6%B5%8B%E8%AF%95%E5%88%9D%E6%8E%A2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">api-接口-fuzz-测试初探</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/windows-%E4%BA%91%E4%B8%BB%E6%9C%BA%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%9E%E5%BD%92%E6%8A%80%E5%B7%A7/">
+            <span class="next-text nav-default">windows-云主机测试与回归技巧</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

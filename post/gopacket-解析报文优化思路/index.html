@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>gopacket 解析报文优化思路 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="问题 网上有个人用gopacket 解析mysql的报文，但是当压测mysql的时候，gopacket解析出现了丢包。 1 mysqlslap --user=myuser --password=verysecretpass --host=solidcomputer --port=3306 --auto-generate-sql --concurrency=1 --number-of-queries 10000 --iterations=1 比如" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/gopacket-%E8%A7%A3%E6%9E%90%E6%8A%A5%E6%96%87%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="gopacket 解析报文优化思路" />
+<meta property="og:description" content="问题 网上有个人用gopacket 解析mysql的报文，但是当压测mysql的时候，gopacket解析出现了丢包。 1 mysqlslap --user=myuser --password=verysecretpass --host=solidcomputer --port=3306 --auto-generate-sql --concurrency=1 --number-of-queries 10000 --iterations=1 比如" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/gopacket-%E8%A7%A3%E6%9E%90%E6%8A%A5%E6%96%87%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-08-04T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2022-08-04T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="gopacket 解析报文优化思路">
+<meta itemprop="description" content="问题 网上有个人用gopacket 解析mysql的报文，但是当压测mysql的时候，gopacket解析出现了丢包。 1 mysqlslap --user=myuser --password=verysecretpass --host=solidcomputer --port=3306 --auto-generate-sql --concurrency=1 --number-of-queries 10000 --iterations=1 比如"><meta itemprop="datePublished" content="2022-08-04T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2022-08-04T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="908">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="gopacket 解析报文优化思路"/>
+<meta name="twitter:description" content="问题 网上有个人用gopacket 解析mysql的报文，但是当压测mysql的时候，gopacket解析出现了丢包。 1 mysqlslap --user=myuser --password=verysecretpass --host=solidcomputer --port=3306 --auto-generate-sql --concurrency=1 --number-of-queries 10000 --iterations=1 比如"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">gopacket 解析报文优化思路</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2022-08-04 </span>
+        
+          <span class="more-meta"> 908 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#问题">问题</a></li>
+    <li><a href="#优化">优化</a>
+      <ul>
+        <li><a href="#路径">路径</a></li>
+        <li><a href="#profiling">Profiling</a></li>
+      </ul>
+    </li>
+    <li><a href="#gopacket">gopacket</a>
+      <ul>
+        <li><a href="#干更少的活">干更少的活</a></li>
+        <li><a href="#减少内存分配">减少内存分配</a></li>
+        <li><a href="#不要每个包解析都打印">不要每个包解析都打印</a></li>
+      </ul>
+    </li>
+    <li><a href="#总体建议">总体建议</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p><img src="../images/100110389-drive-fast-gettyp.jpg" alt="image"></p>
+<h2 id="问题">问题</h2>
+<p>网上有个人用gopacket 解析mysql的报文，但是当压测mysql的时候，gopacket解析出现了丢包。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">mysqlslap --user=myuser --password=verysecretpass --host=solidcomputer --port=3306 --auto-generate-sql --concurrency=1 --number-of-queries 10000 --iterations=1
+</code></pre></td></tr></table>
+</div>
+</div><p>比如 <code>number-of-queries 10000</code>的时候，解析就出现了丢包，但是<code>number-of-queries 500</code>的时候，就不会。</p>
+<p>直接使用tcpdump，不会丢。使用tcpdump到pcap，再使用gopacket解析，也不会丢包。</p>
+<p>所以，问题不在libpcap，是在gopacket解析。</p>
+<h2 id="优化">优化</h2>
+<p>下面是另一个人给他的优化建议，比较普适。记录一下。</p>
+<p>大白话解释就是两个包解析的时间比两个包过来的时间要大，包来了来不及解析，就丢包了。</p>
+<h3 id="路径">路径</h3>
+<ol>
+<li>libpcap</li>
+<li>gopacket/pcap</li>
+<li>gopacket.PacketSource</li>
+<li>gopacket/layers/* (whatever layers the packet contains)</li>
+<li>gopacket/tcpassembly</li>
+<li>gopacket/tcpassembly/tcpreader</li>
+<li>bufio reader</li>
+</ol>
+<h3 id="profiling">Profiling</h3>
+<p>优化之前先要profile。不然就是白费力。</p>
+<p>可以profile cpu，以及内存分配。</p>
+<h2 id="gopacket">gopacket</h2>
+<h3 id="干更少的活">干更少的活</h3>
+<p>加一个bpffilter，不要每个来的包都解析一遍。</p>
+<p>比如 <code>handle.SetBPFFilter(&quot;tcp port 3306&quot;)</code></p>
+<h3 id="减少内存分配">减少内存分配</h3>
+<p>整个解析包的流程里面有很多地方涉及到内存分配，所以要能省则省啊。</p>
+<ol>
+<li><code>gopacket.NewPacketSource(handle, handle.LinkType())</code>这个会调用<code>ReadPacketData</code>， 这样每个包都要复制一遍到内存。</li>
+<li><code>NewPacket</code>又会把每个包再拷贝一次。因为没有设置<code>DecodeOptions</code>，<code>NewPacket</code>会再申请分配一次buffer。</li>
+<li><code>NewPacket</code>解析包，然后分配各个层给它，即使你没要求它这么做。（可以使用lazy改变默认行为）</li>
+<li>所以总的要分配两次buffer。每层包也会这样被处理两次。</li>
+</ol>
+<p>那么如何节省呢？第一次分配我们可以用 <code>ZeroCopyReadPacketData</code>，这样就可以节省一次拷贝。第二次拷贝可以设置一个参数 <code>NoCopy</code>。这样buffer里面的数据再下一个包到来时，就失效了。</p>
+<p>至于替换 <code>NewPacket</code> ，可以使用 <code>DecodingLayerParser</code> 这个方法。因为你要的那些信息总是固定的，没必要一层层解析。甚至可以考虑使用<code>DecodeFromBytes</code>，直接从以太层开始解析，这样可以快一点。</p>
+<h3 id="不要每个包解析都打印">不要每个包解析都打印</h3>
+<p>打印是很慢的，每个包都打印相当于是在循环里面打印。每次解析完都集中处理，最后一步打印出来。</p>
+<h2 id="总体建议">总体建议</h2>
+<p>先使用ZeroCopy， DecodingLayerParser。 不要使用tcpreader。如果使用tcpreader，至少需要一次拷贝。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2022-08-04
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0%E7%94%BB%E5%9B%BE%E9%82%A3%E4%BA%9B%E4%BA%8B/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0%E7%94%BB%E5%9B%BE%E9%82%A3%E4%BA%9B%E4%BA%8B/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">技术文章画图那些事</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/ovs%E5%AD%A6%E4%B9%A0/ovs-%E5%AD%A6%E4%B9%A0/">
+            <span class="next-text nav-default">ovs学习</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

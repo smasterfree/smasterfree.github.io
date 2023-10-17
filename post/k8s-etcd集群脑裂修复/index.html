@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>k8s etcd集群脑裂修复 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="脑裂 在线下大规模测试环境中，通过并发创建 daemonset进行压力测试，可能会导致etcd产生脑裂。 表现为即使无外部新建、删除pod请求的情" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/k8s-etcd%E9%9B%86%E7%BE%A4%E8%84%91%E8%A3%82%E4%BF%AE%E5%A4%8D/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="k8s etcd集群脑裂修复" />
+<meta property="og:description" content="脑裂 在线下大规模测试环境中，通过并发创建 daemonset进行压力测试，可能会导致etcd产生脑裂。 表现为即使无外部新建、删除pod请求的情" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/k8s-etcd%E9%9B%86%E7%BE%A4%E8%84%91%E8%A3%82%E4%BF%AE%E5%A4%8D/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2020-06-15T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-06-15T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="k8s etcd集群脑裂修复">
+<meta itemprop="description" content="脑裂 在线下大规模测试环境中，通过并发创建 daemonset进行压力测试，可能会导致etcd产生脑裂。 表现为即使无外部新建、删除pod请求的情"><meta itemprop="datePublished" content="2020-06-15T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-06-15T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1094">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="k8s etcd集群脑裂修复"/>
+<meta name="twitter:description" content="脑裂 在线下大规模测试环境中，通过并发创建 daemonset进行压力测试，可能会导致etcd产生脑裂。 表现为即使无外部新建、删除pod请求的情"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">k8s etcd集群脑裂修复</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-06-15 </span>
+        
+          <span class="more-meta"> 1094 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#脑裂">脑裂</a></li>
+    <li><a href="#修复">修复</a></li>
+    <li><a href="#压缩">压缩</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="脑裂">脑裂</h2>
+<p>在线下大规模测试环境中，通过并发创建 daemonset进行压力测试，可能会导致etcd产生脑裂。</p>
+<p>表现为即使无外部新建、删除pod请求的情况下，k8s部分组件仍旧在不断的crash，再被重新拉起。</p>
+<p>观察看到etcd这边有较多的错误日志。在停掉k8s api server后，进一步观察etcd集群。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    member list
+5d1778ffb8ffccdf, started, etcd2, https://10.166.6.74:2380, https://10.166.6.74:2379, false
+73ed1156f02ee259, started, etcd3, https://10.166.6.75:2380, https://10.166.6.75:2379, false
+f81714a563f17f2f, started, etcd1, https://10.166.6.73:2380, https://10.166.6.73:2379, false
+
+
+(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    endpoint health
+https://10.166.6.74:2379 is healthy: successfully committed proposal: took = 13.079055ms
+https://10.166.6.75:2379 is healthy: successfully committed proposal: took = 13.737658ms
+https://10.166.6.73:2379 is healthy: successfully committed proposal: took = 48.752559ms
+
+</code></pre></td></tr></table>
+</div>
+</div><p>各个节点数据大小不一致。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    endpoint status  --write-out=table
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+|         ENDPOINT         |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+| https://10.166.6.73:2379 | f81714a563f17f2f |   3.4.3 |  1.3 GB |     false |      false |     13713 |   29273118 |           29273118 | |
+| https://10.166.6.74:2379 | 5d1778ffb8ffccdf |   3.4.3 |  1.4 GB |      true |      false |     13713 |   29273118 |           29273118 | |
+| https://10.166.6.75:2379 | 73ed1156f02ee259 |   3.4.3 |  1.3 GB |     false |      false |     13713 |   29273118 |           29273118 | |
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+
+</code></pre></td></tr></table>
+</div>
+</div><p>但是这边看到etcd集群部分节点数据不一致的情况，此现象也和api 每次get replicasets等请求返回不一致相同。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379&#34;      get   /registry/pods/  --prefix --keys-only  |wc
+   3738    1869  109335
+(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.74:2379&#34;      get   /registry/pods/  --prefix --keys-only  |wc
+   4028    2014  121225
+(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.75:2379&#34;      get   /registry/pods/  --prefix --keys-only  |wc
+   3738    1869  109335
+
+
+(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.74:2379&#34;      get   /registry/replicasets/  --prefix --keys-only  |wc
+232     116   10757
+(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379&#34;      get   /registry/replicasets/  --prefix --keys-only  |wc
+     58      29    2343
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="修复">修复</h2>
+<p>下面着手处理异常节点。注意，先备份数据。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ectl    --endpoints=&#34;https://10.166.6.73:2379&#34;   snapshot save etcd$(date +%Y%m%d_%H%M%S)_snapshot.db
+</code></pre></td></tr></table>
+</div>
+</div><p>k8s集群的etcd也是k8s在管理，因此停服etcd也比较简单。</p>
+<p>把这个里面的 etcd yaml移到外面去。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@prit2-k8s7:/etc/kubernetes/manifests# mv k8s-big-cluster-betayun-etcd.yaml ..
+</code></pre></td></tr></table>
+</div>
+</div><p>然后删除掉数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@prit2-k8s7:/data/k8s# rm -rf etcd-k8s-big-cluster-betayun
+</code></pre></td></tr></table>
+</div>
+</div><p>然后member remove掉</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:/etc/kubernetes/manifests$ ectl --endpoints=&#34;https://10.166.6.73:2379&#34;    member remove 4aeec91e63ed18cf
+Member 4aeec91e63ed18cf removed from cluster b5611ac7d79a54a5
+</code></pre></td></tr></table>
+</div>
+</div><p>再把member 加回来</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ectl     member add etcd2   --peer-urls=https://10.166.6.74:2380
+</code></pre></td></tr></table>
+</div>
+</div><p>再把etcd yaml 移回去，启动这个节点的etcd。这个时候etcd会自动同步其他节点的数据。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">mv /etc/kubernetes/k8s-big-cluster-betayun-etcd.yaml    /etc/kubernetes/manifests/k8s-big-cluster-betayun-etcd.yaml 
+
+</code></pre></td></tr></table>
+</div>
+</div><p>这个时候member list里面加回来了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:/etc/kubernetes/manifests$ ectl --endpoints=&#34;https://10.166.6.75:2379&#34;    member list
+50482d967b8f3c49, started, etcd2, https://10.166.6.74:2380, https://10.166.6.74:2379, false
+73ed1156f02ee259, started, etcd3, https://10.166.6.75:2380, https://10.166.6.75:2379, false
+f81714a563f17f2f, started, etcd1, https://10.166.6.73:2380, https://10.166.6.73:2379, false
+
+
+(my_new_env) hzhuangzhexiao@prit2-k8s6:/etc/kubernetes/manifests$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    endpoint status  --write-out=table
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+|         ENDPOINT         |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+| https://10.166.6.73:2379 | f81714a563f17f2f |   3.4.3 |  1.3 GB |     false |      false |     13948 |   29294508 |           29294508 | |
+| https://10.166.6.74:2379 | 50482d967b8f3c49 |   3.4.3 |  1.3 GB |      true |      false |     13948 |   29294508 |           29294508 | |
+| https://10.166.6.75:2379 | 73ed1156f02ee259 |   3.4.3 |  1.3 GB |     false |      false |     13948 |   29294508 |           29294508 | |
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+
+</code></pre></td></tr></table>
+</div>
+</div><p>数据也一致了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:/etc/kubernetes/manifests$ ectl --endpoints=&#34;https://10.166.6.74:2379&#34;      get   /registry/pods/  --prefix --keys-only  |wc
+   3436    1718   96368
+(my_new_env) hzhuangzhexiao@prit2-k8s6:/etc/kubernetes/manifests$ ectl --endpoints=&#34;https://10.166.6.73:2379&#34;      get   /registry/pods/  --prefix --keys-only  |wc
+   3436    1718   96368
+(my_new_env) hzhuangzhexiao@prit2-k8s6:/etc/kubernetes/manifests$ ectl --endpoints=&#34;https://10.166.6.75:2379&#34;      get   /registry/pods/  --prefix --keys-only  |wc
+   3436    1718   96368
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="压缩">压缩</h2>
+<p>另外，可以在压缩一下etcd中的数据。</p>
+<p>先获取当前的revision number。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    endpoint status --write-out=&#34;json&#34; | egrep -o &#39;&#34;revision&#34;:[0-9]*&#39; | egrep -o &#39;[0-9].*&#39;
+27166835
+27166835
+27166835
+
+</code></pre></td></tr></table>
+</div>
+</div><p>进行compact</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    compact 27166835
+compacted revision 27166835
+
+</code></pre></td></tr></table>
+</div>
+</div><p>进行defrag</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    defrag
+Finished defragmenting etcd member[https://10.166.6.73:2379]
+Finished defragmenting etcd member[https://10.166.6.74:2379]
+Finished defragmenting etcd member[https://10.166.6.75:2379]
+</code></pre></td></tr></table>
+</div>
+</div><p>看大小</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@prit2-k8s6:~$ ectl --endpoints=&#34;https://10.166.6.73:2379,https://10.166.6.74:2379,https://10.166.6.75:2379&#34;    endpoint status  --write-out=table
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+|         ENDPOINT         |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+| https://10.166.6.73:2379 | f81714a563f17f2f |   3.4.3 |   50 MB |      true |      false |     13954 |   30812420 |           30812420 | |
+| https://10.166.6.74:2379 | 39507cf6a0197456 |   3.4.3 |   50 MB |     false |      false |     13954 |   30812421 |           30812421 | |
+| https://10.166.6.75:2379 | 73ed1156f02ee259 |   3.4.3 |   50 MB |     false |      false |     13954 |   30812421 |           30812421 | |
++--------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+</code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-06-15
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/iaas-chaos%E5%BC%82%E5%B8%B8%E6%BC%94%E7%BB%83%E5%B9%B3%E5%8F%B0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">iaas chaos异常演练平台</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/intellifuzztest-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/">
+            <span class="next-text nav-default">IntelliFuzzTest 命令行测试工具</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

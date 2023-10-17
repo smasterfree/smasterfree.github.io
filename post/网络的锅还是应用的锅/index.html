@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>网络的锅还是应用的锅？ - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="前不久工作中遇到一个有意思的事，和我之前看林沛满《wireshark抓包的艺术》中的故事有点像，也有点像packetbomb 里面记录的一些故" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E7%BD%91%E7%BB%9C%E7%9A%84%E9%94%85%E8%BF%98%E6%98%AF%E5%BA%94%E7%94%A8%E7%9A%84%E9%94%85/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="网络的锅还是应用的锅？" />
+<meta property="og:description" content="前不久工作中遇到一个有意思的事，和我之前看林沛满《wireshark抓包的艺术》中的故事有点像，也有点像packetbomb 里面记录的一些故" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E7%BD%91%E7%BB%9C%E7%9A%84%E9%94%85%E8%BF%98%E6%98%AF%E5%BA%94%E7%94%A8%E7%9A%84%E9%94%85/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2020-08-17T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-08-17T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="网络的锅还是应用的锅？">
+<meta itemprop="description" content="前不久工作中遇到一个有意思的事，和我之前看林沛满《wireshark抓包的艺术》中的故事有点像，也有点像packetbomb 里面记录的一些故"><meta itemprop="datePublished" content="2020-08-17T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-08-17T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1467">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="网络的锅还是应用的锅？"/>
+<meta name="twitter:description" content="前不久工作中遇到一个有意思的事，和我之前看林沛满《wireshark抓包的艺术》中的故事有点像，也有点像packetbomb 里面记录的一些故"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">网络的锅还是应用的锅？</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-08-17 </span>
+        
+          <span class="more-meta"> 1467 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#缘起">缘起</a></li>
+    <li><a href="#抓包">抓包</a></li>
+    <li><a href="#代码">代码</a></li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>前不久工作中遇到一个有意思的事，和我之前看林沛满《wireshark抓包的艺术》中的故事有点像，也有点像<a href="https://packetbomb.com/">packetbomb</a> 里面记录的一些故事，所以我给记录一下。</p>
+<h2 id="缘起">缘起</h2>
+<p>业务方向云计算投诉，说他们的应用，过云计算的dgw服务，长连接会被断开，导致应用服务日志里面打一串错误堆栈。</p>
+<p>云计算的dgw服务就是一个内部的网关，用来转发vpc内虚拟机到物理机之间的流量，这个是云计算提供出去的。既然业务说了，那云计算就先自查。</p>
+<h2 id="抓包">抓包</h2>
+<p>于是我架了个服务过dgw，用长连接测了一下。按照奥卡姆剃刀原理，如无必要，勿增实体。我们先模拟一个最简单的长连接测试一下。（业务出问题的是一个缓存应用）</p>
+<p>服务端起了一个 ipd</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./ipd 
+</code></pre></td></tr></table>
+</div>
+</div><p>客户端使用wrk</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">wrk -t100 -c200 -d200s   http://10.122.0.10:8080/ 
+</code></pre></td></tr></table>
+</div>
+</div><p>wrk这边如果使用 &ndash;header &ldquo;Connection: Close&quot;的话，就是短连接，每次都会新建连接去请求。 另外模拟长连接最简单的方式应该是使用iperf起一个服务端、客户端即可。</p>
+<p>抓包，用wireshark Expert info看了一下，是没有异常的包的。</p>
+<p><img src="../images/image-20200817102102447.png" alt="image-20200817102102447"></p>
+<p>当然这个时候也不太说的准，因为毕竟我们的测试环境和业务的不完全一样。也有可能业务的虚拟机问题，也有可能是对端物理机的问题，也有可能是中间链路上的问题。都说不准。</p>
+<p>这时候业务继续反馈，说看发生的云主机，机柜和交换机分布也没啥特点。基本上都有问题。而且之前是没有问题的。是在某一个时间点之后出现了问题，但是在那个时间点之前云计算就没有做过版本升级了。当然这段时间内，其他运维操作还是有的，业务最近由于有重大活动要开展，还是上下不少dgw网关进行扩容，而且之前有台机器物理机有crc异常，然后给下线了。</p>
+<p>这个时候就需要业务进行抓包了。就跟打官司一样，谁主张，谁举证。让业务在有问题的机器上面直接抓，它出问题看着是1-2分钟就出现一次，那抓个10分钟就够了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">tcpdump -i eth0 -n &#39;tcp port 11211 and tcp[tcpflags] &amp; (tcp-rst|tcp-fin|tcp-syn) != 0&#39;
+</code></pre></td></tr></table>
+</div>
+</div><p>出乎意料的是（并没有），竟然一个错包都没有。PE一度认为是看错了。然后我们说，把包都抓下来。然后放到wireshark里面看看，结果还是一样。</p>
+<p><img src="../images/image-20200817103554600.png" alt="image-20200817103554600"></p>
+<h2 id="代码">代码</h2>
+<p>这个时候还是得看看代码，出错地方抛的异常是这样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">net.rubyeye.xmemcached.exception.MemcachedException: Session(10.198.33.108:11211) has been closed
+	at net.rubyeye.xmemcached.impl.MemcachedConnector.send(MemcachedConnector.java:506)
+	at net.rubyeye.xmemcached.XMemcachedClient.sendCommand(XMemcachedClient.java:330)
+	at net.rubyeye.xmemcached.XMemcachedClient.fetch0(XMemcachedClient.java:659)
+	at net.rubyeye.xmemcached.XMemcachedClient.get0(XMemcachedClient.java:1073)
+	at net.rubyeye.xmemcached.XMemcachedClient.get$sentryProxy(XMemcachedClient.java:1031)
+	at net.rubyeye.xmemcached.XMemcachedClient.get(XMemcachedClient.java)
+	at net.rubyeye.xmemcached.XMemcachedClient.get(XMemcachedClient.java:1042)
+	at net.rubyeye.xmemcached.XMemcachedClient.get(XMemcachedClient.java:1064)
+	at sun.reflect.GeneratedMethodAccessor50.invoke(Unknown Source)
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看到是连memcached缓存业务。看调用次数异常，也基本上和业务高低峰时间吻合。高峰期间调缓存次数多，出错的次数也更多。并且在压测场景下，异常数量出现的更多。</p>
+<p><img src="../images/image-20200817112324134.png" alt="image-20200817112324134"></p>
+<p>放狗一搜，看到这个库issue里面有出现过这个，https://github.com/killme2008/xmemcached/issues/68。说memcached server的ip地址变了，客户端使用的session还是老的ip，没变。</p>
+<p>这时候，业务也观察到，存在问题的机器上，应用mc客户端到某个或某些mc服务端的连接有丢失且不会重建。</p>
+<p>业务mc客户端配置了8线程，理论上对每个mc服务节点会有8条TCP长连接。观察异常机器 ，对mc服务节点 10.198.33.113:11211 只有7条连接：</p>
+<p><img src="../images/image-20200817112934430.png" alt="image-20200817112934430"></p>
+<p>正常的机器有8条连接。</p>
+<p><img src="../images/image-20200817113244932.png" alt="image-20200817113244932"></p>
+<h2 id="结论">结论</h2>
+<p>经过上面的排查，问题基本清楚了。因为现在已经封板了，不会再上下机器，所以业务方先把有问题节点的服务先重启了一遍，规避问题。</p>
+<p>推测是dgw变更，导致网络有连接断开，且触发了客户端代码缺陷，出现了僵尸 Session（java session对象存在但底层tcp连接不存在，且不会去重连）。真正要修复问题需要升级xmemcached这个库的版本。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">at net.rubyeye.xmemcached.impl.MemcachedConnector.send(MemcachedConnector.java:506)
+</code></pre></td></tr></table>
+</div>
+</div><p>而且根据出问题的这一行（send函数在506行），放狗一搜，这个用的xmemcached版本是老的不得了，是上古时期的版本。可见业务方这种公共库函数升级不太积极啊。 :)</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-08-17
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E5%90%9E%E5%90%90%E9%87%8F%E5%92%8Ctcp%E7%AA%97%E5%8F%A3%E6%98%AF%E5%95%A5/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">吞吐量和tcp窗口是啥？</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/iaas-chaos%E5%BC%82%E5%B8%B8%E6%BC%94%E7%BB%83%E5%B9%B3%E5%8F%B0/">
+            <span class="next-text nav-default">iaas chaos异常演练平台</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

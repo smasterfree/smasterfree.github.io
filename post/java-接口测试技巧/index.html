@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>java-接口测试技巧 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="最近这段时间给负责的计费项目增加了不少接口自动化代码，略有些心得，分享一下。 bonus 张爱玲说过，出名要趁早，做接口自动化也是。之前定的流程是这个迭" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/java-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%8A%80%E5%B7%A7/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="java-接口测试技巧" />
+<meta property="og:description" content="最近这段时间给负责的计费项目增加了不少接口自动化代码，略有些心得，分享一下。 bonus 张爱玲说过，出名要趁早，做接口自动化也是。之前定的流程是这个迭" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/java-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%8A%80%E5%B7%A7/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-11-24T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2017-11-24T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="java-接口测试技巧">
+<meta itemprop="description" content="最近这段时间给负责的计费项目增加了不少接口自动化代码，略有些心得，分享一下。 bonus 张爱玲说过，出名要趁早，做接口自动化也是。之前定的流程是这个迭"><meta itemprop="datePublished" content="2017-11-24T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2017-11-24T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="2325">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="java-接口测试技巧"/>
+<meta name="twitter:description" content="最近这段时间给负责的计费项目增加了不少接口自动化代码，略有些心得，分享一下。 bonus 张爱玲说过，出名要趁早，做接口自动化也是。之前定的流程是这个迭"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">java-接口测试技巧</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-11-24 </span>
+        
+          <span class="more-meta"> 2325 words </span>
+          <span class="more-meta"> 5 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bonus">bonus</a></li>
+    <li><a href="#table-driven-method">table driven method</a></li>
+    <li><a href="#jump-wire">Jump wire</a></li>
+    <li><a href="#shortcut">shortcut</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>最近这段时间给负责的计费项目增加了不少接口自动化代码，略有些心得，分享一下。</p>
+<h2 id="bonus">bonus</h2>
+<p>张爱玲说过，出名要趁早，做接口自动化也是。之前定的流程是这个迭代内的功能要手工回归一下，等到上线了之后，在下个迭代初补全自动化接口。但是往往到了下个迭代开始的时候又开始了新的一轮需求评审啊，交互评审啊，等等杂七杂八的事，而且一个迭代的新增的接口，在上线前在联调，演练回归都要吐了，（特别是那种传入的参数超级多，有各种组合的情况）等到下个迭代根本再也不想碰它一碰，然后就被永久的积压在那边了。</p>
+<p>所以既然要做，还不如趁早做，称之为演练享受联调时调通接口自动化的红利。在开发初期，定义好前后端接口，开发给出接口文档之后，就可以马上把测试里面的api那一部分给写好了，测试用例设计和逻辑校验部分到是可以放一放，等到开发服务都通了慢慢再做。</p>
+<p>另外，现有的测试框架填api已经很方便了，不管是get还是post接口统一都是addParam。主要就是填写一下对应的参数传进去，当然甚至可以直接把开发control层的代码扒过来，对应接口要传什么参数直接一复制黏贴就好。</p>
+<p>根据上次开会经验，这种兵马未动，粮草先行的做法，井宝宝，晓青姐，钟导都是先行者啊~</p>
+<h2 id="table-driven-method">table driven method</h2>
+<p>代码大全第18章曾经讲到过表驱动法，这种方法如此重要以至于作者单独拎出来一章来讲。实际上，数据是数据，代码是代码，代码是数据，数据是代码。可以把一定的逻辑放到一种数据结构里，然后干掉不少 if 或者case。</p>
+<p>那么到了testng这里比较经典的一个设计就是data provider了。它如此方便以至于其他例如python这种要写测试的话都需要用装饰器去模拟一个。具体来说在data provider里面你可以去构造某一个测试接口的用例表，比如计费的价格计算器，组合条件多种多样，规格不同，副本数不同，包年包月条件，时间长短不同都能影响到最后的价格。这要手工接口一个个试肯定死了。而且联调死过一次，还有演练等着你，还有双十一大促哦，1周年活动哦。。。</p>
+<p>所以为了能够在演练享受到联调的红利，先事先写好一个测试的case，把各种参数传进去，最后验证一下返回的价钱对不对。然后以此条为模板，复制黏贴多份，为了都能覆盖到，各种规格都要出现一下，副本数情况验证一下，包年包月不同时间维度的都要覆盖一下。组合情况多了，全用例肯定是做不到了，那么考虑一下使用全对偶测试用例设计。好了，这张表终于被你设计出来了，它是数据，它也是代码，它内有一段逻辑，它是质量的守护神。</p>
+<p>另外再提一句，data provider中还有一个用法是，比如接口的异常测试，传入的某些取值不应该存在的时候会返回一个错误码，比如为中文，标点符号，过长，全大写等等，这种接口异常校验其实差不多的，但你自己又想不到那么多种情况，可以偷偷的去扒一下别人的data provier里面的异常case，copy过来，齐活啦~久而久之，你就维护起一个你的接口异常case库。</p>
+<p>另外，其实每个case都长得的差不多，一般每次都只是其中几列的参数变化一下，不如抽象成为一个common object，用一个replace 函数换掉固定的几列。这一招是从井宝宝的cloud pay项目中学来的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">  public static Object[] replace(Object[] objects, int[] indice, Object[] objs) {
+    Object[] cloneObj = objects.clone();
+    for (int i = 0; i &lt; indice.length; ++i) {
+      int index = indice[i];
+      cloneObj[index] = objs[i];
+    }
+    return cloneObj;
+  }
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="jump-wire">Jump wire</h2>
+<p><img src="../images/27460-bda278bee10dcbc8.png" alt="飞线"></p>
+<p>飞线好像是电工电子里面的一种技术。那时读高中的时候要手工组装一个收音机，结果电路板上一个用来焊接的小铜片因为温度太高掉下来。这你让背后的二极管如何生脚啊。这时候同桌说了可以用等电位点的方法来解决，也就是找一个和掉下来铜片等电位的一个点，直接搭根线和二极管焊接住，比较dirty的解决方式。</p>
+<p>一个标准的测试过程一般说来为 setup -&gt; test -&gt; verify -&gt; teardown。比较理想的情况应该是测完了把本次测试生成的垃圾都回收掉。不过真正做起来的时候比较难，比如setup要新建一个用户，初始化这边的逻辑既不已知也不用求，也没现成的接口；teardown的时候清理用户的某些资源但是根本就没有delete接口啊。</p>
+<p>这个时候之后自己搭一个飞线了。比如每次下订单或者购买资源包都会扣一下钱验证购买前后资源包、订单的钱有没有扣对，久而久之扣得地主家也没有余粮了。标准的做法是在teardown的时候去还原该租户bill_accout里面的钱。然而没有一个接口是直接设置租户余额的——正常用户租户余额变动都是涉及到充值、支付平台回调等，和下订单没有关系也不在验证的逻辑内——这个时候只好自己加一个dao，写一个方法专门来设置租户的余额。这个在晓青姐的demo项目里提供了脚手架。只不过每一个update都要写个方法，有点麻烦，每次其实就是传的sql语句有点变化，我稍稍修改了一下，用一个通用的sqlUpdate方法来统一处理，这样只要写sql语句就好了。</p>
+<h2 id="shortcut">shortcut</h2>
+<p>知名常二路经济学家，腾讯荐股师子柳在《淘宝技术这十年》里面曾经说，那时候淘宝刚起步，他打了一份eclipse的快捷键就开始上马了。然后10年后我打了一份<a href="https://www.jetbrains.com/idea/">IntelliJ </a>的快捷键。</p>
+<p>具体到接口测试中，首推IntelliJ  列编辑模式。就是在vim中你用ctrl+v 进入的编辑模式类似。主要之前说了，data provider 是一张表，每个case其实都是依赖一个模板，稍微有几个参数的变化，最适合列编辑了。</p>
+<p> 举个例子，规格不同价格不同。在我写case的时候，常用的操作如下，把一个case写好后复制多份，从常量表里面copy规格，从数据库中copy价格：</p>
+<p><img src="../images/27460-27151a0ae5072f98.gif" alt="column-edit.gif"></p>
+<p>有时候没对齐，不方便列编辑。这时候推荐一个Align插件。选中之后可以按照逗号分隔符对齐，在列编辑copy数据库中的价格。</p>
+<p><img src="../images/27460-2b5946a36045f590.gif" alt="align.gif"></p>
+<p>还有各种重构快捷键，抽取参数，抽取常量，抽取方法等等，就不一一赘述了。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-11-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/windows-%E4%BA%91%E4%B8%BB%E6%9C%BA%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%9E%E5%BD%92%E6%8A%80%E5%B7%A7/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">windows-云主机测试与回归技巧</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E7%94%A8python%E7%BB%99%E7%BD%91%E6%98%93%E8%9C%82%E5%B7%A2%E5%86%99%E4%B8%80%E4%B8%AA%E5%91%BD%E4%BB%A4%E8%A1%8Cclient/">
+            <span class="next-text nav-default">用python给网易蜂巢写一个命令行client</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>PPPOE 测试环境部署 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="PPPOE 测试环境部署 server 端 在老云环境创建云主机 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 1: lo: &amp;lt;LOOPBACK,UP,LOWER_UP&amp;gt; mtu 65536 qdisc noqueue state UNKNOWN group default link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo valid_lft forever preferred_lft forever inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2:" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/2023/pppoe%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="PPPOE 测试环境部署" />
+<meta property="og:description" content="PPPOE 测试环境部署 server 端 在老云环境创建云主机 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo valid_lft forever preferred_lft forever inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/2023/pppoe%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-02-05T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2023-02-05T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="PPPOE 测试环境部署">
+<meta itemprop="description" content="PPPOE 测试环境部署 server 端 在老云环境创建云主机 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo valid_lft forever preferred_lft forever inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2:"><meta itemprop="datePublished" content="2023-02-05T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2023-02-05T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1224">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PPPOE 测试环境部署"/>
+<meta name="twitter:description" content="PPPOE 测试环境部署 server 端 在老云环境创建云主机 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo valid_lft forever preferred_lft forever inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2:"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">PPPOE 测试环境部署</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-02-05 </span>
+        
+          <span class="more-meta"> 1224 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#server-端">server 端</a>
+      <ul>
+        <li><a href="#安装服务">安装服务</a></li>
+        <li><a href="#编辑配置文件">编辑配置文件</a></li>
+        <li><a href="#sever端ifconfig">sever端ifconfig</a></li>
+      </ul>
+    </li>
+    <li><a href="#client端">client端</a></li>
+    <li><a href="#clinet能够使用外网服务器上网">clinet能够使用外网服务器上网</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="pppoe-测试环境部署">PPPOE 测试环境部署</h1>
+<p><img src="../images/63ec86656d46266eab640afbJmmt04HQ01.png" alt="image.png"></p>
+<h2 id="server-端">server 端</h2>
+<p>在老云环境创建云主机</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span class="m">65536</span> qdisc noqueue state UNKNOWN group default 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span class="m">1400</span> qdisc pfifo_fast state UP group default qlen <span class="m">1000</span>
+    link/ether fa:16:3e:ac:1e:c3 brd ff:ff:ff:ff:ff:ff
+    inet 10.173.36.35/21 brd 10.173.39.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:feac:1ec3/64 scope link
+       valid_lft forever preferred_lft forever
+3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span class="m">1500</span> qdisc pfifo_fast state UP group default qlen <span class="m">1000</span>
+    link/ether fa:17:00:12:00:49 brd ff:ff:ff:ff:ff:ff
+    inet 59.111.109.72/21 brd 59.111.103.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f817:ff:fe12:49/64 scope link
+       valid_lft forever preferred_lft forever
+</code></pre></td></tr></table>
+</div>
+</div><p>其中 eth0 是内网网卡，eth1 是外网网卡</p>
+<h3 id="安装服务">安装服务</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"> apt-get install pppoe
+</code></pre></td></tr></table>
+</div>
+</div><p>检查安装成功</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">dpkg -l <span class="p">|</span> grep ppp
+ii  ppp                                    2.4.6-3.1+deb8u1                     amd64        Point-to-Point Protocol <span class="o">(</span>PPP<span class="o">)</span> - daemon
+ii  pppoe                                  3.8-3                                amd64        PPP over Ethernet driver
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="编辑配置文件">编辑配置文件</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">vi /etc/ppp/options
+</code></pre></td></tr></table>
+</div>
+</div><p>最主要的是修改 ms-dns ，使用 -pap, +chap.</p>
+<p>配置文件为 /etc/ppp/options</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># /etc/ppp/options</span>
+ms-dns 114.114.114.114
+ms-dns 223.5.5.5
+asyncmap <span class="m">0</span>
+auth
+crtscts
+lock
+hide-password
+modem
+-pap
++chap
+lcp-echo-interval <span class="m">30</span>
+lcp-echo-failure <span class="m">4</span>
+noipx
+</code></pre></td></tr></table>
+</div>
+</div><p>配置 /etc/ppp/pppoe-server-options</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#  cat pppoe-server-options
+# PPP options for the PPPoE server
+# LIC: GPL
+require-chap
+lcp-echo-interval 60
+lcp-echo-failure 5
+logfile /var/log/pppd.log
+</code></pre></td></tr></table>
+</div>
+</div><p>配置 /etc/ppp/chap-secrets   pppoe认证的用户名和密码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># Secrets for authentication using CHAP
+# client        server  secret                  IP addresses
+test    *       123456           *
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="sever端ifconfig">sever端ifconfig</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@111:/etc/ppp# ifconfig 
+eth0      Link encap:Ethernet  HWaddr fa:16:3e:ac:1e:c3  
+          inet addr:10.173.36.35  Bcast:10.173.39.255  Mask:255.255.248.0
+          inet6 addr: fe80::f816:3eff:feac:1ec3/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1400  Metric:1
+          RX packets:363059 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:24316 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:19799537 (18.8 MiB)  TX bytes:4576273 (4.3 MiB)
+
+eth1      Link encap:Ethernet  HWaddr fa:17:00:12:00:49
+          inet addr:59.111.109.72  Bcast:59.111.103.255  Mask:255.255.248.0
+          inet6 addr: fe80::f817:ff:fe12:49/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:109597003 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:13671833 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:61590280229 (57.3 GiB)  TX bytes:14169288021 (13.1 GiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:10710 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:10710 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:1586955 (1.5 MiB)  TX bytes:1586955 (1.5 MiB)
+
+ppp0      Link encap:Point-to-Point Protocol
+          inet addr:172.32.50.1  P-t-P:172.32.50.2  Mask:255.255.255.255
+          UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1392  Metric:1
+          RX packets:70 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:71 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:3
+          RX bytes:5573 (5.4 KiB)  TX bytes:5920 (5.7 KiB)
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="client端">client端</h2>
+<p>安装 pppoeconf</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apt-get install pppoeconf
+</code></pre></td></tr></table>
+</div>
+</div><p>运行pppoeconf 一步一步操作即可</p>
+<p>运行起来网卡会多一块ppp0</p>
+<p><img src="../images/63ec9d71bab62f6f8e136186N8t30ffO01.png" alt="image.png"></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@pppoe-client:/etc/ppp# ifconfig 
+eth0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1400
+        inet 10.173.38.138  netmask 255.255.248.0  broadcast 10.173.39.255
+        inet6 fe80::f816:3eff:fe4d:c26a  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether fa:16:3e:4d:c2:6a  txqueuelen 1000  (Ethernet)
+        RX packets 43471  bytes 31822360 (30.3 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 20455  bytes 1433858 (1.3 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 20  bytes 1680 (1.6 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 20  bytes 1680 (1.6 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+ppp0: flags=4305&lt;UP,POINTOPOINT,RUNNING,NOARP,MULTICAST&gt;  mtu 1392
+        inet 172.32.50.2  netmask 255.255.255.255  destination 172.32.50.1
+        ppp  txqueuelen 3  (Point-to-Point Protocol)
+        RX packets 71  bytes 5920 (5.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 70  bytes 5573 (5.4 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</code></pre></td></tr></table>
+</div>
+</div><p>可以ping 通对端</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@pppoe-client:/etc/ppp# ping 172.32.50.1
+PING 172.32.50.1 (172.32.50.1) 56(84) bytes of data.
+64 bytes from 172.32.50.1: icmp_seq=1 ttl=64 time=0.697 ms
+64 bytes from 172.32.50.1: icmp_seq=2 ttl=64 time=0.348 ms
+64 bytes from 172.32.50.1: icmp_seq=3 ttl=64 time=0.393 ms
+^C
+--- 172.32.50.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2053ms
+rtt min/avg/max/mdev = 0.348/0.479/0.697/0.156 ms
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="clinet能够使用外网服务器上网">clinet能够使用外网服务器上网</h2>
+<p>server端这样配置</p>
+<p>使PPPOE客户端通过服务器的外网网卡共享上网。 PPPoE 协议接入控制的主要方式就是通过对IP数据包的封装再转发。所以要配置 PPPoE 服务器必须要开启IP转发功能。开启IP转发功能需要去除/etc/sysctl.conf 文件中 net.ipv4.ip_forward=1 该行的注释，随后运行 sudo sysctl -p 即可生效配置打开 IP 转发功能。</p>
+<p>kill pppoe server 服务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">killall pppoe-server
+</code></pre></td></tr></table>
+</div>
+</div><p>然后这么启动服务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">pppoe-server -C isp -L 172.32.50.1  -p /etc/ppp/ipaddress_pool -I eth0 -m <span class="m">1412</span> -N <span class="m">30</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中  ip pool是，用于分配客户端地址</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">root@111:/etc/ppp# cat /etc/ppp/ipaddress_pool
+172.32.50.2-30
+</code></pre></td></tr></table>
+</div>
+</div><p>server端增加iptables规则</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">iptables -A POSTROUTING -t nat -s 172.32.50.0/24 -j MASQUERADE
+</code></pre></td></tr></table>
+</div>
+</div><p>此时客户端使用ppp0网卡已经可以通外网</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">root@pppoe-client:/etc/ppp# ping -I ppp0 114.114.114.114
+PING 114.114.114.114 <span class="o">(</span>114.114.114.114<span class="o">)</span> from 172.32.50.2 ppp0: 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+<span class="m">64</span> bytes from 114.114.114.114: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">82</span> <span class="nv">time</span><span class="o">=</span>7.80 ms
+<span class="m">64</span> bytes from 114.114.114.114: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">91</span> <span class="nv">time</span><span class="o">=</span>7.44 ms
+<span class="m">64</span> bytes from 114.114.114.114: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">85</span> <span class="nv">time</span><span class="o">=</span>7.54 ms
+^C
+--- 114.114.114.114 ping statistics ---
+<span class="m">3</span> packets transmitted, <span class="m">3</span> received, 0% packet loss, <span class="nb">time</span> 2003ms
+rtt min/avg/max/mdev <span class="o">=</span> 7.448/7.599/7.803/0.165 ms
+</code></pre></td></tr></table>
+</div>
+</div><p>我们把 ipinfo.io 的路由配置为走ppp0 网卡</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">ip route add 34.117.59.81/32  via 172.32.50.2
+</code></pre></td></tr></table>
+</div>
+</div><p>这时 client <code>curl ipinfo.io/ip</code>   走的就是server 外网出口出去。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">root@pppoe-client:/etc/ppp# curl ipinfo.io/ip    
+59.111.109.72    
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="../images/63ec9acccd05480e4158e242dmtTfcVi01.png" alt="image.png"></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2023-02-05
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/2023/pppoe-over-vxlan-%E5%AE%9E%E7%8E%B0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">pppoe over vxlan 实现</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/2023/%E6%8A%93%E5%8C%85%E5%AD%A6%E4%B9%A0pppoe%E6%8A%A5%E6%96%87/">
+            <span class="next-text nav-default">抓包学习 PPPOE报文</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

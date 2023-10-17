@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>k8s e2e测试部署和调试 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="下面简单描述一下e2e测试的部署。 部署k8s all in one 集群 这个国内网络环境下部署比较困难，很多镜像要从google云拉取，被墙了导致很多网络错误" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/k8s-e2e%E9%83%A8%E7%BD%B2%E5%92%8C%E8%B0%83%E8%AF%95/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="k8s e2e测试部署和调试" />
+<meta property="og:description" content="下面简单描述一下e2e测试的部署。 部署k8s all in one 集群 这个国内网络环境下部署比较困难，很多镜像要从google云拉取，被墙了导致很多网络错误" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/k8s-e2e%E9%83%A8%E7%BD%B2%E5%92%8C%E8%B0%83%E8%AF%95/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2020-04-14T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2020-04-14T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="k8s e2e测试部署和调试">
+<meta itemprop="description" content="下面简单描述一下e2e测试的部署。 部署k8s all in one 集群 这个国内网络环境下部署比较困难，很多镜像要从google云拉取，被墙了导致很多网络错误"><meta itemprop="datePublished" content="2020-04-14T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2020-04-14T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="3142">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="k8s e2e测试部署和调试"/>
+<meta name="twitter:description" content="下面简单描述一下e2e测试的部署。 部署k8s all in one 集群 这个国内网络环境下部署比较困难，很多镜像要从google云拉取，被墙了导致很多网络错误"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">k8s e2e测试部署和调试</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-04-14 </span>
+        
+          <span class="more-meta"> 3142 words </span>
+          <span class="more-meta"> 7 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#部署k8s-all-in-one-集群">部署k8s all in one 集群</a>
+      <ul>
+        <li><a href="#安装集群">安装集群</a></li>
+        <li><a href="#5验证安装">5.验证安装</a></li>
+      </ul>
+    </li>
+    <li><a href="#e2e-部署">e2e 部署</a></li>
+    <li><a href="#运行测试">运行测试</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>下面简单描述一下e2e测试的部署。</p>
+<h2 id="部署k8s-all-in-one-集群">部署k8s all in one 集群</h2>
+<p>这个国内网络环境下部署比较困难，很多镜像要从google云拉取，被墙了导致很多网络错误。这边推荐使用easzup 项目来部署，它都从国内源来拉。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 下载工具脚本easzup，举例使用kubeasz版本2.0.2</span>
+<span class="nb">export</span> <span class="nv">release</span><span class="o">=</span>2.0.2
+curl -C- -fLO --retry <span class="m">3</span> https://github.com/easzlab/kubeasz/releases/download/<span class="si">${</span><span class="nv">release</span><span class="si">}</span>/easzup
+chmod +x ./easzup
+<span class="c1"># 使用工具脚本下载</span>
+./easzup -D
+</code></pre></td></tr></table>
+</div>
+</div><p>上述脚本运行成功后，所有文件（kubeasz代码、二进制、离线镜像）均已整理好放入目录<code>/etc/ansilbe</code></p>
+<ul>
+<li><code>/etc/ansible</code> 包含 kubeasz 版本为 ${release} 的发布代码</li>
+<li><code>/etc/ansible/bin</code> 包含 k8s/etcd/docker/cni 等二进制文件</li>
+<li><code>/etc/ansible/down</code> 包含集群安装时需要的离线容器镜像</li>
+<li><code>/etc/ansible/down/packages</code> 包含集群安装时需要的系统基础软件</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">ssh-keygen -t rsa -b <span class="m">2048</span> -N <span class="s1">&#39;&#39;</span> -f ~/.ssh/id_rsa
+ssh-copy-id <span class="nv">$IP</span>  <span class="c1"># $IP 为所有节点地址包括自身，按照提示输入 yes 和 root 密码</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="安装集群">安装集群</h3>
+<ul>
+<li>4.1 容器化运行 kubeasz，详见<a href="https://links.jianshu.com/go?to=docker_kubeasz.md">文档</a></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./easzup -S
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>4.2 使用默认配置安装 aio 集群</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">docker <span class="nb">exec</span> -it kubeasz easzctl start-aio
+</code></pre></td></tr></table>
+</div>
+</div><p>部署成功输出结果为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">前面省略
+TASK [cluster-addon : 导入 metallb的离线镜像（若执行失败，可忽略）] ***********************************************************************************************
+
+TASK [cluster-addon : 导入 metallb的离线镜像（若执行失败，可忽略）] ***********************************************************************************************
+
+TASK [cluster-addon : 生成 metallb 相关 manifests] **************************************************************************************************
+
+TASK [cluster-addon : 创建 metallb controller 部署] *************************************************************************************************
+
+PLAY RECAP **************************************************************************************************************************************
+192.168.0.32               : ok=111  changed=84   unreachable=0    failed=0
+localhost                  : ok=22   changed=18   unreachable=0    failed=0
+
+[INFO] save context: aio
+[INFO] save aio roles&#39; configration
+[INFO] save aio ansible hosts
+[INFO] save aio kubeconfig
+[INFO] save aio kube-proxy.kubeconfig
+[INFO] save aio certs
+[INFO] Action successed : start-aio
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="5验证安装">5.验证安装</h3>
+<p>需要安装kubectl 二进制，加到环境变量里面去，注意版本。</p>
+<p>如果提示kubectl: command not found，退出重新ssh登陆一下，环境变量生效即可</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ kubectl version                   <span class="c1"># 验证集群版本     </span>
+$ kubectl get componentstatus       <span class="c1"># 验证 scheduler/controller-manager/etcd等组件状态</span>
+$ kubectl get node                  <span class="c1"># 验证节点就绪 (Ready) 状态</span>
+$ kubectl get pod --all-namespaces  <span class="c1"># 验证集群pod状态，默认已安装网络插件、coredns、metrics-server等</span>
+$ kubectl get svc --all-namespaces  <span class="c1"># 验证集群服务状态</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如果前面都部署成功的话，对应的输出是：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">root@docker-main:~# kubectl version
+Client Version: version.Info<span class="o">{</span>Major:<span class="s2">&#34;1&#34;</span>, Minor:<span class="s2">&#34;16&#34;</span>, GitVersion:<span class="s2">&#34;v1.16.1&#34;</span>, GitCommit:<span class="s2">&#34;d647ddbd755faf07169599a625faf302ffc34458&#34;</span>, GitTreeState:<span class="s2">&#34;clean&#34;</span>, BuildDate:<span class="s2">&#34;2019-10-02T17:01:15Z&#34;</span>, GoVersion:<span class="s2">&#34;go1.12.10&#34;</span>, Compiler:<span class="s2">&#34;gc&#34;</span>, Platform:<span class="s2">&#34;linux/amd64&#34;</span><span class="o">}</span>
+Server Version: version.Info<span class="o">{</span>Major:<span class="s2">&#34;1&#34;</span>, Minor:<span class="s2">&#34;15&#34;</span>, GitVersion:<span class="s2">&#34;v1.15.0&#34;</span>, GitCommit:<span class="s2">&#34;e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529&#34;</span>, GitTreeState:<span class="s2">&#34;clean&#34;</span>, BuildDate:<span class="s2">&#34;2019-06-19T16:32:14Z&#34;</span>, GoVersion:<span class="s2">&#34;go1.12.5&#34;</span>, Compiler:<span class="s2">&#34;gc&#34;</span>, Platform:<span class="s2">&#34;linux/amd64&#34;</span><span class="o">}</span>
+
+
+root@docker-main:~#  kubectl get componentstatus
+NAME                 AGE
+scheduler            &lt;unknown&gt;
+controller-manager   &lt;unknown&gt;
+etcd-0               &lt;unknown&gt;
+
+
+root@docker-main:~#  kubectl get node
+NAME           STATUS   ROLES    AGE    VERSION
+192.168.0.32   Ready    master   2m4s   v1.15.0
+
+
+root@docker-main:~# kubectl get pod --all-namespaces
+NAMESPACE     NAME                                          READY   STATUS    RESTARTS   AGE
+kube-system   coredns-797455887b-8knvl                      1/1     Running   <span class="m">0</span>          96s
+kube-system   coredns-797455887b-pgvbj                      1/1     Running   <span class="m">0</span>          96s
+kube-system   heapster-5f848f54bc-vzzsg                     1/1     Running   <span class="m">0</span>          87s
+kube-system   kube-flannel-ds-amd64-hcx6f                   1/1     Running   <span class="m">0</span>          111s
+kube-system   kubernetes-dashboard-5c7687cf8-lff5v          1/1     Running   <span class="m">0</span>          88s
+kube-system   metrics-server-85c7b8c8c4-5wzb6               1/1     Running   <span class="m">0</span>          92s
+kube-system   traefik-ingress-controller-766dbfdddd-f6ptw   1/1     Running   <span class="m">0</span>          84s
+
+
+
+
+root@docker-main:~#  kubectl get svc --all-namespaces
+NAMESPACE     NAME                      TYPE        CLUSTER-IP     EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>                       AGE
+default       kubernetes                ClusterIP   10.68.0.1      &lt;none&gt;        443/TCP                       2m45s
+kube-system   heapster                  ClusterIP   10.68.115.3    &lt;none&gt;        80/TCP                        92s
+kube-system   kube-dns                  ClusterIP   10.68.0.2      &lt;none&gt;        53/UDP,53/TCP,9153/TCP        101s
+kube-system   kubernetes-dashboard      NodePort    10.68.59.48    &lt;none&gt;        443:36345/TCP                 93s
+kube-system   metrics-server            ClusterIP   10.68.89.111   &lt;none&gt;        443/TCP                       98s
+kube-system   traefik-ingress-service   NodePort    10.68.208.72   &lt;none&gt;        80:23456/TCP,8080:32059/TCP   89s
+</code></pre></td></tr></table>
+</div>
+</div><p>到这一步，k8s all in one集群算部署好了。</p>
+<h2 id="e2e-部署">e2e 部署</h2>
+<p>首先要有golang的环境。把go安装好。然后到github上面下好kubernetes的源码。版本checkout到 all in one k8s的版本。</p>
+<p>我这边go env为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-objectivec" data-lang="objectivec"><span class="n">GO111MODULE</span><span class="o">=</span><span class="s">&#34;on&#34;</span>
+<span class="n">GOARCH</span><span class="o">=</span><span class="s">&#34;amd64&#34;</span>
+<span class="n">GOBIN</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">GOCACHE</span><span class="o">=</span><span class="s">&#34;/root/.cache/go-build&#34;</span>
+<span class="n">GOENV</span><span class="o">=</span><span class="s">&#34;/root/.config/go/env&#34;</span>
+<span class="n">GOEXE</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">GOFLAGS</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">GOHOSTARCH</span><span class="o">=</span><span class="s">&#34;amd64&#34;</span>
+<span class="n">GOHOSTOS</span><span class="o">=</span><span class="s">&#34;linux&#34;</span>
+<span class="n">GONOPROXY</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">GONOSUMDB</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">GOOS</span><span class="o">=</span><span class="s">&#34;linux&#34;</span>
+<span class="n">GOPATH</span><span class="o">=</span><span class="s">&#34;/root/go&#34;</span>
+<span class="n">GOPRIVATE</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">GOPROXY</span><span class="o">=</span><span class="s">&#34;https://goproxy.cn&#34;</span>
+<span class="n">GOROOT</span><span class="o">=</span><span class="s">&#34;/root/.go&#34;</span>
+<span class="n">GOSUMDB</span><span class="o">=</span><span class="s">&#34;sum.golang.org&#34;</span>
+<span class="n">GOTMPDIR</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">GOTOOLDIR</span><span class="o">=</span><span class="s">&#34;/root/.go/pkg/tool/linux_amd64&#34;</span>
+<span class="n">GCCGO</span><span class="o">=</span><span class="s">&#34;gccgo&#34;</span>
+<span class="n">AR</span><span class="o">=</span><span class="s">&#34;ar&#34;</span>
+<span class="n">CC</span><span class="o">=</span><span class="s">&#34;gcc&#34;</span>
+<span class="n">CXX</span><span class="o">=</span><span class="s">&#34;g++&#34;</span>
+<span class="n">CGO_ENABLED</span><span class="o">=</span><span class="s">&#34;1&#34;</span>
+<span class="n">GOMOD</span><span class="o">=</span><span class="s">&#34;/root/go/src/k8s.io/kubernetes/go.mod&#34;</span>
+<span class="n">CGO_CFLAGS</span><span class="o">=</span><span class="s">&#34;-g -O2&#34;</span>
+<span class="n">CGO_CPPFLAGS</span><span class="o">=</span><span class="s">&#34;&#34;</span>
+<span class="n">CGO_CXXFLAGS</span><span class="o">=</span><span class="s">&#34;-g -O2&#34;</span>
+<span class="n">CGO_FFLAGS</span><span class="o">=</span><span class="s">&#34;-g -O2&#34;</span>
+<span class="n">CGO_LDFLAGS</span><span class="o">=</span><span class="s">&#34;-g -O2&#34;</span>
+<span class="n">PKG_CONFIG</span><span class="o">=</span><span class="s">&#34;pkg-config&#34;</span>
+<span class="n">GOGCCFLAGS</span><span class="o">=</span><span class="s">&#34;-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build691628942=/tmp/go-build -gno-record-gcc-switches&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>然后在就可以build e2e 了</p>
+<p>然后现在社区都通过kubetest 来维护整个生命周期。</p>
+<p>安装</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">go get -u k8s.io/test-infra/kubetest
+</code></pre></td></tr></table>
+</div>
+</div><p>然后使用命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubetest --build
+</code></pre></td></tr></table>
+</div>
+</div><p>不过这边也会遇到非常多的网络错误 :(</p>
+<p>例如这边拉镜像失败：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="n">root</span><span class="vi">@k8s</span><span class="o">-</span><span class="n">all</span><span class="o">-</span><span class="k">in</span><span class="o">-</span><span class="ss">one</span><span class="p">:</span><span class="o">~</span><span class="sr">/go/s</span><span class="n">rc</span><span class="o">/</span><span class="n">k8s</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="c1"># kubetest --build</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">13</span> <span class="n">process</span><span class="o">.</span><span class="n">go</span><span class="p">:</span><span class="mi">153</span><span class="p">:</span> <span class="ss">Running</span><span class="p">:</span> <span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="sr">/root/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span> <span class="n">quick</span><span class="o">-</span><span class="n">release</span>
+<span class="ss">make</span><span class="p">:</span> <span class="no">Entering</span> <span class="n">directory</span> <span class="s1">&#39;/root/go/src/k8s.io/kubernetes&#39;</span>
+<span class="o">+++</span> <span class="o">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">13</span><span class="o">]</span> <span class="no">Verifying</span> <span class="no">Prerequisites</span><span class="o">....</span>
+<span class="o">+++</span> <span class="o">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">13</span><span class="o">]</span> <span class="no">Building</span> <span class="no">Docker</span> <span class="n">image</span> <span class="n">kube</span><span class="o">-</span><span class="ss">build</span><span class="p">:</span><span class="n">build</span><span class="o">-</span><span class="mi">742</span><span class="n">d44a132</span><span class="o">-</span><span class="mi">5</span><span class="o">-</span><span class="n">v1</span><span class="o">.</span><span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span>
+<span class="o">+++</span> <span class="no">Docker</span> <span class="n">build</span> <span class="n">command</span> <span class="n">failed</span> <span class="k">for</span> <span class="n">kube</span><span class="o">-</span><span class="ss">build</span><span class="p">:</span><span class="n">build</span><span class="o">-</span><span class="mi">742</span><span class="n">d44a132</span><span class="o">-</span><span class="mi">5</span><span class="o">-</span><span class="n">v1</span><span class="o">.</span><span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span>
+
+<span class="no">Sending</span> <span class="n">build</span> <span class="n">context</span> <span class="n">to</span> <span class="no">Docker</span> <span class="n">daemon</span>  <span class="mi">9</span><span class="o">.</span><span class="mi">216</span><span class="n">kB</span>
+<span class="no">Step</span> <span class="mi">1</span><span class="o">/</span><span class="mi">16</span> <span class="p">:</span> <span class="no">FROM</span> <span class="n">k8s</span><span class="o">.</span><span class="n">gcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="ss">cross</span><span class="p">:</span><span class="n">v1</span><span class="o">.</span><span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span>
+<span class="no">Get</span> <span class="ss">https</span><span class="p">:</span><span class="sr">//</span><span class="n">k8s</span><span class="o">.</span><span class="n">gcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">v2</span><span class="o">/</span><span class="p">:</span> <span class="n">net</span><span class="o">/</span><span class="ss">http</span><span class="p">:</span> <span class="n">request</span> <span class="n">canceled</span> <span class="k">while</span> <span class="n">waiting</span> <span class="k">for</span> <span class="n">connection</span> <span class="p">(</span><span class="no">Client</span><span class="o">.</span><span class="n">Timeout</span> <span class="n">exceeded</span> <span class="k">while</span> <span class="n">awaiting</span> <span class="n">headers</span><span class="p">)</span>
+
+<span class="no">To</span> <span class="k">retry</span> <span class="n">manually</span><span class="p">,</span> <span class="ss">run</span><span class="p">:</span>
+
+<span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">kube</span><span class="o">-</span><span class="ss">build</span><span class="p">:</span><span class="n">build</span><span class="o">-</span><span class="mi">742</span><span class="n">d44a132</span><span class="o">-</span><span class="mi">5</span><span class="o">-</span><span class="n">v1</span><span class="o">.</span><span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span> <span class="o">--</span><span class="n">pull</span><span class="o">=</span><span class="kp">false</span> <span class="sr">/root/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">kube</span><span class="o">-</span><span class="ss">build</span><span class="p">:</span><span class="n">build</span><span class="o">-</span><span class="mi">742</span><span class="n">d44a132</span><span class="o">-</span><span class="mi">5</span><span class="o">-</span><span class="n">v1</span><span class="o">.</span><span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">-</span><span class="mi">1</span>
+
+<span class="o">!!!</span> <span class="o">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">29</span><span class="o">]</span> <span class="no">Call</span> <span class="ss">tree</span><span class="p">:</span>
+<span class="o">!!!</span> <span class="o">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">29</span><span class="o">]</span>  <span class="mi">1</span><span class="p">:</span> <span class="n">build</span><span class="o">/</span><span class="n">release</span><span class="o">.</span><span class="n">sh</span><span class="p">:</span><span class="mi">35</span> <span class="n">kube</span><span class="o">::</span><span class="n">build</span><span class="o">::</span><span class="n">build_image</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="ss">Makefile</span><span class="p">:</span><span class="mi">461</span><span class="p">:</span> <span class="n">recipe</span> <span class="k">for</span> <span class="n">target</span> <span class="s1">&#39;quick-release&#39;</span> <span class="n">failed</span>
+<span class="ss">make</span><span class="p">:</span> <span class="o">***</span> <span class="o">[</span><span class="n">quick</span><span class="o">-</span><span class="n">release</span><span class="o">]</span> <span class="no">Error</span> <span class="mi">1</span>
+<span class="ss">make</span><span class="p">:</span> <span class="no">Leaving</span> <span class="n">directory</span> <span class="s1">&#39;/root/go/src/k8s.io/kubernetes&#39;</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">29</span> <span class="n">process</span><span class="o">.</span><span class="n">go</span><span class="p">:</span><span class="mi">155</span><span class="p">:</span> <span class="no">Step</span> <span class="s1">&#39;make -C /root/go/src/k8s.io/kubernetes quick-release&#39;</span> <span class="n">finished</span> <span class="k">in</span> <span class="mi">16</span><span class="o">.</span><span class="mi">13719432</span><span class="n">s</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">29</span> <span class="n">main</span><span class="o">.</span><span class="n">go</span><span class="p">:</span><span class="mi">319</span><span class="p">:</span> <span class="no">Something</span> <span class="n">went</span> <span class="ss">wrong</span><span class="p">:</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">acquire</span> <span class="n">k8s</span> <span class="ss">binaries</span><span class="p">:</span> <span class="n">error</span> <span class="n">during</span> <span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="sr">/root/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span> <span class="n">quick</span><span class="o">-</span><span class="ss">release</span><span class="p">:</span> <span class="nb">exit</span> <span class="n">status</span> <span class="mi">2</span>
+<span class="n">root</span><span class="vi">@k8s</span><span class="o">-</span><span class="n">all</span><span class="o">-</span><span class="k">in</span><span class="o">-</span><span class="ss">one</span><span class="p">:</span><span class="o">~</span><span class="sr">/go/s</span><span class="n">rc</span><span class="o">/</span><span class="n">k8s</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="c1">#</span>
+<span class="n">root</span><span class="vi">@k8s</span><span class="o">-</span><span class="n">all</span><span class="o">-</span><span class="k">in</span><span class="o">-</span><span class="ss">one</span><span class="p">:</span><span class="o">~</span><span class="sr">/go/s</span><span class="n">rc</span><span class="o">/</span><span class="n">k8s</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="c1">#</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>解决办法，这边推荐借用Azure 中国 提供了 gcr.io 及k8s.gcr.io容器仓库的镜像代理服务，借道下载google的镜像。</p>
+<p>然后有同学写了个wrapper脚本，一站式的下镜像，改tag之类的。</p>
+<p>参考：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">git clone https://github.com/silenceshell/docker-wrapper.git
+sudo cp docker-wrapper/docker-wrapper.py /usr/local/bin/
+</code></pre></td></tr></table>
+</div>
+</div><p>这样之后，就可以使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">docker_wrapper.py  pull k8s.gcr.io/kube-cross:v1.12.5-1
+</code></pre></td></tr></table>
+</div>
+</div><p>来下载依赖的镜像。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">root</span><span class="err">@</span><span class="nx">k8s</span><span class="o">-</span><span class="nx">all</span><span class="o">-</span><span class="nx">in</span><span class="o">-</span><span class="nx">one</span><span class="p">:</span><span class="err">~</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="err">#</span> <span class="nx">kubetest</span> <span class="o">--</span><span class="nx">build</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">10</span> <span class="nx">process</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">153</span><span class="p">:</span> <span class="nx">Running</span><span class="p">:</span> <span class="nx">make</span> <span class="o">-</span><span class="nx">C</span> <span class="o">/</span><span class="nx">root</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span> <span class="nx">quick</span><span class="o">-</span><span class="nx">release</span>
+<span class="nx">make</span><span class="p">:</span> <span class="nx">Entering</span> <span class="nx">directory</span> <span class="err">&#39;</span><span class="o">/</span><span class="nx">root</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="err">&#39;</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="nx">Verifying</span> <span class="nx">Prerequisites</span><span class="o">...</span><span class="p">.</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span> <span class="nx">Building</span> <span class="nx">Docker</span> <span class="nx">image</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">build</span><span class="p">:</span><span class="nx">build</span><span class="o">-</span><span class="mi">742</span><span class="nx">d44a132</span><span class="o">-</span><span class="mi">5</span><span class="o">-</span><span class="nx">v1</span><span class="mf">.12.5</span><span class="o">-</span><span class="mi">1</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span> <span class="nx">Syncing</span> <span class="nx">sources</span> <span class="nx">to</span> <span class="nx">container</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="nx">Running</span> <span class="nx">build</span> <span class="nx">command</span><span class="o">...</span>
+<span class="nx">stat</span> <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">vendor</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="p">:</span> <span class="nx">no</span> <span class="nx">such</span> <span class="nx">file</span> <span class="nx">or</span> <span class="nx">directory</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span><span class="mi">50</span><span class="p">]</span> <span class="nx">Building</span> <span class="k">go</span> <span class="nx">targets</span> <span class="k">for</span> <span class="nx">linux</span><span class="o">/</span><span class="nx">amd64</span><span class="p">:</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kube</span><span class="o">-</span><span class="nx">proxy</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kube</span><span class="o">-</span><span class="nx">apiserver</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kube</span><span class="o">-</span><span class="nx">controller</span><span class="o">-</span><span class="nx">manager</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">cloud</span><span class="o">-</span><span class="nx">controller</span><span class="o">-</span><span class="nx">manager</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kubelet</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kubeadm</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">hyperkube</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kube</span><span class="o">-</span><span class="nx">scheduler</span>
+    <span class="nx">vendor</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">apiextensions</span><span class="o">-</span><span class="nx">apiserver</span>
+    <span class="nx">cluster</span><span class="o">/</span><span class="nx">gce</span><span class="o">/</span><span class="nx">gci</span><span class="o">/</span><span class="nx">mounter</span>
+<span class="nx">stat</span> <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">vendor</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="p">:</span> <span class="nx">no</span> <span class="nx">such</span> <span class="nx">file</span> <span class="nx">or</span> <span class="nx">directory</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="mi">36</span><span class="p">]</span> <span class="nx">Building</span> <span class="k">go</span> <span class="nx">targets</span> <span class="k">for</span> <span class="nx">linux</span><span class="o">/</span><span class="nx">amd64</span><span class="p">:</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kube</span><span class="o">-</span><span class="nx">proxy</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kubeadm</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kubelet</span>
+<span class="nx">stat</span> <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">vendor</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="p">:</span> <span class="nx">no</span> <span class="nx">such</span> <span class="nx">file</span> <span class="nx">or</span> <span class="nx">directory</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">24</span><span class="p">:</span><span class="mi">17</span><span class="p">]</span> <span class="nx">Building</span> <span class="k">go</span> <span class="nx">targets</span> <span class="k">for</span> <span class="nx">linux</span><span class="o">/</span><span class="nx">amd64</span><span class="p">:</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kubectl</span>
+<span class="nx">stat</span> <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">vendor</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="p">:</span> <span class="nx">no</span> <span class="nx">such</span> <span class="nx">file</span> <span class="nx">or</span> <span class="nx">directory</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">24</span><span class="p">:</span><span class="mi">38</span><span class="p">]</span> <span class="nx">Building</span> <span class="k">go</span> <span class="nx">targets</span> <span class="k">for</span> <span class="nx">linux</span><span class="o">/</span><span class="nx">amd64</span><span class="p">:</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">gendocs</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">genkubedocs</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">genman</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">genyaml</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">genswaggertypedocs</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">linkcheck</span>
+    <span class="nx">vendor</span><span class="o">/</span><span class="nx">github</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">onsi</span><span class="o">/</span><span class="nx">ginkgo</span><span class="o">/</span><span class="nx">ginkgo</span>
+    <span class="nx">test</span><span class="o">/</span><span class="nx">e2e</span><span class="o">/</span><span class="nx">e2e</span><span class="p">.</span><span class="nx">test</span>
+<span class="nx">stat</span> <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">vendor</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="o">/</span><span class="nx">client</span><span class="o">-</span><span class="k">go</span><span class="p">:</span> <span class="nx">no</span> <span class="nx">such</span> <span class="nx">file</span> <span class="nx">or</span> <span class="nx">directory</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">26</span><span class="p">]</span> <span class="nx">Building</span> <span class="k">go</span> <span class="nx">targets</span> <span class="k">for</span> <span class="nx">linux</span><span class="o">/</span><span class="nx">amd64</span><span class="p">:</span>
+    <span class="nx">cmd</span><span class="o">/</span><span class="nx">kubemark</span>
+    <span class="nx">vendor</span><span class="o">/</span><span class="nx">github</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">onsi</span><span class="o">/</span><span class="nx">ginkgo</span><span class="o">/</span><span class="nx">ginkgo</span>
+    <span class="nx">test</span><span class="o">/</span><span class="nx">e2e_node</span><span class="o">/</span><span class="nx">e2e_node</span><span class="p">.</span><span class="nx">test</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">26</span><span class="p">]</span> <span class="nx">Syncing</span> <span class="nx">out</span> <span class="nx">of</span> <span class="nx">container</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">58</span><span class="p">]</span> <span class="nx">Building</span> <span class="nx">tarball</span><span class="p">:</span> <span class="nx">src</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">58</span><span class="p">]</span> <span class="nx">Starting</span> <span class="nx">tarball</span><span class="p">:</span> <span class="nx">client</span> <span class="nx">linux</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">58</span><span class="p">]</span> <span class="nx">Building</span> <span class="nx">tarball</span><span class="p">:</span> <span class="nx">manifests</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span><span class="p">:</span><span class="mi">58</span><span class="p">]</span> <span class="nx">Waiting</span> <span class="nx">on</span> <span class="nx">tarballs</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span> <span class="nx">Building</span> <span class="nx">images</span><span class="p">:</span> <span class="nx">linux</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">13</span><span class="p">]</span> <span class="nx">Building</span> <span class="nx">tarball</span><span class="p">:</span> <span class="nx">node</span> <span class="nx">linux</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="nx">Starting</span> <span class="nx">docker</span> <span class="nx">build</span> <span class="k">for</span> <span class="nx">image</span><span class="p">:</span> <span class="nx">cloud</span><span class="o">-</span><span class="nx">controller</span><span class="o">-</span><span class="nx">manager</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="nx">Starting</span> <span class="nx">docker</span> <span class="nx">build</span> <span class="k">for</span> <span class="nx">image</span><span class="p">:</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">apiserver</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="nx">Starting</span> <span class="nx">docker</span> <span class="nx">build</span> <span class="k">for</span> <span class="nx">image</span><span class="p">:</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">controller</span><span class="o">-</span><span class="nx">manager</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="nx">Starting</span> <span class="nx">docker</span> <span class="nx">build</span> <span class="k">for</span> <span class="nx">image</span><span class="p">:</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">scheduler</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="nx">Starting</span> <span class="nx">docker</span> <span class="nx">build</span> <span class="k">for</span> <span class="nx">image</span><span class="p">:</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">proxy</span><span class="o">-</span><span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="nx">Building</span> <span class="nx">hyperkube</span> <span class="nx">image</span> <span class="k">for</span> <span class="nx">arch</span><span class="p">:</span> <span class="nx">amd64</span>
+<span class="o">+++</span> <span class="p">[</span><span class="mi">1101</span> <span class="mi">15</span><span class="p">:</span><span class="mi">28</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="nx">Building</span> <span class="nx">conformance</span> <span class="nx">image</span> <span class="k">for</span> <span class="nx">arch</span><span class="p">:</span> <span class="nx">amd64</span>
+<span class="nx">Sending</span> <span class="nx">build</span> <span class="nx">context</span> <span class="nx">to</span> <span class="nx">Docker</span> <span class="nx">daemon</span>  <span class="mf">50.06</span><span class="nx">MB</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>到最后 Building conformance image 总是出现错误，不过我们不用关注了。因为要的二进制都制作好从docker里面捞出来了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">root</span><span class="err">@</span><span class="nx">k8s</span><span class="o">-</span><span class="nx">all</span><span class="o">-</span><span class="nx">in</span><span class="o">-</span><span class="nx">one</span><span class="p">:</span><span class="err">~</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">linux</span><span class="o">/</span><span class="nx">amd64</span><span class="err">#</span> <span class="nx">ll</span>
+<span class="nx">total</span> <span class="mf">2.3</span><span class="nx">G</span>
+<span class="nx">drwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">2</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">4.0</span><span class="nx">K</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span> <span class="p">.</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">216</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span> <span class="nx">e2e_node</span><span class="p">.</span><span class="nx">test</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">12</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span> <span class="nx">ginkgo</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">146</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">27</span> <span class="nx">kubemark</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">7.2</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">26</span> <span class="nx">linkcheck</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">162</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">26</span> <span class="nx">e2e</span><span class="p">.</span><span class="nx">test</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">55</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">26</span> <span class="nx">gendocs</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">235</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">26</span> <span class="nx">genkubedocs</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">5.4</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">26</span> <span class="nx">genswaggertypedocs</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">244</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">25</span> <span class="nx">genman</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">55</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">25</span> <span class="nx">genyaml</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">56</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">24</span> <span class="nx">kubectl</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">48</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">24</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">proxy</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">53</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">24</span> <span class="nx">kubeadm</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">151</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">24</span> <span class="nx">kubelet</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">149</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">controller</span><span class="o">-</span><span class="nx">manager</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">51</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">scheduler</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">2.3</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span> <span class="nx">mounter</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">129</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span> <span class="nx">cloud</span><span class="o">-</span><span class="nx">controller</span><span class="o">-</span><span class="nx">manager</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">57</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span> <span class="nx">apiextensions</span><span class="o">-</span><span class="nx">apiserver</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">196</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">apiserver</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mi">239</span><span class="nx">M</span> <span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">15</span><span class="p">:</span><span class="mi">23</span> <span class="nx">hyperkube</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">2.8</span><span class="nx">M</span> <span class="nx">Oct</span> <span class="mi">31</span> <span class="mi">15</span><span class="p">:</span><span class="mi">31</span> <span class="k">go</span><span class="o">-</span><span class="nx">bindata</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span>  <span class="mi">15</span><span class="nx">M</span> <span class="nx">Oct</span> <span class="mi">31</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span> <span class="nx">openapi</span><span class="o">-</span><span class="nx">gen</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">8.8</span><span class="nx">M</span> <span class="nx">Oct</span> <span class="mi">31</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span> <span class="nx">conversion</span><span class="o">-</span><span class="nx">gen</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">8.8</span><span class="nx">M</span> <span class="nx">Oct</span> <span class="mi">31</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span> <span class="nx">defaulter</span><span class="o">-</span><span class="nx">gen</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">8.8</span><span class="nx">M</span> <span class="nx">Oct</span> <span class="mi">31</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span> <span class="nx">deepcopy</span><span class="o">-</span><span class="nx">gen</span>
+<span class="o">-</span><span class="nx">rwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">1</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">4.5</span><span class="nx">M</span> <span class="nx">Oct</span> <span class="mi">31</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span> <span class="nx">go2make</span>
+<span class="nx">drwxr</span><span class="o">-</span><span class="nx">xr</span><span class="o">-</span><span class="nx">x</span> <span class="mi">3</span> <span class="nx">root</span> <span class="nx">root</span> <span class="mf">4.0</span><span class="nx">K</span> <span class="nx">Oct</span> <span class="mi">31</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span> <span class="p">..</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="运行测试">运行测试</h2>
+<p>装好了之后执行用例集：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">kubetest --test --test_args<span class="o">=</span><span class="s2">&#34;--ginkgo.focus=\[sig-api-machinery\]  --host=https://192.168.0.32:6443&#34;</span> --provider<span class="o">=</span><span class="nb">local</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>效果是：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="err">前面太长了，没截</span>
+<span class="p">[</span><span class="n">Fail</span><span class="p">]</span> <span class="p">[</span><span class="n">sig</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">machinery</span><span class="p">]</span> <span class="n">AdmissionWebhook</span> <span class="p">[</span><span class="n">BeforeEach</span><span class="p">]</span> <span class="n">Should</span> <span class="n">be</span> <span class="n">able</span> <span class="n">to</span> <span class="n">deny</span> <span class="n">attaching</span> <span class="n">pod</span>
+<span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="n">dockerized</span><span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">e2e</span><span class="o">/</span><span class="n">apimachinery</span><span class="o">/</span><span class="n">webhook</span><span class="p">.</span><span class="nl">go:</span><span class="m">384</span>
+
+<span class="p">[</span><span class="n">Fail</span><span class="p">]</span> <span class="p">[</span><span class="n">sig</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">machinery</span><span class="p">]</span> <span class="n">AdmissionWebhook</span> <span class="p">[</span><span class="n">BeforeEach</span><span class="p">]</span> <span class="n">Should</span> <span class="n">be</span> <span class="n">able</span> <span class="n">to</span> <span class="n">deny</span> <span class="n">pod</span> <span class="n">and</span> <span class="n">configmap</span> <span class="n">creation</span>
+<span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="n">dockerized</span><span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">e2e</span><span class="o">/</span><span class="n">apimachinery</span><span class="o">/</span><span class="n">webhook</span><span class="p">.</span><span class="nl">go:</span><span class="m">384</span>
+
+<span class="p">[</span><span class="n">Fail</span><span class="p">]</span> <span class="p">[</span><span class="n">sig</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">machinery</span><span class="p">]</span> <span class="n">CustomResourceConversionWebhook</span> <span class="p">[</span><span class="n">BeforeEach</span><span class="p">]</span> <span class="n">Should</span> <span class="n">be</span> <span class="n">able</span> <span class="n">to</span> <span class="n">convert</span> <span class="n">a</span> <span class="n">non</span> <span class="n">homogeneous</span> <span class="n">list</span> <span class="n">of</span> <span class="n">CRs</span>
+<span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="n">dockerized</span><span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">e2e</span><span class="o">/</span><span class="n">apimachinery</span><span class="o">/</span><span class="n">crd_conversion_webhook</span><span class="p">.</span><span class="nl">go:</span><span class="m">312</span>
+
+<span class="p">[</span><span class="n">Fail</span><span class="p">]</span> <span class="p">[</span><span class="n">sig</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">machinery</span><span class="p">]</span> <span class="n">AdmissionWebhook</span> <span class="p">[</span><span class="n">BeforeEach</span><span class="p">]</span> <span class="n">Should</span> <span class="n">be</span> <span class="n">able</span> <span class="n">to</span> <span class="n">deny</span> <span class="n">custom</span> <span class="n">resource</span> <span class="n">creation</span> <span class="n">and</span> <span class="n">deletion</span>
+<span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="n">dockerized</span><span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">e2e</span><span class="o">/</span><span class="n">apimachinery</span><span class="o">/</span><span class="n">webhook</span><span class="p">.</span><span class="nl">go:</span><span class="m">384</span>
+
+<span class="p">[</span><span class="n">Fail</span><span class="p">]</span> <span class="p">[</span><span class="n">sig</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">machinery</span><span class="p">]</span> <span class="n">AdmissionWebhook</span> <span class="p">[</span><span class="n">BeforeEach</span><span class="p">]</span> <span class="n">Should</span> <span class="n">not</span> <span class="n">be</span> <span class="n">able</span> <span class="n">to</span> <span class="n">mutate</span> <span class="n">or</span> <span class="n">prevent</span> <span class="n">deletion</span> <span class="n">of</span> <span class="n">webhook</span> <span class="n">configuration</span> <span class="n">objects</span>
+<span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="n">dockerized</span><span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">e2e</span><span class="o">/</span><span class="n">apimachinery</span><span class="o">/</span><span class="n">webhook</span><span class="p">.</span><span class="nl">go:</span><span class="m">384</span>
+
+<span class="p">[</span><span class="n">Fail</span><span class="p">]</span> <span class="p">[</span><span class="n">sig</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">machinery</span><span class="p">]</span> <span class="n">AdmissionWebhook</span> <span class="p">[</span><span class="n">BeforeEach</span><span class="p">]</span> <span class="n">Should</span> <span class="n">deny</span> <span class="n">crd</span> <span class="n">creation</span>
+<span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">_output</span><span class="o">/</span><span class="n">dockerized</span><span class="o">/</span><span class="n">go</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">k8s</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">e2e</span><span class="o">/</span><span class="n">apimachinery</span><span class="o">/</span><span class="n">webhook</span><span class="p">.</span><span class="nl">go:</span><span class="m">384</span>
+
+<span class="n">Ran</span> <span class="m">78</span> <span class="n">of</span> <span class="m">4411</span> <span class="n">Specs</span> <span class="k">in</span> <span class="m">6694.822</span> <span class="n">seconds</span>
+<span class="n">FAIL</span><span class="o">!</span> <span class="o">--</span> <span class="m">62</span> <span class="n">Passed</span> <span class="o">|</span> <span class="m">16</span> <span class="n">Failed</span> <span class="o">|</span> <span class="m">0</span> <span class="n">Pending</span> <span class="o">|</span> <span class="m">4333</span> <span class="n">Skipped</span>
+<span class="o">---</span> <span class="nl">FAIL:</span> <span class="n">TestE2E</span> <span class="p">(</span><span class="m">6694.93</span><span class="n">s</span><span class="p">)</span>
+<span class="n">FAIL</span>
+
+<span class="n">Ginkgo</span> <span class="n">ran</span> <span class="m">1</span> <span class="n">suite</span> <span class="k">in</span> <span class="m">1</span><span class="n">h51m35</span><span class="p">.</span><span class="m">77151929</span><span class="n">s</span>
+<span class="n">Test</span> <span class="n">Suite</span> <span class="n">Failed</span>
+<span class="o">!!!</span> <span class="n">Error</span> <span class="k">in</span> <span class="p">.</span><span class="o">/</span><span class="n">hack</span><span class="o">/</span><span class="n">ginkgo</span><span class="o">-</span><span class="n">e2e</span><span class="p">.</span><span class="nl">sh:</span><span class="m">146</span>
+  <span class="n">Error</span> <span class="k">in</span> <span class="p">.</span><span class="o">/</span><span class="n">hack</span><span class="o">/</span><span class="n">ginkgo</span><span class="o">-</span><span class="n">e2e</span><span class="p">.</span><span class="nl">sh:</span><span class="m">146.</span> <span class="s1">&#39;&#34;</span><span class="si">${</span><span class="n">ginkgo</span><span class="si">}</span><span class="s1">&#34; &#34;</span><span class="si">${</span><span class="n">ginkgo_args</span><span class="p">[</span><span class="err">@</span><span class="p">]</span><span class="o">:+</span><span class="n">$</span><span class="p">{</span><span class="n">ginkgo_args</span><span class="p">[</span><span class="err">@</span><span class="p">]</span><span class="si">}</span><span class="s1">}&#34; &#34;</span><span class="si">${</span><span class="n">e2e_test</span><span class="si">}</span><span class="s1">&#34; -- &#34;</span><span class="si">${</span><span class="n">auth_config</span><span class="p">[</span><span class="err">@</span><span class="p">]</span><span class="o">:+</span><span class="n">$</span><span class="p">{</span><span class="n">auth_config</span><span class="p">[</span><span class="err">@</span><span class="p">]</span><span class="si">}</span><span class="s1">}&#34;--ginkgo.flakeAttempts=&#34;</span><span class="si">${</span><span class="n">FLAKE_ATTEMPTS</span><span class="si">}</span><span class="s1">&#34; --host=&#34;</span><span class="si">${</span><span class="n">KUBE_MASTER_URL</span><span class="si">}</span><span class="s1">&#34; --provider=&#34;</span><span class="si">${</span><span class="n">KUBERNETES_PROVIDER</span><span class="si">}</span><span class="s1">&#34; --gce-project=&#34;</span><span class="si">${</span><span class="nl">PROJECT:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --gce-zone=&#34;</span><span class="si">${</span><span class="nl">ZONE:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --gce-region=&#34;</span><span class="si">${</span><span class="nl">REGION:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --gce-multizone=&#34;</span><span class="si">${</span><span class="nl">MULTIZONE:</span><span class="o">-</span><span class="kc">false</span><span class="si">}</span><span class="s1">&#34; --gke-cluster=&#34;</span><span class="si">${</span><span class="nl">CLUSTER_NAME:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --kube-master=&#34;</span><span class="si">${</span><span class="nl">KUBE_MASTER:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --cluster-tag=&#34;</span><span class="si">${</span><span class="nl">CLUSTER_ID:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --cloud-config-file=&#34;</span><span class="si">${</span><span class="nl">CLOUD_CONFIG:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --repo-root=&#34;</span><span class="si">${</span><span class="n">KUBE_ROOT</span><span class="si">}</span><span class="s1">&#34; --node-instance-group=&#34;</span><span class="si">${</span><span class="nl">NODE_INSTANCE_GROUP:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --prefix=&#34;</span><span class="si">${</span><span class="nl">KUBE_GCE_INSTANCE_PREFIX:</span><span class="o">-</span><span class="n">e2e</span><span class="si">}</span><span class="s1">&#34; --network=&#34;</span><span class="si">${</span><span class="nl">KUBE_GCE_NETWORK:</span><span class="o">-</span><span class="n">$</span><span class="p">{</span><span class="nl">KUBE_GKE_NETWORK:</span><span class="o">-</span><span class="n">e2e</span><span class="si">}</span><span class="s1">}&#34; --node-tag=&#34;</span><span class="si">${</span><span class="nl">NODE_TAG:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --master-tag=&#34;</span><span class="si">${</span><span class="nl">MASTER_TAG:</span><span class="o">-</span><span class="si">}</span><span class="s1">&#34; --cluster-monitoring-mode=&#34;</span><span class="si">${</span><span class="nl">KUBE_ENABLE_CLUSTER_MONITORING:</span><span class="o">-</span><span class="n">standalone</span><span class="si">}</span><span class="s1">&#34; --prometheus-monitoring=&#34;</span><span class="si">${</span><span class="nl">KUBE_ENABLE_PROMETHEUS_MONITORING:</span><span class="o">-</span><span class="kc">false</span><span class="si">}</span><span class="s1">&#34; --dns-domain=&#34;</span><span class="si">${</span><span class="nl">KUBE_DNS_DOMAIN:</span><span class="o">-</span><span class="n">cluster</span><span class="p">.</span><span class="n">local</span><span class="si">}</span><span class="s1">&#34; --ginkgo.slowSpecThreshold=&#34;</span><span class="si">${</span><span class="nl">GINKGO_SLOW_SPEC_THRESHOLD:</span><span class="o">-</span><span class="m">300</span><span class="si">}</span><span class="s1">&#34; </span><span class="si">${</span><span class="nl">KUBE_CONTAINER_RUNTIME:</span><span class="o">+</span><span class="s2">&#34;--container-runtime=${KUBE_CONTAINER_RUNTIME</span><span class="si">}</span><span class="s1">&#34;} </span><span class="si">${</span><span class="nl">MASTER_OS_DISTRIBUTION:</span><span class="o">+</span><span class="s2">&#34;--master-os-distro=${MASTER_OS_DISTRIBUTION</span><span class="si">}</span><span class="s1">&#34;} </span><span class="si">${</span><span class="nl">NODE_OS_DISTRIBUTION:</span><span class="o">+</span><span class="s2">&#34;--node-os-distro=${NODE_OS_DISTRIBUTION</span><span class="si">}</span><span class="s1">&#34;} </span><span class="si">${</span><span class="nl">NUM_NODES:</span><span class="o">+</span><span class="s2">&#34;--num-nodes=${NUM_NODES</span><span class="si">}</span><span class="s1">&#34;} </span><span class="si">${</span><span class="nl">E2E_REPORT_DIR:</span><span class="o">+</span><span class="s2">&#34;--report-dir=${E2E_REPORT_DIR</span><span class="si">}</span><span class="s1">&#34;} </span><span class="si">${</span><span class="nl">E2E_REPORT_PREFIX:</span><span class="o">+</span><span class="s2">&#34;--report-prefix=${E2E_REPORT_PREFIX</span><span class="si">}</span><span class="s1">&#34;} &#34;</span><span class="si">${</span><span class="err">@</span><span class="o">:-</span><span class="si">}</span><span class="s1">&#34;&#39;</span> <span class="n">exited</span> <span class="kd">with</span> <span class="n">status</span> <span class="m">1</span>
+<span class="n">Call</span> <span class="nl">stack:</span>
+  <span class="m">1</span><span class="o">:</span> <span class="p">.</span><span class="o">/</span><span class="n">hack</span><span class="o">/</span><span class="n">ginkgo</span><span class="o">-</span><span class="n">e2e</span><span class="p">.</span><span class="nl">sh:</span><span class="m">146</span> <span class="n">main</span><span class="p">(...)</span>
+<span class="n">Exiting</span> <span class="kd">with</span> <span class="n">status</span> <span class="m">1</span>
+<span class="m">2019</span><span class="o">/</span><span class="m">10</span><span class="o">/</span><span class="m">31</span> <span class="m">23</span><span class="o">:</span><span class="m">38</span><span class="o">:</span><span class="m">09</span> <span class="n">process</span><span class="p">.</span><span class="nl">go:</span><span class="m">155</span><span class="o">:</span> <span class="n">Step</span> <span class="s1">&#39;./hack/ginkgo-e2e.sh --ginkgo.focus=</span><span class="err">\</span><span class="s1">[sig-api-machinery</span><span class="err">\</span><span class="s1">] --host=https://192.168.0.32:6443&#39;</span> <span class="n">finished</span> <span class="k">in</span> <span class="m">1</span><span class="n">h51m35</span><span class="p">.</span><span class="m">827477558</span><span class="n">s</span>
+<span class="m">2019</span><span class="o">/</span><span class="m">10</span><span class="o">/</span><span class="m">31</span> <span class="m">23</span><span class="o">:</span><span class="m">38</span><span class="o">:</span><span class="m">09</span> <span class="n">main</span><span class="p">.</span><span class="nl">go:</span><span class="m">319</span><span class="o">:</span> <span class="n">Something</span> <span class="n">went</span> <span class="nl">wrong:</span> <span class="n">encountered</span> <span class="m">1</span> <span class="nl">errors:</span> <span class="p">[</span><span class="n">error</span> <span class="n">during</span> <span class="p">.</span><span class="o">/</span><span class="n">hack</span><span class="o">/</span><span class="n">ginkgo</span><span class="o">-</span><span class="n">e2e</span><span class="p">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">ginkgo</span><span class="p">.</span><span class="n">focus</span><span class="o">=</span><span class="err">\</span><span class="p">[</span><span class="n">sig</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">machinery</span><span class="err">\</span><span class="p">]</span> <span class="o">--</span><span class="n">host</span><span class="o">=</span><span class="nl">https:</span><span class="c1">//192.168.0.32:6443: exit status 1]
+</span></code></pre></td></tr></table>
+</div>
+</div><p>然后调试一个测试用例，这样适合自己写着的时候调试：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-ruby" data-lang="ruby"><span class="n">root</span><span class="vi">@k8s</span><span class="o">-</span><span class="n">all</span><span class="o">-</span><span class="k">in</span><span class="o">-</span><span class="ss">one</span><span class="p">:</span><span class="o">~</span><span class="sr">/go/s</span><span class="n">rc</span><span class="o">/</span><span class="n">k8s</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">kubernetes</span><span class="c1">#  kubetest --test --test_args=&#34;--ginkgo.focus=SSH.to.all     --host=https://192.168.0.32:6443&#34; --provider=local</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">18</span> <span class="nx">process</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">153</span><span class="p">:</span> <span class="nx">Running</span><span class="p">:</span> <span class="p">.</span><span class="o">/</span><span class="nx">hack</span><span class="o">/</span><span class="nx">e2e</span><span class="o">-</span><span class="nx">internal</span><span class="o">/</span><span class="nx">e2e</span><span class="o">-</span><span class="nx">status</span><span class="p">.</span><span class="nx">sh</span>
+<span class="nx">Skeleton</span> <span class="nx">Provider</span><span class="p">:</span> <span class="nx">prepare</span><span class="o">-</span><span class="nx">e2e</span> <span class="nx">not</span> <span class="nx">implemented</span>
+<span class="nx">Client</span> <span class="nx">Version</span><span class="p">:</span> <span class="nx">version</span><span class="p">.</span><span class="nx">Info</span><span class="p">{</span><span class="nx">Major</span><span class="p">:</span><span class="s">&#34;1&#34;</span><span class="p">,</span> <span class="nx">Minor</span><span class="p">:</span><span class="s">&#34;15&#34;</span><span class="p">,</span> <span class="nx">GitVersion</span><span class="p">:</span><span class="s">&#34;v1.15.0&#34;</span><span class="p">,</span> <span class="nx">GitCommit</span><span class="p">:</span><span class="s">&#34;e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529&#34;</span><span class="p">,</span> <span class="nx">GitTreeState</span><span class="p">:</span><span class="s">&#34;clean&#34;</span><span class="p">,</span> <span class="nx">BuildDate</span><span class="p">:</span><span class="s">&#34;2019-06-19T16:40:16Z&#34;</span><span class="p">,</span> <span class="nx">GoVersion</span><span class="p">:</span><span class="s">&#34;go1.12.5&#34;</span><span class="p">,</span> <span class="nx">Compiler</span><span class="p">:</span><span class="s">&#34;gc&#34;</span><span class="p">,</span> <span class="nx">Platform</span><span class="p">:</span><span class="s">&#34;linux/amd64&#34;</span><span class="p">}</span>
+<span class="nx">Server</span> <span class="nx">Version</span><span class="p">:</span> <span class="nx">version</span><span class="p">.</span><span class="nx">Info</span><span class="p">{</span><span class="nx">Major</span><span class="p">:</span><span class="s">&#34;1&#34;</span><span class="p">,</span> <span class="nx">Minor</span><span class="p">:</span><span class="s">&#34;15&#34;</span><span class="p">,</span> <span class="nx">GitVersion</span><span class="p">:</span><span class="s">&#34;v1.15.0&#34;</span><span class="p">,</span> <span class="nx">GitCommit</span><span class="p">:</span><span class="s">&#34;e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529&#34;</span><span class="p">,</span> <span class="nx">GitTreeState</span><span class="p">:</span><span class="s">&#34;clean&#34;</span><span class="p">,</span> <span class="nx">BuildDate</span><span class="p">:</span><span class="s">&#34;2019-06-19T16:32:14Z&#34;</span><span class="p">,</span> <span class="nx">GoVersion</span><span class="p">:</span><span class="s">&#34;go1.12.5&#34;</span><span class="p">,</span> <span class="nx">Compiler</span><span class="p">:</span><span class="s">&#34;gc&#34;</span><span class="p">,</span> <span class="nx">Platform</span><span class="p">:</span><span class="s">&#34;linux/amd64&#34;</span><span class="p">}</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">18</span> <span class="nx">process</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">155</span><span class="p">:</span> <span class="nx">Step</span> <span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="nx">hack</span><span class="o">/</span><span class="nx">e2e</span><span class="o">-</span><span class="nx">internal</span><span class="o">/</span><span class="nx">e2e</span><span class="o">-</span><span class="nx">status</span><span class="p">.</span><span class="nx">sh</span><span class="err">&#39;</span> <span class="nx">finished</span> <span class="nx">in</span> <span class="mf">114.312821</span><span class="nx">ms</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">18</span> <span class="nx">process</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">153</span><span class="p">:</span> <span class="nx">Running</span><span class="p">:</span> <span class="p">.</span><span class="o">/</span><span class="nx">cluster</span><span class="o">/</span><span class="nx">kubectl</span><span class="p">.</span><span class="nx">sh</span> <span class="o">--</span><span class="nx">match</span><span class="o">-</span><span class="nx">server</span><span class="o">-</span><span class="nx">version</span><span class="p">=</span><span class="kc">false</span> <span class="nx">version</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">18</span> <span class="nx">process</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">155</span><span class="p">:</span> <span class="nx">Step</span> <span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="nx">cluster</span><span class="o">/</span><span class="nx">kubectl</span><span class="p">.</span><span class="nx">sh</span> <span class="o">--</span><span class="nx">match</span><span class="o">-</span><span class="nx">server</span><span class="o">-</span><span class="nx">version</span><span class="p">=</span><span class="kc">false</span> <span class="nx">version</span><span class="err">&#39;</span> <span class="nx">finished</span> <span class="nx">in</span> <span class="mf">76.761003</span><span class="nx">ms</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">18</span> <span class="nx">process</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">153</span><span class="p">:</span> <span class="nx">Running</span><span class="p">:</span> <span class="p">.</span><span class="o">/</span><span class="nx">hack</span><span class="o">/</span><span class="nx">ginkgo</span><span class="o">-</span><span class="nx">e2e</span><span class="p">.</span><span class="nx">sh</span> <span class="o">--</span><span class="nx">ginkgo</span><span class="p">.</span><span class="nx">focus</span><span class="p">=</span><span class="nx">SSH</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">all</span> <span class="o">--</span><span class="nx">host</span><span class="p">=</span><span class="nx">https</span><span class="p">:</span><span class="c1">//192.168.0.32:6443
+</span><span class="c1"></span><span class="nx">Setting</span> <span class="nx">up</span> <span class="k">for</span> <span class="nx">KUBERNETES_PROVIDER</span><span class="p">=</span><span class="s">&#34;local&#34;</span><span class="p">.</span>
+<span class="nx">Skeleton</span> <span class="nx">Provider</span><span class="p">:</span> <span class="nx">prepare</span><span class="o">-</span><span class="nx">e2e</span> <span class="nx">not</span> <span class="nx">implemented</span>
+<span class="nx">KUBE_MASTER_IP</span><span class="p">:</span>
+<span class="nx">KUBE_MASTER</span><span class="p">:</span>
+<span class="nx">I1101</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.578786</span>   <span class="mi">61483</span> <span class="nx">e2e</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">241</span><span class="p">]</span> <span class="nx">Starting</span> <span class="nx">e2e</span> <span class="nx">run</span> <span class="s">&#34;35be1931-909f-4013-9a3d-9a235cd2e4fe&#34;</span> <span class="nx">on</span> <span class="nx">Ginkgo</span> <span class="nx">node</span> <span class="mi">1</span>
+<span class="nx">Running</span> <span class="nx">Suite</span><span class="p">:</span> <span class="nx">Kubernetes</span> <span class="nx">e2e</span> <span class="nx">suite</span>
+<span class="o">==================================</span><span class="p">=</span>
+<span class="nx">Random</span> <span class="nx">Seed</span><span class="p">:</span> <span class="mi">1572587118</span> <span class="o">-</span> <span class="nx">Will</span> <span class="nx">randomize</span> <span class="nx">all</span> <span class="nx">specs</span>
+<span class="nx">Will</span> <span class="nx">run</span> <span class="mi">1</span> <span class="nx">of</span> <span class="mi">4411</span> <span class="nx">specs</span>
+
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.673</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="o">&gt;&gt;</span><span class="p">&gt;</span> <span class="nx">kubeConfig</span><span class="p">:</span> <span class="o">/</span><span class="nx">root</span><span class="o">/</span><span class="p">.</span><span class="nx">kube</span><span class="o">/</span><span class="nx">config</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.676</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Waiting</span> <span class="nx">up</span> <span class="nx">to</span> <span class="mi">30</span><span class="nx">m0s</span> <span class="k">for</span> <span class="nf">all</span> <span class="p">(</span><span class="nx">but</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">nodes</span> <span class="nx">to</span> <span class="nx">be</span> <span class="nx">schedulable</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.696</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Waiting</span> <span class="nx">up</span> <span class="nx">to</span> <span class="mi">10</span><span class="nx">m0s</span> <span class="k">for</span> <span class="nx">all</span> <span class="nf">pods</span> <span class="p">(</span><span class="nx">need</span> <span class="nx">at</span> <span class="nx">least</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">in</span> <span class="nx">namespace</span> <span class="err">&#39;</span><span class="nx">kube</span><span class="o">-</span><span class="nx">system</span><span class="err">&#39;</span> <span class="nx">to</span> <span class="nx">be</span> <span class="nx">running</span> <span class="nx">and</span> <span class="nx">ready</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.724</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">7</span> <span class="nx">pods</span> <span class="nx">in</span> <span class="nx">namespace</span> <span class="err">&#39;</span><span class="nx">kube</span><span class="o">-</span><span class="nx">system</span><span class="err">&#39;</span> <span class="nx">are</span> <span class="nx">running</span> <span class="nx">and</span> <span class="nf">ready</span> <span class="p">(</span><span class="mi">0</span> <span class="nx">seconds</span> <span class="nx">elapsed</span><span class="p">)</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.724</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">expected</span> <span class="mi">6</span> <span class="nx">pod</span> <span class="nx">replicas</span> <span class="nx">in</span> <span class="nx">namespace</span> <span class="err">&#39;</span><span class="nx">kube</span><span class="o">-</span><span class="nx">system</span><span class="err">&#39;</span><span class="p">,</span> <span class="mi">6</span> <span class="nx">are</span> <span class="nx">Running</span> <span class="nx">and</span> <span class="nx">Ready</span><span class="p">.</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.724</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Waiting</span> <span class="nx">up</span> <span class="nx">to</span> <span class="mi">5</span><span class="nx">m0s</span> <span class="k">for</span> <span class="nx">all</span> <span class="nx">daemonsets</span> <span class="nx">in</span> <span class="nx">namespace</span> <span class="err">&#39;</span><span class="nx">kube</span><span class="o">-</span><span class="nx">system</span><span class="err">&#39;</span> <span class="nx">to</span> <span class="nx">start</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.733</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">1</span> <span class="nx">pods</span> <span class="nx">ready</span> <span class="nx">in</span> <span class="nx">namespace</span> <span class="err">&#39;</span><span class="nx">kube</span><span class="o">-</span><span class="nx">system</span><span class="err">&#39;</span> <span class="nx">in</span> <span class="nx">daemonset</span> <span class="err">&#39;</span><span class="nx">kube</span><span class="o">-</span><span class="nx">flannel</span><span class="o">-</span><span class="nx">ds</span><span class="o">-</span><span class="nx">amd64</span><span class="err">&#39;</span> <span class="p">(</span><span class="mi">0</span> <span class="nx">seconds</span> <span class="nx">elapsed</span><span class="p">)</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.733</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">e2e</span> <span class="nx">test</span> <span class="nx">version</span><span class="p">:</span> <span class="nx">v1</span><span class="mf">.15.0</span><span class="o">-</span><span class="nx">dirty</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.734</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">kube</span><span class="o">-</span><span class="nx">apiserver</span> <span class="nx">version</span><span class="p">:</span> <span class="nx">v1</span><span class="mf">.15.0</span>
+<span class="nx">SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS</span>
+<span class="o">------------------------------</span>
+<span class="p">[</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="p">]</span> <span class="p">[</span><span class="nx">sig</span><span class="o">-</span><span class="nx">node</span><span class="p">]</span> <span class="nx">SSH</span>
+  <span class="nx">should</span> <span class="nx">SSH</span> <span class="nx">to</span> <span class="nx">all</span> <span class="nx">nodes</span> <span class="nx">and</span> <span class="nx">run</span> <span class="nx">commands</span>
+  <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">test</span><span class="o">/</span><span class="nx">e2e</span><span class="o">/</span><span class="nx">node</span><span class="o">/</span><span class="nx">ssh</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">45</span>
+<span class="p">[</span><span class="nx">BeforeEach</span><span class="p">]</span> <span class="p">[</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="p">]</span> <span class="p">[</span><span class="nx">sig</span><span class="o">-</span><span class="nx">node</span><span class="p">]</span> <span class="nx">SSH</span>
+  <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">test</span><span class="o">/</span><span class="nx">e2e</span><span class="o">/</span><span class="nx">framework</span><span class="o">/</span><span class="nx">framework</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">150</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">Creating</span> <span class="nx">a</span> <span class="nx">kubernetes</span> <span class="nx">client</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.817</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="o">&gt;&gt;</span><span class="p">&gt;</span> <span class="nx">kubeConfig</span><span class="p">:</span> <span class="o">/</span><span class="nx">root</span><span class="o">/</span><span class="p">.</span><span class="nx">kube</span><span class="o">/</span><span class="nx">config</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">Building</span> <span class="nx">a</span> <span class="nx">namespace</span> <span class="nx">api</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">basename</span> <span class="nx">ssh</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.831</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">No</span> <span class="nx">PodSecurityPolicies</span> <span class="nx">found</span><span class="p">;</span> <span class="nx">assuming</span> <span class="nx">PodSecurityPolicy</span> <span class="nx">is</span> <span class="nx">disabled</span><span class="p">.</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">Waiting</span> <span class="k">for</span> <span class="nx">a</span> <span class="k">default</span> <span class="nx">service</span> <span class="nx">account</span> <span class="nx">to</span> <span class="nx">be</span> <span class="nx">provisioned</span> <span class="nx">in</span> <span class="nx">namespace</span>
+<span class="p">[</span><span class="nx">BeforeEach</span><span class="p">]</span> <span class="p">[</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="p">]</span> <span class="p">[</span><span class="nx">sig</span><span class="o">-</span><span class="nx">node</span><span class="p">]</span> <span class="nx">SSH</span>
+  <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">test</span><span class="o">/</span><span class="nx">e2e</span><span class="o">/</span><span class="nx">node</span><span class="o">/</span><span class="nx">ssh</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">36</span>
+<span class="p">[</span><span class="nx">It</span><span class="p">]</span> <span class="nx">should</span> <span class="nx">SSH</span> <span class="nx">to</span> <span class="nx">all</span> <span class="nx">nodes</span> <span class="nx">and</span> <span class="nx">run</span> <span class="nx">commands</span>
+  <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">test</span><span class="o">/</span><span class="nx">e2e</span><span class="o">/</span><span class="nx">node</span><span class="o">/</span><span class="nx">ssh</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">45</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">Getting</span> <span class="nx">all</span> <span class="nx">nodes</span><span class="err">&#39;</span> <span class="nx">SSH</span><span class="o">-</span><span class="nx">able</span> <span class="nx">IP</span> <span class="nx">addresses</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.834</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">No</span> <span class="nx">external</span> <span class="nx">IP</span> <span class="nx">address</span> <span class="nx">on</span> <span class="nx">nodes</span><span class="p">,</span> <span class="nx">falling</span> <span class="nx">back</span> <span class="nx">to</span> <span class="nx">internal</span> <span class="nx">IPs</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">SSH</span><span class="err">&#39;</span><span class="nx">ing</span> <span class="nx">to</span> <span class="mi">1</span> <span class="nx">nodes</span> <span class="nx">and</span> <span class="nx">running</span> <span class="nx">echo</span> <span class="s">&#34;Hello from $(whoami)@$(hostname)&#34;</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">19.931</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Got</span> <span class="nx">stdout</span> <span class="nx">from</span> <span class="mf">192.168.0.32</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span> <span class="nx">Hello</span> <span class="nx">from</span> <span class="nx">root</span><span class="err">@</span><span class="nx">k8s</span><span class="o">-</span><span class="nx">all</span><span class="o">-</span><span class="nx">in</span><span class="o">-</span><span class="nx">one</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">SSH</span><span class="err">&#39;</span><span class="nx">ing</span> <span class="nx">to</span> <span class="mi">1</span> <span class="nx">nodes</span> <span class="nx">and</span> <span class="nx">running</span> <span class="nx">echo</span> <span class="s">&#34;foo&#34;</span> <span class="p">|</span> <span class="nx">grep</span> <span class="s">&#34;bar&#34;</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">SSH</span><span class="err">&#39;</span><span class="nx">ing</span> <span class="nx">to</span> <span class="mi">1</span> <span class="nx">nodes</span> <span class="nx">and</span> <span class="nx">running</span> <span class="nx">echo</span> <span class="s">&#34;stdout&#34;</span> <span class="o">&amp;&amp;</span> <span class="nx">echo</span> <span class="s">&#34;stderr&#34;</span> <span class="p">&gt;</span><span class="o">&amp;</span><span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nx">exit</span> <span class="mi">7</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">20.097</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Got</span> <span class="nx">stdout</span> <span class="nx">from</span> <span class="mf">192.168.0.32</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span> <span class="nx">stdout</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">20.097</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Got</span> <span class="nx">stderr</span> <span class="nx">from</span> <span class="mf">192.168.0.32</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span> <span class="nx">stderr</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">SSH</span><span class="err">&#39;</span><span class="nx">ing</span> <span class="nx">to</span> <span class="nx">a</span> <span class="nx">nonexistent</span> <span class="nx">host</span>
+<span class="kt">error</span> <span class="nx">dialing</span> <span class="nx">root</span><span class="err">@</span><span class="nx">i</span><span class="p">.</span><span class="nx">do</span><span class="p">.</span><span class="nx">not</span><span class="p">.</span><span class="nx">exist</span><span class="p">:</span> <span class="err">&#39;</span><span class="nx">dial</span> <span class="nx">tcp</span><span class="p">:</span> <span class="nx">address</span> <span class="nx">i</span><span class="p">.</span><span class="nx">do</span><span class="p">.</span><span class="nx">not</span><span class="p">.</span><span class="nx">exist</span><span class="p">:</span> <span class="nx">missing</span> <span class="nx">port</span> <span class="nx">in</span> <span class="nx">address</span><span class="err">&#39;</span><span class="p">,</span> <span class="nx">retrying</span>
+<span class="p">[</span><span class="nx">AfterEach</span><span class="p">]</span> <span class="p">[</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="p">]</span> <span class="p">[</span><span class="nx">sig</span><span class="o">-</span><span class="nx">node</span><span class="p">]</span> <span class="nx">SSH</span>
+  <span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">_output</span><span class="o">/</span><span class="nx">dockerized</span><span class="o">/</span><span class="k">go</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">k8s</span><span class="p">.</span><span class="nx">io</span><span class="o">/</span><span class="nx">kubernetes</span><span class="o">/</span><span class="nx">test</span><span class="o">/</span><span class="nx">e2e</span><span class="o">/</span><span class="nx">framework</span><span class="o">/</span><span class="nx">framework</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">151</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">25.098</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Waiting</span> <span class="nx">up</span> <span class="nx">to</span> <span class="mi">3</span><span class="nx">m0s</span> <span class="k">for</span> <span class="nf">all</span> <span class="p">(</span><span class="nx">but</span> <span class="mi">0</span><span class="p">)</span> <span class="nx">nodes</span> <span class="nx">to</span> <span class="nx">be</span> <span class="nx">ready</span>
+<span class="nx">STEP</span><span class="p">:</span> <span class="nx">Destroying</span> <span class="nx">namespace</span> <span class="s">&#34;ssh-9879&#34;</span> <span class="k">for</span> <span class="nx">this</span> <span class="nx">suite</span><span class="p">.</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">31.108</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Waiting</span> <span class="nx">up</span> <span class="nx">to</span> <span class="mi">30</span><span class="nx">s</span> <span class="k">for</span> <span class="nx">server</span> <span class="nx">preferred</span> <span class="nx">namespaced</span> <span class="nx">resources</span> <span class="nx">to</span> <span class="nx">be</span> <span class="nx">successfully</span> <span class="nx">discovered</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">31.169</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">namespace</span> <span class="nx">ssh</span><span class="o">-</span><span class="mi">9879</span> <span class="nx">deletion</span> <span class="nx">completed</span> <span class="nx">in</span> <span class="mf">6.068405507</span><span class="nx">s</span>
+<span class="err">•</span><span class="nx">SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSNov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">31.174</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Running</span> <span class="nx">AfterSuite</span> <span class="nx">actions</span> <span class="nx">on</span> <span class="nx">all</span> <span class="nx">nodes</span>
+<span class="nx">Nov</span>  <span class="mi">1</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mf">31.174</span><span class="p">:</span> <span class="nx">INFO</span><span class="p">:</span> <span class="nx">Running</span> <span class="nx">AfterSuite</span> <span class="nx">actions</span> <span class="nx">on</span> <span class="nx">node</span> <span class="mi">1</span>
+
+<span class="nx">Ran</span> <span class="mi">1</span> <span class="nx">of</span> <span class="mi">4411</span> <span class="nx">Specs</span> <span class="nx">in</span> <span class="mf">11.505</span> <span class="nx">seconds</span>
+<span class="nx">SUCCESS</span><span class="p">!</span> <span class="o">--</span> <span class="mi">1</span> <span class="nx">Passed</span> <span class="p">|</span> <span class="mi">0</span> <span class="nx">Failed</span> <span class="p">|</span> <span class="mi">0</span> <span class="nx">Pending</span> <span class="p">|</span> <span class="mi">4410</span> <span class="nx">Skipped</span>
+<span class="nx">PASS</span>
+
+<span class="nx">Ginkgo</span> <span class="nx">ran</span> <span class="mi">1</span> <span class="nx">suite</span> <span class="nx">in</span> <span class="mf">12.524250351</span><span class="nx">s</span>
+<span class="nx">Test</span> <span class="nx">Suite</span> <span class="nx">Passed</span>
+<span class="mi">2019</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mo">01</span> <span class="mi">13</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">31</span> <span class="nx">process</span><span class="p">.</span><span class="k">go</span><span class="p">:</span><span class="mi">155</span><span class="p">:</span> <span class="nx">Step</span> <span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="nx">hack</span><span class="o">/</span><span class="nx">ginkgo</span><span class="o">-</span><span class="nx">e2e</span><span class="p">.</span><span class="nx">sh</span> <span class="o">--</span><span class="nx">ginkgo</span><span class="p">.</span><span class="nx">focus</span><span class="p">=</span><span class="nx">SSH</span><span class="p">.</span><span class="nx">to</span><span class="p">.</span><span class="nx">all</span> <span class="o">--</span><span class="nx">host</span><span class="p">=</span><span class="nx">https</span><span class="p">:</span><span class="c1">//192.168.0.32:6443&#39; finished in 12.590311594s
+</span></code></pre></td></tr></table>
+</div>
+</div><p>基本上单机版本的e2e就是这么使用了。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2020-04-14
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/windows-tensorflow-%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">安装windows  tensorflow 环境指南</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/iptables-%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">
+            <span class="next-text nav-default">iptables 命令使用指南</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

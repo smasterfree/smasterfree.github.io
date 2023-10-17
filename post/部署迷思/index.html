@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>部署迷思 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="作为一个在云计算领域学习工作的新人，对于部署方面的问题略有接触。今天正好看到了一篇文章，结合最近我在做的一个线上部署打桩虚拟机调试的工作，算" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E9%83%A8%E7%BD%B2%E8%BF%B7%E6%80%9D/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="部署迷思" />
+<meta property="og:description" content="作为一个在云计算领域学习工作的新人，对于部署方面的问题略有接触。今天正好看到了一篇文章，结合最近我在做的一个线上部署打桩虚拟机调试的工作，算" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E9%83%A8%E7%BD%B2%E8%BF%B7%E6%80%9D/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2015-12-04T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2015-12-04T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="部署迷思">
+<meta itemprop="description" content="作为一个在云计算领域学习工作的新人，对于部署方面的问题略有接触。今天正好看到了一篇文章，结合最近我在做的一个线上部署打桩虚拟机调试的工作，算"><meta itemprop="datePublished" content="2015-12-04T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2015-12-04T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1885">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="部署迷思"/>
+<meta name="twitter:description" content="作为一个在云计算领域学习工作的新人，对于部署方面的问题略有接触。今天正好看到了一篇文章，结合最近我在做的一个线上部署打桩虚拟机调试的工作，算"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">部署迷思</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2015-12-04 </span>
+        
+          <span class="more-meta"> 1885 words </span>
+          <span class="more-meta"> 4 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#上古时代">上古时代</a></li>
+    <li><a href="#命令式部署">命令式部署</a></li>
+    <li><a href="#描述式部署">描述式部署</a></li>
+    <li><a href="#更进一步">更进一步</a></li>
+    <li><a href="#没有银弹">没有银弹</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>作为一个在云计算领域学习工作的新人，对于部署方面的问题略有接触。今天正好看到了一篇文章，结合最近我在做的一个线上部署打桩虚拟机调试的工作，算是做一点感想记录吧。</p>
+<h2 id="上古时代">上古时代</h2>
+<p>部署工作自从计算机诞生以来就有了吧。多年以前，人们都是登录到一台服务器上，用命令行安装（更早的时候是下载源码，编译）一些软件，更改一下配置文件，启动服务。</p>
+<p>done！收工了。</p>
+<p>这种做法要是管理一两台服务器还好，如果要管理一两百台服务器呢？手工一台一台如何装的过来？</p>
+<h2 id="命令式部署">命令式部署</h2>
+<p>这种方法称之为命令式部署。我们把一个需要安装的软件，它的依赖，如何配置，如何启动都用shell脚本写好，这就是自动化部署的雏形。这一方面最为出名的当属devstack的部署脚本了。那一千多行stack.sh其实也就是个目录，细细扒下去，盘根错节，各种依赖，到各个子文件夹下去调各个子脚本。事实上，装devstack从来也不是无痛的。经常需要反反复复倒腾好几遍，才能搞定。以至于在成功装了一个devstack之后，赶紧打个快照压压惊~ </p>
+<p>当然，这里除了产品本身部署复杂度之外，还有shell这个不给力的，支离破碎语言的锅。</p>
+<p>另外，shell脚本本身也不能解决批量部署的问题，要你去给100台服务器装devstack，难道还要一个一个ssh上去，手动敲一遍？ </p>
+<p>这时候就需要祭出ssh批量连接管理自动化工具了，比如python写的Fabric。你可以使用它批量连到几百台服务器上，下发操作指令，简单的如 apt-get install tmux ，或者复杂的你可以本地写好一个脚本，然后批量丢到服务器上去，再执行这个脚本。这样看来，安装程序，修改配置文件，启动服务都是可实现的。 </p>
+<p>但是，这些脚本都是命令描述式的。在脚本中充斥着各式各样的动词，比如 install，remove，start等等。如果我的期望是一台装好wordpress的服务器，它是如何装的又和我有什么关系呢？</p>
+<h2 id="描述式部署">描述式部署</h2>
+<p> 这个问题已经有人想到了，而且轮子也已经发明出来了。这种描述式的部署方式被puppet，以及后来者ansible所采用。从这个时候起，我们更多的是在写配置文件，而不是写程序（例如DSL）。例如ansible，我们用一个配置文件指定哪些节点是什么角色，用另一个配置文件用来描述安装哪些服务。比如，我需要安装： 
+ - mysql
+ - php
+ - nginx</p>
+<p>描述式部署少了命令式部署中那些啰啰嗦嗦的动词，而且，通过角色的引入，我们也能更好的控制粒度，进行解耦。 </p>
+<p>事实上，这种方式就是现在部署的事实标准（<strong>de facto standard</strong>）。</p>
+<h2 id="更进一步">更进一步</h2>
+<p> 然而，这种方法没有问题吗？也是有的，首先是依赖问题。安装C先要安装B，安装B先要安装A，我们不能一股脑儿把CBA写到配置文件中而不考虑其顺序。第二是所谓的dependency hell，如果C依赖的B依赖一个低版本的A，而这个A和服务B依赖的高版本的A冲突不兼容，冲突了，那怎么办？只好人肉找出原因，修掉bug。 </p>
+<p>另外一点是，部署依赖状态。试想，我要装一个包，但是这个包在这个服务器上已经装了一个旧版本的，怎么办？是卸掉旧的，重新装一个新的，还是直接升级？卸掉旧的又需要考虑哪些问题？新的包装失败了怎么办，能回滚吗？回滚不了该如何处理？ </p>
+<p>事实上，部署从来不是丢一个配置文件，执行一串命令这么简单。我们需要思前想后，考虑许多的可能性，并把这些逻辑都丢到我们的安装脚本或者配置文件中去。 </p>
+<p>为什么？ </p>
+<p>因为计算机运行其实是一个存储状态的过程。我最初是听七牛的许世伟老师在teahour中提到过这个思想。你面对一台uptime 有好几年linux的服务器，早就确定不了它的状态了。对一个未知的东西升个级，万一它崩溃怎么办？ </p>
+<p>所以线上升级慎之又慎，要联调，要演练，要测试环境都跑一遍。而且服务器上的软件越少越好，不必要的软件不要装，这些运维法则的背后，就是降低状态演变的可能性。</p>
+<h2 id="没有银弹">没有银弹</h2>
+<blockquote>
+<p>喜欢就买，不行就分，多喝热水，重启试试！                      &mdash;现代谚语</p>
+</blockquote>
+<p>人生简单的不二箴言，蕴含着大哲理。为什么重启能够解决90%的问题，就是因为重启之后是一个确定的状态，从一个确定的状态，通过确定的操作，可以转变成另一个确定的状态。 </p>
+<p>都是确定的，多好！ </p>
+<p>虽然没有银弹，但docker可能是一个答案。如果你把所有的服务，配置文件都打到一个镜像中去，然后到哪里都是docker启动，那么就像上文说的，是从一个确定的状态（0 状态），转移到另一个确定的状态，而且，没有副作用。如果一个服务一个镜像，那么那些相互干扰，依赖冲突也都不复存在了。 </p>
+<p>恰好，我还知道，网易蜂巢就是一个docker服务，为开发者打造的全SSD容器云，欢迎试用。</p>
+<p>利益相关：蜂巢卖的好，晚餐能多加一个鸡腿 </p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2015-12-04
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E4%B8%80%E4%B8%AAbug%E5%B8%A6%E6%9D%A5%E7%9A%84%E8%8B%A5%E5%B9%B2%E6%80%9D%E8%80%83/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">一个Bug带来的若干思考</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E5%AD%A6%E4%B9%A0tcpdump/">
+            <span class="next-text nav-default">学习tcpdump</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>排查云主机获取不到外网ip - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="问题： eth2 设备无ip 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 root@pri1-nova295-yq-163-org-freedom-1297:~# ip a 1: lo: &amp;lt;LOOPBACK,UP,LOWER_UP&amp;gt; mtu 16436 qdisc noqueue state UNKNOWN link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2: eth0: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu 1400 qdisc pfifo_fast state UP qlen 1000" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/%E6%8E%92%E6%9F%A5%E4%BA%91%E4%B8%BB%E6%9C%BA%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E5%A4%96%E7%BD%91ip%E5%B7%B2%E6%8C%82%E8%BD%BD%E4%BA%86%E5%A4%96%E7%BD%91port/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="排查云主机获取不到外网ip" />
+<meta property="og:description" content="问题： eth2 设备无ip 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 root@pri1-nova295-yq-163-org-freedom-1297:~# ip a 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1400 qdisc pfifo_fast state UP qlen 1000" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/%E6%8E%92%E6%9F%A5%E4%BA%91%E4%B8%BB%E6%9C%BA%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E5%A4%96%E7%BD%91ip%E5%B7%B2%E6%8C%82%E8%BD%BD%E4%BA%86%E5%A4%96%E7%BD%91port/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-10-24T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2017-10-24T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="排查云主机获取不到外网ip">
+<meta itemprop="description" content="问题： eth2 设备无ip 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 root@pri1-nova295-yq-163-org-freedom-1297:~# ip a 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1400 qdisc pfifo_fast state UP qlen 1000"><meta itemprop="datePublished" content="2017-10-24T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2017-10-24T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1604">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="排查云主机获取不到外网ip"/>
+<meta name="twitter:description" content="问题： eth2 设备无ip 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 root@pri1-nova295-yq-163-org-freedom-1297:~# ip a 1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 inet 127.0.0.1/8 scope host lo inet6 ::1/128 scope host valid_lft forever preferred_lft forever 2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1400 qdisc pfifo_fast state UP qlen 1000"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">排查云主机获取不到外网ip</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2017-10-24 </span>
+        
+          <span class="more-meta"> 1604 words </span>
+          <span class="more-meta"> 4 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>问题： eth2 设备无ip</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">root@pri1-nova295-yq-163-org-freedom-1297:~# ip a
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1400 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:ca:25:e8 brd ff:ff:ff:ff:ff:ff
+    inet 10.171.162.28/20 brd 10.171.175.255 scope global eth0
+    inet6 fe80::f816:3eff:feca:25e8/64 scope link
+       valid_lft forever preferred_lft forever
+3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:4d:0f:1c brd ff:ff:ff:ff:ff:ff
+    inet 10.172.99.224/26 brd 10.172.99.255 scope global eth1
+    inet6 fe80::f816:3eff:fe4d:f1c/64 scope link
+       valid_lft forever preferred_lft forever
+4: eth2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether fa:16:3e:05:62:4a brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::f816:3eff:fe05:624a/64 scope link
+       valid_lft forever preferred_lft forever
+root@pri1-nova295-yq-163-org-freedom-1297:~#
+</code></pre></td></tr></table>
+</div>
+</div><p>可以先在云主机内自行 dhclient -v eth2试着获取ip
+还是不能解决。
+试着排查</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">qa@ca826:~/IaaS_Regression_Testing/source$ nova interface-list 1b04648c-c08d-4d20-b6ca-ea1918755a82
++------------+--------------------------------------+--------------------------------------+---------------+-------------------+
+| Port State | Port ID                              | Net ID                               | IP addresses  | MAC Addr          |
++------------+--------------------------------------+--------------------------------------+---------------+-------------------+
+| ACTIVE     | 208fa1d6-1e3a-4655-b0c8-1b0bbb366c9a | fcfeb227-2c99-4e32-9609-95998aafaf07 | 59.111.30.170 | fa:16:3e:05:62:4a |
+| ACTIVE     | 70a003b0-3983-4164-a58a-647c2f0997b1 | 885356b0-905f-4fa9-888e-1416e958888f | 10.171.162.28 | fa:16:3e:ca:25:e8 |
+| ACTIVE     | d13735c5-ca5b-4c6a-9046-28bff5a6e642 | 6ff8b62b-4fed-4c67-940e-15a586f553a5 | 10.172.99.224 | fa:16:3e:4d:0f:1c |
++------------+--------------------------------------+--------------------------------------+---------------+-------------------+
+</code></pre></td></tr></table>
+</div>
+</div><p>查看这个云主机所在的物理节点</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">qa@ca826:~/IaaS_Regression_Testing$ nova show 1b04648c-c08d-4d20-b6ca-ea1918755a82
++--------------------------------------------------+----------------------------------------------------------------+
+| Property                                         | Value                                                          |
++--------------------------------------------------+----------------------------------------------------------------+
+| OS-DCF:diskConfig                                | MANUAL                                                         |
+| OS-EXT-AZ:availability_zone                      | yiqiao1.music1                                                 |
+| OS-EXT-SRV-ATTR:host                             | pri1-nova295.yq.163.org                                        |
+| OS-EXT-SRV-ATTR:hypervisor_hostname              | pri1-nova295.yq.163.org                                        |
+| OS-EXT-SRV-ATTR:instance_name                    | instance-0004d80d                                              |
+| OS-EXT-STS:power_state                           | 1                                                              |
+| OS-EXT-STS:task_state                            | -                                                              |
+| OS-EXT-STS:vm_state                              | active                                                         |
+| OS-SRV-USG:launched_at                           | 2017-03-30T01:57:54.000000                                     |
+| OS-SRV-USG:terminated_at                         | -                                                              |
+| accessIPv4                                       |                                                                |
+| accessIPv6                                       |                                                                |
+| availability_zone                                | yiqiao1.music1                                                 |
+| config_drive                                     | 1                                                              |
+| created                                          | 2017-03-30T01:57:34Z                                           |
+| flavor                                           | flavor_1 (1)                                                   |
+| hostId                                           | 88754d7b28b0ec172eb1aba61abcf866e3eb9cc894969cf085c000b2       |
+| hypervisor_type                                  | qemu                                                           |
+| id                                               | 1b04648c-c08d-4d20-b6ca-ea1918755a82                           |
+| idc_e52c62f6a5334806b6bac162eb3f7a42 network     | 10.172.99.224                                                  |
+| image                                            | debian_7_x86_64_pri.raw (9a60713c-204f-4797-b5b4-2330e47fafc9) |
+| key_name                                         | IaaScheck                                                      |
+| metadata                                         | {}                                                             |
+| name                                             | pri1-nova295-yq-163-org-freedom-1297                           |
+| os-extended-volumes:volumes_attached             | []                                                             |
+| os-netease-extended-volumes:volumes_attached     | []                                                             |
+| os-server-status                                 | up                                                             |
+| os_type                                          | linux                                                          |
+| private_e52c62f6a5334806b6bac162eb3f7a42 network | 10.171.162.28                                                  |
+| progress                                         | 0                                                              |
+| public_admin network                             | 59.111.30.170                                                  |
+| security_groups                                  | default                                                        |
+| status                                           | ACTIVE                                                         |
+| tenant_id                                        | e52c62f6a5334806b6bac162eb3f7a42                               |
+| updated                                          | 2017-03-30T01:57:54Z                                           |
+| use_ceph                                         | yes                                                            |
+| user_id                                          | f04ca6a1295740cc974769601c54b668                               |
++--------------------------------------------------+----------------------------------------------------------------+
+</code></pre></td></tr></table>
+</div>
+</div><p>这里是用云网络联调做一下实验。原理一样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ nova show f755c788-64a8-40e7-9e33-70bed6709fb7
++--------------------------------------------------+----------------------------------------------------------------+
+| Property                                         | Value                                                          |
++--------------------------------------------------+----------------------------------------------------------------+
+| OS-DCF:diskConfig                                | MANUAL                                                         |
+| OS-EXT-AZ:availability_zone                      | zw.netbeta1                                                    |
+| OS-EXT-SRV-ATTR:host                             | 10-180-0-37                                                    |
+| OS-EXT-SRV-ATTR:hypervisor_hostname              | 10-180-0-37                                                    |
+| OS-EXT-SRV-ATTR:instance_name                    | instance-000ac3a0                                              |
+| OS-EXT-STS:power_state                           | 1                                                              |
+| OS-EXT-STS:task_state                            | -                                                              |
+| OS-EXT-STS:vm_state                              | active                                                         |
+| OS-SRV-USG:launched_at                           | 2017-02-16T06:55:42.000000                                     |
+| OS-SRV-USG:terminated_at                         | -                                                              |
+| accessIPv4                                       |                                                                |
+| accessIPv6                                       |                                                                |
+| availability_zone                                | zw.netbeta1                                                    |
+| config_drive                                     | 1                                                              |
+| created                                          | 2016-12-20T06:54:34Z                                           |
+| flavor                                           | flavor_85 (85)                                                 |
+| hostId                                           | 0e225977a1045489747c0b643058ba9489f6d9e3679b423757a5e31c       |
+| hypervisor_type                                  | qemu                                                           |
+| id                                               | f755c788-64a8-40e7-9e33-70bed6709fb7                           |
+| image                                            | debian_7_x86_64_pri.raw (009b381e-f42e-42d5-a227-8fc032e6b5c8) |
+| key_name                                         | luozewen                                                       |
+| metadata                                         | {}                                                             |
+| name                                             | nbs-management                                                 |
+| os-extended-volumes:volumes_attached             | []                                                             |
+| os-netease-extended-volumes:volumes_attached     | []                                                             |
+| os-server-status                                 | up                                                             |
+| os_type                                          | linux                                                          |
+| private_5b54a7e1084b465780c0b8db5b0cca26 network | 10.180.65.243                                                  |
+| progress                                         | 0                                                              |
+| public_admin_zw network                          | 115.236.127.178                                                |
+| security_groups                                  | default                                                        |
+| status                                           | ACTIVE                                                         |
+| tenant_id                                        | 5b54a7e1084b465780c0b8db5b0cca26                               |
+| updated                                          | 2017-02-27T11:55:07Z                                           |
+| use_ceph                                         | yes                                                            |
+| user_id                                          | 7579c1456aea4178a97ab642375d1ee2                               |
+| vncPass                                          | 000000                                                         |
++--------------------------------------------------+----------------------------------------------------------------+         
+
+
+
+hzhuangzhexiao@10-180-0-37:~$ nova interface-list f755c788-64a8-40e7-9e33-70bed6709fb7
++------------+--------------------------------------+--------------------------------------+-----------------+-------------------+
+| Port State | Port ID                              | Net ID                               | IP addresses    | MAC Addr          |
++------------+--------------------------------------+--------------------------------------+-----------------+-------------------+
+| ACTIVE     | 0b89bc22-90e1-4005-a5ac-cb84b2c89a0e | c5c58a7a-477f-4949-a2ec-acb057e5d0ab | 10.180.65.243   | fa:16:3e:2f:8b:cf |
+| ACTIVE     | 2bf57e70-3c8c-429c-ae2e-450662b066f4 | dae73933-9e60-4ad7-b48c-046aca96343f | 115.236.127.178 | fa:16:3e:81:ae:3f |
++------------+--------------------------------------+--------------------------------------+-----------------+-------------------+
+hzhuangzhexiao@10-180-0-37:~$
+
+
+
+hzhuangzhexiao@10-180-0-37:~$ neutron port-show  2bf57e70-3c8c-429c-ae2e-450662b066f4
++-----------------------+----------------------------------------------------------------------------------------+
+| Field                 | Value                                                                                  |
++-----------------------+----------------------------------------------------------------------------------------+
+| admin_state_up        | True                                                                                   |
+| allowed_address_pairs |                                                                                        |
+| binding:capabilities  | {&#34;port_filter&#34;: true}                                                                  |
+| binding:host_id       | 10-180-0-37                                                                            |
+| binding:profile       | {&#34;nova_no_clean&#34;: true}                                                                |
+| binding:vif_type      | ovs                                                                                    |
+| device_id             | f755c788-64a8-40e7-9e33-70bed6709fb7                                                   |
+| device_owner          | compute:zw.netbeta1                                                                    |
+| extra_data            | {&#34;user_id&#34;: &#34;1cd096c922064b3ba51bdc1cd076987b&#34;}                                        |
+| extra_dhcp_opts       |                                                                                        |
+| filtered_ports        |                                                                                        |
+| fixed_ips             | {&#34;subnet_id&#34;: &#34;3f4a0aef-73bb-4240-a4d8-187dc0d9208f&#34;, &#34;ip_address&#34;: &#34;115.236.127.178&#34;} |
+| id                    | 2bf57e70-3c8c-429c-ae2e-450662b066f4                                                   |
+| ingress_max_rate      |                                                                                        |
+| mac_address           | fa:16:3e:81:ae:3f                                                                      |
+| max_bm_pps            |                                                                                        |
+| max_pps               |                                                                                        |
+| max_rate              |                                                                                        |
+| name                  | pub-zw                                                                                 |
+| network_id            | dae73933-9e60-4ad7-b48c-046aca96343f                                                   |
+| parent_portid         |                                                                                        |
+| port_security_enabled | False                                                                                  |
+| prefer_rate           |                                                                                        |
+| security_groups       |                                                                                        |
+| status                | ACTIVE                                                                                 |
+| support_azs           | zw                                                                                     |
+| tenant_id             | 5b54a7e1084b465780c0b8db5b0cca26                                                       |
++-----------------------+----------------------------------------------------------------------------------------+
+</code></pre></td></tr></table>
+</div>
+</div><p>知道port 之后 , 通过port设备，可以知道对应的 Interface.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ sudo ovs-vsctl show |grep -C 10 2bf57e70
+
+            tag: 156
+            Interface &#34;tapc2eb6208-1f&#34;
+                type: internal
+        Port &#34;tap2bf57e70-3c&#34;
+            tag: 31
+            Interface &#34;tap2bf57e70-3c&#34;
+        Port &#34;tap6b0f7a7f-ce&#34;
+            tag: 179
+</code></pre></td></tr></table>
+</div>
+</div><p>列出 Interface</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo ovs-vsctl list interface tap2bf57e70-3c
+
+
+hzhuangzhexiao@10-180-0-37:~$ sudo ovs-vsctl list interface tap2bf57e70-3c |grep attached-mac
+external_ids        : {attached-mac=&#34;fa:16:3e:81:ae:3f&#34;, iface-id=&#34;2bf57e70-3c8c-429c-ae2e-450662b066f4&#34;, iface-status=active, vm-id=&#34;f755c788-64a8-40e7-9e33-70bed6709fb7&#34;}
+hzhuangzhexiao@10-180-0-37:~$
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ ip -s link show tap2bf57e70-3c
+221: tap2bf57e70-3c: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc htb master ovs-system state UNKNOWN mode DEFAULT group default qlen 500
+    link/ether fe:16:3e:81:ae:3f brd ff:ff:ff:ff:ff:ff
+    RX: bytes  packets  errors  dropped overrun mcast   
+    8851335    109246   0       0       0       0     
+    TX: bytes  packets  errors  dropped carrier collsns
+    969707031  14688579 0       0       0       0     
+</code></pre></td></tr></table>
+</div>
+</div><p>如果需要抓包的话：</p>
+<p>找出port 对应的net</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ neutron  dhcp-agent-list-hosting-net   dae73933-9e60-4ad7-b48c-046aca96343f
++--------------------------------------+-------------+----------------+-------+
+| id                                   | host        | admin_state_up | alive |
++--------------------------------------+-------------+----------------+-------+
+| 9995f487-dd26-4034-b37b-f558ff08d2f2 | 10-180-0-38 | True           | :-)   |
+| a65b0294-0a68-4cec-8619-7a053045bc73 | 10-180-0-37 | True           | :-)   |
++--------------------------------------+-------------+----------------+-------+
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+hzhuangzhexiao@10-180-0-37:~$ sudo ip netns exec qdhcp-dae73933-9e60-4ad7-b48c-046aca96343f ip a
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+60: tap1241c583-1f: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UNKNOWN group default qlen 1000
+    link/ether fa:16:3e:33:ef:69 brd ff:ff:ff:ff:ff:ff
+    inet 115.236.127.171/24 brd 115.236.127.255 scope global tap1241c583-1f
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:fe33:ef69/64 scope link
+       valid_lft forever preferred_lft forever
+</code></pre></td></tr></table>
+</div>
+</div><p>这下可以在namespace 里面抓包，看各种问题</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo ip netns exec qdhcp-dae73933-9e60-4ad7-b48c-046aca96343f tcpdump -i  tap1241c583-1f -v host 115.236.127.178
+</code></pre></td></tr></table>
+</div>
+</div><p>============================================================</p>
+<p>看 ml2_conf.ini</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ cat  /etc/neutron/plugins/ml2/ml2_conf.ini | grep public
+bridge_mapping_patterns = public:br-wan
+</code></pre></td></tr></table>
+</div>
+</div><p>sudo ovs-vsctl show</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ sudo ovs-vsctl show |grep br-wan
+    Bridge br-wan-zw
+        Port phy-br-wan-zw
+            Interface phy-br-wan-zw
+                options: {peer=int-br-wan-zw}
+        Port br-wan-zw
+            Interface br-wan-zw
+        Port int-br-wan-zw
+            Interface int-br-wan-zw
+                options: {peer=phy-br-wan-zw}
+        Port int-br-wan-yz
+            Interface int-br-wan-yz
+                options: {peer=phy-br-wan-yz}
+    Bridge br-wan-yz
+        Port phy-br-wan-yz
+            Interface phy-br-wan-yz
+                options: {peer=int-br-wan-yz}
+        Port br-wan-yz
+            Interface br-wan-yz
+</code></pre></td></tr></table>
+</div>
+</div><p>ip -s link show |grep eth2</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ ip -s link show |grep eth2
+2: eth2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc prio state UP mode DEFAULT group default qlen 1000
+20: eth2.101@eth2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP mode DEFAULT group default
+21: eth2.104@eth2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default
+22: eth2.110@eth2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default
+hzhuangzhexiao@10-180-0-37:~$
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ sudo ovs-vsctl list interface eth2.104 |grep ofport
+ofport              : 1
+ofport_request      : []
+hzhuangzhexiao@10-180-0-37:~$
+</code></pre></td></tr></table>
+</div>
+</div><p>ofport 不应该为 -1</p>
+<p>看对应的流量 rx tx 这个应该是看对应物理机的流量。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">hzhuangzhexiao@10-180-0-37:~$ ip -s link show eth2.104
+21: eth2.104@eth2: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue master ovs-system state UP mode DEFAULT group default
+    link/ether ec:f4:bb:e6:31:44 brd ff:ff:ff:ff:ff:ff
+    RX: bytes  packets  errors  dropped overrun mcast   
+    817091270  15381530 0       0       0       113324
+    TX: bytes  packets  errors  dropped carrier collsns
+    17222606   216169   0       0       0       0     
+hzhuangzhexiao@10-180-0-37:~$
+</code></pre></td></tr></table>
+</div>
+</div><p>sa用这个来看</p>
+<p>cat /proc/net/dev  |grep eth2</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2017-10-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/%E7%94%A8python%E7%BB%99%E7%BD%91%E6%98%93%E8%9C%82%E5%B7%A2%E5%86%99%E4%B8%80%E4%B8%AA%E5%91%BD%E4%BB%A4%E8%A1%8Cclient/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">用python给网易蜂巢写一个命令行client</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%89%E6%9D%BF%E6%96%A7/">
+            <span class="next-text nav-default">网络问题的三板斧</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

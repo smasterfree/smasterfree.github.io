@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>vpc-iaas-py集成测试回归工具使用 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="目标 完成vpc环境下，iaas（云主机，网络，硬盘等）相关的集成测试。 在每个物理计算节点，创建云主机，验证网络连通性，云主机生命周期操作，挂" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/vpc-iaas-py%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E5%9B%9E%E5%BD%92%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="vpc-iaas-py集成测试回归工具使用" />
+<meta property="og:description" content="目标 完成vpc环境下，iaas（云主机，网络，硬盘等）相关的集成测试。 在每个物理计算节点，创建云主机，验证网络连通性，云主机生命周期操作，挂" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/vpc-iaas-py%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E5%9B%9E%E5%BD%92%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2019-12-24T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2019-12-24T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="vpc-iaas-py集成测试回归工具使用">
+<meta itemprop="description" content="目标 完成vpc环境下，iaas（云主机，网络，硬盘等）相关的集成测试。 在每个物理计算节点，创建云主机，验证网络连通性，云主机生命周期操作，挂"><meta itemprop="datePublished" content="2019-12-24T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2019-12-24T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="3769">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="vpc-iaas-py集成测试回归工具使用"/>
+<meta name="twitter:description" content="目标 完成vpc环境下，iaas（云主机，网络，硬盘等）相关的集成测试。 在每个物理计算节点，创建云主机，验证网络连通性，云主机生命周期操作，挂"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">vpc-iaas-py集成测试回归工具使用</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-12-24 </span>
+        
+          <span class="more-meta"> 3769 words </span>
+          <span class="more-meta"> 8 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#执行">执行</a></li>
+    <li><a href="#测试某一个tag下的所有用例">测试某一个tag下的所有用例</a></li>
+    <li><a href="#打出执行最慢的10条用例">打出执行最慢的10条用例</a></li>
+    <li><a href="#指定运行某一个测试用例">指定运行某一个测试用例</a></li>
+    <li><a href="#pytest日志持久化">pytest日志持久化</a></li>
+    <li><a href="#单独测试某一文件用例">单独测试某一文件用例</a></li>
+    <li><a href="#plugin-not-registered">plugin not registered</a></li>
+    <li><a href="#列出所有用例">列出所有用例</a></li>
+    <li><a href="#适配iaas-ci-report的用法">适配iaas ci report的用法</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#成功">成功</a></li>
+    <li><a href="#失败">失败</a></li>
+    <li><a href="#出错排查">出错排查</a>
+      <ul>
+        <li><a href="#demo1">demo1</a></li>
+        <li><a href="#demo2">demo2</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="目标">目标</h1>
+<ul>
+<li>完成vpc环境下，iaas（云主机，网络，硬盘等）相关的集成测试。</li>
+<li>在每个物理计算节点，创建云主机，验证网络连通性，云主机生命周期操作，挂卸载云硬盘等。</li>
+<li>网关节点验证</li>
+<li>管理操作、运维接口验证</li>
+</ul>
+<h1 id="安装与部署">安装与部署</h1>
+<ul>
+<li>
+<p>拷贝整个项目到节点机或者lxc上</p>
+</li>
+<li>
+<p>在节点上安装 virtualenv</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">wget https://github.com/pypa/virtualenv/archive/16.0.0.tar.gz
+tar -xf 16.0.0.tar.gz
+cd virtualenv-16.0.0
+python virtualenv.py my_new_env
+. my_new_env/bin/activate
+
+或者直接通过 pip install virtualenv 安装 virtualenv
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>安装 requirements.txt</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pip install -r requirements.txt
+</code></pre></td></tr></table>
+</div>
+</div><p>升级依赖。当测试代码新增依赖时，需要在requirements.in 和 requirements.txt加入对应的依赖库，并且定死版本。</p>
+<p>推荐使用pip-tools解析依赖。</p>
+<h1 id="运行">运行</h1>
+<h2 id="执行">执行</h2>
+<p>回归计算节点</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -n 24   -v  -s   pytest_case/ -m compute
+
+-n 为并发进程数，也可以设置为auto（进程数和cpu核数保持一致）
+
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="测试某一个tag下的所有用例">测试某一个tag下的所有用例</h2>
+<p>单独回归云主机测试用例集</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -n 24  -v  -s  pytest_case/ -m compute
+</code></pre></td></tr></table>
+</div>
+</div><p>单独跑网络测试集</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -n 24  -v  -s  pytest_case/ -m net
+</code></pre></td></tr></table>
+</div>
+</div><p>跑冒烟测试集</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -n 24  -v  -s  pytest_case/ -m smoke
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="打出执行最慢的10条用例">打出执行最慢的10条用例</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -n 24  --durations=10  -v  -s  pytest_case/ -m smoke
+
+-m 只运行mark为smoke的测试用例 （可以在用例上增加 @pytest.mark.smoke进行标记）
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="指定运行某一个测试用例">指定运行某一个测试用例</h2>
+<p>使用 -k参数。它会去寻找测试用例中包含 floating_ip 字串的用例。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -n 6   -v  -s   pytest_case/ -k floating_ip
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="pytest日志持久化">pytest日志持久化</h2>
+<p>将pytest的log输出到stdout，并持久化一份到日志目录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -n 24   -v  -s   pytest_case/ -m smoke | tee log/pytest-$(date &#34;+%Y-%m-%d-%H-%M-%S&#34;).log
+</code></pre></td></tr></table>
+</div>
+</div><p>在log目录下，pytest- 前缀的日志为用例成功与否的日志。</p>
+<p>另有一份时间戳的日志，记录所有操作，云主机uuid等状态检查项详细日志，重点关注error日志。</p>
+<h2 id="单独测试某一文件用例">单独测试某一文件用例</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+回归主机用例
+pytest -n 24   --durations=10  -v  -s   pytest_case/test_server_ops.py
+
+回归网络用例 
+pytest -n 24   --durations=10  -v  -s   pytest_case/test_net_ops.py
+
+回归云硬盘用例  
+pytest -n 24   --durations=10  -v  -s   pytest_case/test_volume_ops.py
+
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="plugin-not-registered">plugin not registered</h2>
+<p>如果运行遇到下面这样的问题</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(mhj)hzhuangzhexiao@cyq9:~/vpc-iaas-py$ pytest  -n 24 -v -s pytest_case/ -m smoke
+usage: pytest [options] [file_or_dir] [file_or_dir] [...]
+pytest: error: unrecognized arguments: -n pytest_case/
+  inifile: None
+  rootdir: /home/hzhuangzhexiao/vpc-iaas-py
+</code></pre></td></tr></table>
+</div>
+</div><p>是因为xdist plugin没有register</p>
+<p>通过下面这个命令就可以看到 xdist没有注册为  setuptools registered plugins。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(mhj)hzhuangzhexiao@cyq9:~/vpc-iaas-py$ pytest --version
+This is pytest version 3.8.1, imported from /home/hzhuangzhexiao/mhj/local/lib/python2.7/site-packages/pytest.pyc
+</code></pre></td></tr></table>
+</div>
+</div><p>workaround可以使用 -p参数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest -p xdist.plugin  -n 24 -v -s pytest_case/ -m smoke
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="列出所有用例">列出所有用例</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest --collect-only
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="适配iaas-ci-report的用法">适配iaas ci report的用法</h2>
+<p>命令行执行参数增加 &ndash;json-report</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest  --json-report  -n 5   -v  -s   pytest_case/ -m compute
+</code></pre></td></tr></table>
+</div>
+</div><p>执行完成之后，运行脚本。 第一个参数是项目名，-m是metadata info，可以不写，也可以方便
+提交任何需要补充信息。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">python ci-report.py  cns -m cns_test_case
+</code></pre></td></tr></table>
+</div>
+</div><p>会自动将pytest解析 .report.json 生成结果，然后发送到ci report服务器。</p>
+<p>注意依赖两个库， 需要提前装好。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">gitpython==2.1.15
+pytest-json-report==1.0.1
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="配置">配置</h1>
+<p><code>env.conf</code> 里面配置回归测试哪个环境。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[env]
+test_env = liantiao.conf
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>/etc/*.conf</code>  下面配置环境回归的具体信息。包括租户认证、计算、网络、镜像等相关配置;
+注：如果要回归spot相关功能，将conf文件中
+business_type = spot，然后执行compute用例。</li>
+<li><code>/ssh_key</code> 目录下放对应云主机的ssh key。</li>
+<li><code>/node_list</code> 下放对应环境期望回归的节点信息。注意格式。为<code>AZ:HOST 挂载盘类型</code> 。可以随便找个环境先看一下示例。</li>
+</ul>
+<p>注意，node_list里面回归的节点以及挂载云硬盘格式。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org ceph,nbs,lvm
+dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org ceph,nbs
+
+这样的配置文件，最终会被转换成如下用例，进行回归测试。
+
+[
+   (&#39;dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org&#39;, &#39;ceph&#39;), 
+   (&#39;dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org&#39;, &#39;nbs&#39;), 
+   (&#39;dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org&#39;, &#39;lvm&#39;),
+   (&#39;dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org&#39;, &#39;ceph&#39;), 
+   (&#39;dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org&#39;, &#39;nbs&#39;)
+]
+</code></pre></td></tr></table>
+</div>
+</div><p>conf文件每一项具体含义及说明，可以参考 xxx.conf.sample.</p>
+<h1 id="结果展示与出错排查">结果展示与出错排查</h1>
+<h2 id="成功">成功</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+pytest_case/test_server_ops.py::test_stop_and_start[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+pytest_case/test_server_ops.py::test_user_role
+pytest_case/test_server_ops.py::test_create_vm[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+pytest_case/test_server_ops.py::test_reboot[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+pytest_case/test_server_ops.py::test_image
+pytest_case/test_server_ops.py::test_snap_shot[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+pytest_case/test_net_ops.py::test_floating_ip[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+pytest_case/test_server_ops.py::test_reboot[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+pytest_case/test_server_ops.py::test_snap_shot[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+pytest_case/test_server_ops.py::test_create_vm[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+pytest_case/test_server_ops.py::test_stop_and_start[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-ceph]
+pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-ceph]
+pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+pytest_case/test_net_ops.py::test_floating_ip[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-ceph]
+[gw4] PASSED pytest_case/test_server_ops.py::test_user_role
+[gw18] PASSED pytest_case/test_server_ops.py::test_image
+[gw23] PASSED pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-ceph]
+[gw1] PASSED pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-ceph]
+[gw2] PASSED pytest_case/test_server_ops.py::test_create_vm[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+[gw19] PASSED pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+[gw8] PASSED pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-ceph]
+[gw9] PASSED pytest_case/test_server_ops.py::test_snap_shot[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+[gw14] PASSED pytest_case/test_net_ops.py::test_floating_ip[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+[gw5] PASSED pytest_case/test_server_ops.py::test_create_vm[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+[gw20] PASSED pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+[gw3] PASSED pytest_case/test_server_ops.py::test_reboot[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+[gw6] PASSED pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+[gw11] PASSED pytest_case/test_server_ops.py::test_stop_and_start[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org]
+[gw17] PASSED pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+[gw0] PASSED pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+[gw16] PASSED pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+[gw10] PASSED pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+[gw21] PASSED pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+[gw22] PASSED pytest_case/test_server_ops.py::test_reboot[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+[gw7] PASSED pytest_case/test_server_ops.py::test_stop_and_start[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+[gw13] PASSED pytest_case/test_server_ops.py::test_snap_shot[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+[gw15] PASSED pytest_case/test_net_ops.py::test_floating_ip[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+[gw12] PASSED pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+
+=========================================================== slowest 10 test durations ============================================================
+201.26s call     pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+181.24s call     pytest_case/test_net_ops.py::test_floating_ip[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+175.90s call     pytest_case/test_server_ops.py::test_snap_shot[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+174.83s call     pytest_case/test_server_ops.py::test_stop_and_start[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+174.50s call     pytest_case/test_server_ops.py::test_reboot[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org]
+173.82s call     pytest_case/test_volume_ops.py::test_volume_get_device_path[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-nbs]
+169.15s call     pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+166.88s call     pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+161.85s call     pytest_case/test_volume_ops.py::test_volume_attach_and_detach[dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org-ceph]
+158.84s call     pytest_case/test_volume_ops.py::test_volume_live_update_qos[dongguan1.perf_vpc2:pubbeta2-nova92.dg.163.org-nbs]
+========================================================== 24 passed in 204.94 seconds ==========================================================
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="失败">失败</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">-- Docs: https://docs.pytest.org/en/latest/warnings.html
+============= 1 failed, 175 passed, 57 warnings in 486.93 seconds ==============
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="出错排查">出错排查</h2>
+<h3 id="demo1">demo1</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">______________ test_resize_vm[pubt2.vpc2:pubt2-nova68.dg.163.org] ______________
+[gw11] linux2 -- Python 2.7.3 /home/hzhuangzhexiao/hzx_env/bin/python
+
+set_regression_server = &lt;conftest.ServerConstructor object at 0x42eef90&gt;
+
+    def test_resize_vm(set_regression_server):
+        uuid = set_regression_server.vm_uuid
+        vm_status = set_regression_server.vm.poll_vm_status(&#34;ACTIVE&#34;)
+        assert vm_status is True
+    
+        os_server_status = set_regression_server.vm.poll_vm_os_server_status(&#34;up&#34;)
+        assert os_server_status is True
+        time.sleep(3)
+    
+        current_flavor = set_regression_server. \
+            vm.get_vm_fact()[&#34;server&#34;][&#34;flavor&#34;][&#39;id&#39;]
+        if get_is_sriov_from_flavor(current_flavor) is True:
+            flavor_alt = conf.sriov_flavor_alt
+        else:
+            flavor_alt = conf.flavor_alt
+    
+        set_regression_server.vm.vm_resize(flavor_alt)
+    
+        vm_status = set_regression_server.vm.poll_vm_status(&#34;ACTIVE&#34;)
+&gt;       assert vm_status is True
+E       assert False is True
+
+pytest_case/test_server_ops.py:126: AssertionError
+------------------------------ Captured log setup ------------------------------
+hypervisor.py              102 WARNING  read proton agent-{u&#39;description&#39;: u&#39;&#39;, u&#39;mock_alive&#39;: False, u&#39;admin_state_up&#39;: True, u&#39;created_at&#39;: u&#39;2018-01-08 19:35:27&#39;, u&#39;local_ip&#39;: u&#39;10.182.4.34/22&#39;, u&#39;alive&#39;: False, u&#39;host&#39;: u&#39;pubt2-nova34.dg.163.org&#39;, u&#39;agent_type&#39;: u&#39;Access agent&#39;, u&#39;check_status&#39;: True, u&#39;extra_configurations&#39;: {}, u&#39;az&#39;: u&#39;pubt2&#39;, u&#39;id&#39;: u&#39;3255b00f-9e6e-4abe-9c0f-b64338186bee&#39;, u&#39;configurations&#39;: {}} configurations error
+hypervisor.py              102 WARNING  read proton agent-{u&#39;description&#39;: u&#39;&#39;, u&#39;mock_alive&#39;: False, u&#39;admin_state_up&#39;: True, u&#39;created_at&#39;: u&#39;2018-01-08 19:35:27&#39;, u&#39;local_ip&#39;: u&#39;10.185.2.46/24&#39;, u&#39;alive&#39;: False, u&#39;host&#39;: u&#39;pubt1-nova46.yq.163.org&#39;, u&#39;agent_type&#39;: u&#39;Access agent&#39;, u&#39;check_status&#39;: True, u&#39;extra_configurations&#39;: {}, u&#39;az&#39;: u&#39;pubt1&#39;, u&#39;id&#39;: u&#39;3288fbd6-842c-4d0e-83a9-49ab9a009b0f&#39;, u&#39;configurations&#39;: {}} configurations error
+hypervisor.py              102 WARNING  read proton agent-{u&#39;description&#39;: u&#39;&#39;, u&#39;mock_alive&#39;: False, u&#39;admin_state_up&#39;: True, u&#39;created_at&#39;: u&#39;2018-01-08 19:35:27&#39;, u&#39;local_ip&#39;: u&#39;10.185.2.47/24&#39;, u&#39;alive&#39;: False, u&#39;host&#39;: u&#39;pubt1-nova47.yq.163.org&#39;, u&#39;agent_type&#39;: u&#39;Access agent&#39;, u&#39;check_status&#39;: True, u&#39;extra_configurations&#39;: {}, u&#39;az&#39;: u&#39;pubt1&#39;, u&#39;id&#39;: u&#39;479f29af-2150-4da8-b8ee-ff097762a10c&#39;, u&#39;configurations&#39;: {}} configurations error
+hypervisor.py              102 WARNING  read proton agent-{u&#39;created_at&#39;: u&#39;2018-01-08 19:35:27&#39;, u&#39;description&#39;: u&#39;&#39;, u&#39;mock_alive&#39;: False, u&#39;admin_state_up&#39;: True, u&#39;heartbeat_timestamp&#39;: u&#39;2018-10-11 16:41:30&#39;, u&#39;local_ip&#39;: u&#39;10.182.4.62/22&#39;, u&#39;alive&#39;: True, u&#39;host&#39;: u&#39;pubt2-nova62.dg.163.org&#39;, u&#39;agent_type&#39;: u&#39;Access agent&#39;, u&#39;check_status&#39;: True, u&#39;extra_configurations&#39;: {}, u&#39;az&#39;: u&#39;pubt2&#39;, u&#39;id&#39;: u&#39;d86f4e1e-2dba-4042-a314-98cb51a6e1d2&#39;, u&#39;configurations&#39;: {}} configurations error
+hypervisor.py              102 WARNING  read proton agent-{u&#39;created_at&#39;: u&#39;2018-01-08 19:35:27&#39;, u&#39;description&#39;: u&#39;&#39;, u&#39;mock_alive&#39;: False, u&#39;admin_state_up&#39;: True, u&#39;heartbeat_timestamp&#39;: u&#39;2018-10-11 16:41:34&#39;, u&#39;local_ip&#39;: u&#39;10.182.4.61/22&#39;, u&#39;alive&#39;: True, u&#39;host&#39;: u&#39;pubt2-nova61.dg.163.org&#39;, u&#39;agent_type&#39;: u&#39;Access agent&#39;, u&#39;check_status&#39;: True, u&#39;extra_configurations&#39;: {}, u&#39;az&#39;: u&#39;pubt2&#39;, u&#39;id&#39;: u&#39;fe6665c9-9902-49c7-96f0-b82517a8463f&#39;, u&#39;configurations&#39;: {}} configurations error
+nova.py                     76 INFO     request return {&#34;server&#34;: {&#34;vncPass&#34;: &#34;000000&#34;, &#34;OS-DCF:diskConfig&#34;: &#34;MANUAL&#34;, &#34;id&#34;: &#34;8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1&#34;, &#34;links&#34;: [{&#34;href&#34;: &#34;http://10.185.0.253:8774/v2/5b2d1fdcfaac407aa50aba05136add7e/servers/8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1&#34;, &#34;rel&#34;: &#34;self&#34;}, {&#34;href&#34;: &#34;http://10.185.0.253:8774/5b2d1fdcfaac407aa50aba05136add7e/servers/8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1&#34;, &#34;rel&#34;: &#34;bookmark&#34;}], &#34;adminPass&#34;: &#34;87812999.a&#34;}}
+nova.py                     82 INFO     request is {&#34;server&#34;: {&#34;availability_zone&#34;: &#34;pubt2.vpc2:pubt2-nova68.dg.163.org&#34;, &#34;key_name&#34;: &#34;idrsa&#34;, &#34;flavorRef&#34;: &#34;1&#34;, &#34;max_count&#34;: 1, &#34;min_count&#34;: 1, &#34;networks&#34;: [{&#34;subnet&#34;: &#34;aafea5be-2325-4b4c-a3c3-edd3728c65c5&#34;, &#34;uuid&#34;: &#34;13372d3f-1de1-4f14-acbb-e303ba8accb2&#34;}], &#34;vncPass&#34;: &#34;000000&#34;, &#34;name&#34;: &#34;pytest-G1O4E3-2018-10-11_16:41-pubt2.vpc2:pubt2-nova68.dg.163.org&#34;, &#34;imageRef&#34;: &#34;eb0f2f96-b06a-4220-abf3-9d2f5c547517&#34;, &#34;adminPass&#34;: &#34;87812999.a&#34;, &#34;metadata&#34;: {&#34;use-vpc&#34;: &#34;true&#34;, &#34;instance_image_type&#34;: &#34;ceph&#34;, &#34;label&#34;: &#34;test-label&#34;}, &#34;personality&#34;: [{&#34;path&#34;: &#34;/etc/vm_monitor/info&#34;, &#34;contents&#34;: &#34;eyJzZXJ2aWNlIjoib3BlbnN0YWNrIiwib3JpX3VzZXIiOiI1YjJkMWZkY2ZhYWM0MDdhYTUwYWJhMDUxMzZhZGQ3ZSIsInJlc291cmNlX3R5cGUiOiJvcGVuc3RhY2siLCJyZXNvdXJjZV9pZCI6Imh6eHRlc3QiLCJhZ2dyZWdhdGlvbl9pdGVtcyI6e30sImFjY2Vzc0tleSI6ImNkYjE4MDAxM2RlZDQ4N2U5NmU1OTdhZDVmNzMxYmEyIiwiYWNjZXNzU2VjcmV0IjoiODJhYTNmMTQ5NDI2NDIzYmIyOWIxZjU5MzU0ZTI5MTMiLCJtb25pdG9yV2ViU2VydmVyVXJsIjoiaHR0cDovLzEwLjE4Mi4yLjI0Nzo4MTg2In0=&#34;}]}}, 
+
+ response vm_uuid  is 8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1
+------------------------------ Captured log call -------------------------------
+nova.py                    423 INFO     after 15 seconds, vm 8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1 status is ACTIVE
+nova.py                    404 INFO     after 10 seconds, vm 8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1 os_server_status is up
+nova.py                    222 INFO     resize vm 8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1
+nova.py                    417 ERROR    vm 8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1 is not in status ACTIVE
+---------------------------- Captured log teardown -----------------------------
+nova.py                    254 INFO     delete vm 8f8e5899-b7f5-41c2-b4d2-511b67dcf8a1
+</code></pre></td></tr></table>
+</div>
+</div><p>上面这个用例可以看到，vm_status和预期的不一致。云主机一直没有active。</p>
+<p>可以在后面 Captured log中找到云主机的uuid，然后通过管理节点和计算节点的日志等，排查
+云主机状态不正确的原因。pubt2-nova68.dg.163.org节点nova服务是否正常等。</p>
+<h3 id="demo2">demo2</h3>
+<p>网络连通性异常示例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[gw4] PASSED pytest_case/test_net_ops.py::test_floating_ip[jiande1.a_kaola_server_sriov_lssd2:pri3-nova250.jd.163.org]
+[gw11] PASSED pytest_case/test_net_ops.py::test_floating_ip[jiande1.a_kaola_server_sriov_lssd2:pri3-nova178.jd.163.org]
+[gw19] PASSED pytest_case/test_net_ops.py::test_floating_ip[jiande1.a_kaola_server_sriov_lssd1:pri3-nova248.jd.163.org]
+[gw1] FAILED pytest_case/test_net_ops.py::test_floating_ip[jiande1.a_common_cache_sriov2:pri3-nova718.jd.163.org]
+
+=================================== FAILURES ===================================
+___ test_floating_ip[jiande1.a_common_cache_sriov2:pri3-nova718.jd.163.org] ____
+[gw16] linux2 -- Python 2.7.3 /home/hzhuangzhexiao/virtualenv-15.0.3/my_new_env/bin/python
+
+set_regression_server = &lt;conftest.ServerConstructor object at 0x367d450&gt;
+
+   @pytest.mark.smoke
+   def test_floating_ip(set_regression_server):
+       uuid = set_regression_server.vm_uuid
+
+       vm_status = set_regression_server.vm.poll_vm_status(&#34;ACTIVE&#34;)
+       assert vm_status is True
+
+       os_server_status = set_regression_server.vm.poll_vm_os_server_status(&#34;up&#34;)
+       assert os_server_status is True
+
+       # attach float ip
+       set_regression_server.init_vpc()
+       set_regression_server.vm_vpc.vm_attach_floatingip()
+       time.sleep(5)
+
+       # parse the public ip address from response
+       vm_public_ip_addr = set_regression_server. \
+           vm_vpc.new_floatingip_ip_addr[0][u&#39;ip_address&#39;]
+
+&gt;       ssh_port_is_ok = check_port_status(vm_public_ip_addr, 22)
+
+pytest_case/test_net_ops.py:32:
+
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+src_ip = &#39;59.111.229.250&#39;, port = 22
+
+   def check_port_status(src_ip, port=conf.vm_ssh_port):
+       for count in range(0, PORT_CHECK_TIMEOUT + 1):
+           status = check_port_is_open(src_ip, port)
+
+           if not status:
+               time.sleep(1)
+               count = count + 1
+               if count == PORT_CHECK_TIMEOUT:
+                   logger.error(&#34;timeout, port is not open&#34;)
+&gt;                   raise Exception(&#34;gateway vm port {} is down!!&#34;.format(port))
+E                   Exception: gateway vm port 22 is down!!
+
+lib/check_port.py:34: Exception
+------------------------------ Captured log setup ------------------------------
+</code></pre></td></tr></table>
+</div>
+</div><p>因此需要排查 pri3-nova718 节点网络服务是否正常。</p>
+<p><code>proton agent-list | grep pri3-nova718 </code> 查看agent是否为xxx状态等。</p>
+<p>常见错误</p>
+<ol>
+<li>云主机启动失败，没有active（nova服务没起， nova service-list就能看到down）</li>
+<li>网络相关的出错（proton agent服务异常，ovs相关服务检查）</li>
+<li>心跳上报错误（ceilometer服务异常，没起，或者和libvirt之间启动顺序）</li>
+<li>Resize出错（resize规格没有改，可能是因为线上没有资源了，可迁移节点都被disable了等）</li>
+<li>Migrate出错（可能是由于rsync网段配置错误，导致没法拷贝）</li>
+<li>User role not in qa 测试租户没加qa角色</li>
+<li>Image does not belong to this tenant 测试镜像没加这个租户</li>
+<li>创建snat失败。一般是因为没资源了。 proton external-ip-pool-list通过这个接口看下资源</li>
+<li>volume 状态不对。Nbs或者lvm volume挂卸载卷异常。一般是nbs agent没有部署，导致没法挂卸载。
+去节点上<code>ps aux | grep nbs</code> 看下agent部署了没有</li>
+<li>如果待测节点列表中只有一个节点，或者只有一个vpc+sriov节点，迁移会失败。此种情况可以忽略。</li>
+<li>节点列表中混合了ceph和本地存储的节点（一般都是nlb或者rds的），可能导致迁移失败。
+因为目前迁移节点是根据是否为sriov进行划分的。本地盘迁移到ceph节点api会报错。</li>
+<li>创建igw失败。可能是由于Resource IGW agent for VpcPeeringConnectio is exhausted，这种情况需要定期清理资源</li>
+</ol>
+<h1 id="网关以及ip池验证">网关以及ip池验证</h1>
+<ol>
+<li>
+<p>为测试租户创建对端cidr，以联调环境为例，在etc目录下找到对应环境的联调测试租户2a64834f411c47f4840e3f078acde161，创建对端cidr（如果对端cidr是默认的即default true，无需此步骤）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"> proton gateway-service-remote-cidr-create service 30.30.30.0/24 --tenant-id 2a64834f411c47f4840e3f078acde161
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在文件/data_provider目录下配置待测的网关或者ip池的uuid，例如</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">DATA:
+    ADMIN: xyz
+    some_dict:
+        v1: k1
+        v2: k2
+    nova_az_list:
+        - dongguan1.common_sriov2
+        - dongguan1.exception_vpc1
+    tag_lists:
+        - [cn-east-1b, user.public]
+        - [cn-east-1b,  user.music, user.kaola ]
+    check_agents:
+        - 90139756-139f-4c5f-ab32-d0619c684656
+    check_pools:
+        - 3536d26a-3848-48e1-96ca-267bf55a1293
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<p>3.在对应/etc目录配置文件，填入对端应该可以通的ip</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">service_check_ips = 10.182.8.1,10.187.12.1
+</code></pre></td></tr></table>
+</div>
+</div><p>4.验证通过以下命令, 结果输出如下。</p>
+<ul>
+<li>
+<p>为降低配置错误，尽量网关/ip池尽量单独测试。</p>
+</li>
+<li>
+<p>对于一些测试如要验证网关节点/ip池，需要在特定带tag的资源池/网关节点，创建网关资源（即创建的时候需要带形如&ndash;tag id=TAG_ID,works_on_agent=true,works_on_xip_pool=true）才能验证的网关节点/ip池的测试无法支持自动化验证。</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">单独测试ip池
+pytest -n 24   --durations=10   -v  -s   pytest_case/test_gateway_and_ip_pool.py -k test_external_ip_pools
+单独测试网关节点
+pytest -n 24   --durations=10   -v  -s   pytest_case/test_gateway_and_ip_pool.py -k test_gateway_agent
+测试网关节点以及ip池
+pytest -n 24   --durations=10   -v  -s   pytest_case/test_gateway_and_ip_pool.py
+</code></pre></td></tr></table>
+</div>
+</div><p>结果展示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">pytest_case/test_gateway_and_ip_pool.py::test_external_ip_pools[3536d26a-3848-48e1-96ca-267bf55a1293] 
+pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[62b38c94-6ee3-4309-9149-3b1d4ac433bf] 
+pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[2e64ec49-1502-4b8f-9bf8-0922938fd63f] 
+pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[90139756-139f-4c5f-ab32-d0619c684656] 
+pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[b4ff112b-9dee-4575-ae04-b09d136932aa] 
+pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[50f76200-585e-4cf9-b91a-2e61f5a3817c] 
+[gw11] PASSED pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[b4ff112b-9dee-4575-ae04-b09d136932aa] 
+[gw15] FAILED pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[2e64ec49-1502-4b8f-9bf8-0922938fd63f] 
+[gw3] PASSED pytest_case/test_gateway_and_ip_pool.py::test_external_ip_pools[3536d26a-3848-48e1-96ca-267bf55a1293] 
+[gw8] PASSED pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[90139756-139f-4c5f-ab32-d0619c684656] 
+[gw23] PASSED pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[62b38c94-6ee3-4309-9149-3b1d4ac433bf] 
+[gw12] PASSED pytest_case/test_gateway_and_ip_pool.py::test_gateway_agent[50f76200-585e-4cf9-b91a-2e61f5a3817c] 
+
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="vpc-iaas-py-测试版本设置">vpc-iaas-py 测试版本设置</h1>
+<p>在根目录 VERSION下定义版本，在打包的时候根据功能变动进行版本号升级，在创建云主机的时候写入到 metadata。
+用来排查测试代码到底是用的哪个版本。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">(my_new_env) hzhuangzhexiao@pubbeta1-nova10:~/vpc-iaas-py$ nova show 42d4d4d9-ebfd-453f-89eb-f061f775583c
++----------------------------------------------+---------------------------------------------------------------------------------------------+
+| Property                                     | Value                                                                                       |
++----------------------------------------------+---------------------------------------------------------------------------------------------+
+| OS-DCF:diskConfig                            | MANUAL                                                                                      |
+| OS-EXT-AZ:availability_zone                  | dongguan1.perf_vpc2                                                                         |
+| OS-EXT-SRV-ATTR:host                         | pubbeta2-nova90.dg.163.org                                                                  |
+| OS-EXT-SRV-ATTR:hypervisor_hostname          | pubbeta2-nova90.dg.163.org                                                                  |
+| OS-EXT-SRV-ATTR:instance_name                | instance-00a324c5                                                                           |
+| OS-EXT-STS:power_state                       | 1                                                                                           |
+| OS-EXT-STS:task_state                        | -                                                                                           |
+| OS-EXT-STS:vm_state                          | active                                                                                      |
+| OS-SRV-USG:launched_at                       | 2019-10-08T08:47:11.000000                                                                  |
+| OS-SRV-USG:terminated_at                     | -                                                                                           |
+| accessIPv4                                   |                                                                                             |
+| accessIPv6                                   |                                                                                             |
+| availability_zone                            | dongguan1.perf_vpc2                                                                         |
+| business_type                                | normal                                                                                      |
+| ceph_pool                                    | switch01_sas_vms                                                                            |
+| config_drive                                 | 1                                                                                           |
+| created                                      | 2019-10-08T08:47:04Z                                                                        |
+| flavor                                       | flavor_1 (1)                                                                                |
+| hostId                                       | cb84f85094a2f20dc8992053430f60622ecb34fd149125feb96069c3                                    |
+| hypervisor_type                              | qemu                                                                                        |
+| id                                           | 42d4d4d9-ebfd-453f-89eb-f061f775583c                                                        |
+| image                                        | debian_9.9_x86_64_pub_dhcp_sriov (7e6e2f71-8d1a-4f2c-87b1-d8aa1baafa02)                     |
+| instance-qos:read_bps                        | 104857600                                                                                   |
+| instance-qos:read_iops                       | 1000                                                                                        |
+| instance-qos:write_bps                       | 104857600                                                                                   |
+| instance-qos:write_iops                      | 1000                                                                                        |
+| key_name                                     | idrsa                                                                                       |
+| metadata                                     | {&#34;use-vpc&#34;: &#34;true&#34;, &#34;instance_image_type&#34;: &#34;ceph&#34;, &#34;label&#34;: &#34;vpc-iaas-py version: 0.2.2     |
+|                                              | &#34;}                                                                                          |
+| name                                         | pytest-hzhuangzhexiao-XUABXV-2019-10-08_16:47dongguan1.perf_vpc2:pubbeta2-nova90.dg.163.org |
+| os-extended-volumes:volumes_attached         | []                                                                                          |
+| os-netease-extended-volumes:volumes_attached | []                                                                                          |
+| os-server-status                             | down                                                                                        |
+| os_type                                      | linux                                                                                       |
+| progress                                     | 0                                                                                           |
+| status                                       | ACTIVE                                                                                      |
+| tenant_id                                    | 2a64834f411c47f4840e3f078acde161                                                            |
+| updated                                      | 2019-10-08T08:47:12Z                                                                        |
+| use_ceph                                     | yes                                                                                         |
+| user_id                                      | 8d86e52082bd44cd9d6fc471ed062bfc                                                            |
++----------------------------------------------+---------------------------------------------------------------------------------------------+
+</code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-12-24
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/openstack-1.0-neutron%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E4%BD%BF%E7%94%A8%E5%B7%A5%E5%85%B7/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">openstack 1.0 neutron集成测试使用工具</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/proton-tempest-plugin%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8/">
+            <span class="next-text nav-default">proton-tempest-plugin安装使用及远程调试说明</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

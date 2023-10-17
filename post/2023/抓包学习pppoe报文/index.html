@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>抓包学习 PPPOE报文 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="抓包学习 PPPOE报文 PPPoE报文是使用Ethernet格式进行封装的，Ethernet中各字段解释如下： DMAC：表示目的设备的MAC地" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/2023/%E6%8A%93%E5%8C%85%E5%AD%A6%E4%B9%A0pppoe%E6%8A%A5%E6%96%87/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="抓包学习 PPPOE报文" />
+<meta property="og:description" content="抓包学习 PPPOE报文 PPPoE报文是使用Ethernet格式进行封装的，Ethernet中各字段解释如下： DMAC：表示目的设备的MAC地" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/2023/%E6%8A%93%E5%8C%85%E5%AD%A6%E4%B9%A0pppoe%E6%8A%A5%E6%96%87/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-02-05T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2023-02-05T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="抓包学习 PPPOE报文">
+<meta itemprop="description" content="抓包学习 PPPOE报文 PPPoE报文是使用Ethernet格式进行封装的，Ethernet中各字段解释如下： DMAC：表示目的设备的MAC地"><meta itemprop="datePublished" content="2023-02-05T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2023-02-05T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="1927">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="抓包学习 PPPOE报文"/>
+<meta name="twitter:description" content="抓包学习 PPPOE报文 PPPoE报文是使用Ethernet格式进行封装的，Ethernet中各字段解释如下： DMAC：表示目的设备的MAC地"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">抓包学习 PPPOE报文</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-02-05 </span>
+        
+          <span class="more-meta"> 1927 words </span>
+          <span class="more-meta"> 4 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#discovery阶段">Discovery阶段</a></li>
+    <li><a href="#session阶段">Session阶段</a></li>
+    <li><a href="#terminate阶段">Terminate阶段</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="抓包学习-pppoe报文">抓包学习 PPPOE报文</h1>
+<p>PPPoE报文是使用Ethernet格式进行封装的，Ethernet中各字段解释如下：</p>
+<ul>
+<li>DMAC：表示目的设备的MAC地址，通常为以太网单播目的地址或者以太网广播地址（0xFFFFFFFF）。</li>
+<li>SMAC：表示源设备的以太网MAC地址。</li>
+<li>Type：表示协议类型字段，当值为0x8863时表示承载的是PPPoE发现阶段的报文。当值为0x8864时表示承载的是PPPoE会话阶段的报文。</li>
+</ul>
+<p>PPPoE字段中的各个字段解释如下：</p>
+<ul>
+<li>VER：表示PPPoE版本号，值为0x01。</li>
+<li>Type：表示类型，值为0x01。</li>
+<li>Code：表示PPPoE报文类型，不同取值标识不同的PPPoE报文类型。</li>
+<li>PPPoE会话ID：与以太网SMAC和DMAC一起定义了一个PPPoE会话。</li>
+<li>Length：表示PPPoE报文的Payload长度，不包括以太网头部和PPPoE头部的长度。</li>
+</ul>
+<blockquote>
+<p>PPPOE工作原理：</p>
+</blockquote>
+<p>PPPoE可分为三个阶段，即发现阶段、会话阶段和会话终结阶段。</p>
+<p><img src="../images/63ed9791cd054826ee2f6e95vtB8EN2F01.png" alt="image.png"></p>
+<h2 id="discovery阶段">Discovery阶段</h2>
+<ul>
+<li>
+<p>PPPoE Client广播发送一个<strong>PADI( PPPoE Active Discovery Initial)报文</strong>,在此报文中包含PPPoEClient想要得到的服务类型信息。</p>
+<p>在PADI报文中，目的MAC地址是一个广播地址，Code字段为0x09，Session ID字段为0x0000。
+<img src="../images/63ed97cc6d462660eeacb12a0btMKC0F01.png" alt="image.png"></p>
+</li>
+<li>
+<p>所有的 PPPoE Server收到PADI报文之后,将其中请求的服务与自己能够提供的服务进行比较,如果可以提供,则单播回复一个<strong>PADO( PPPoE Active Discovery Offer)报文</strong>。</p>
+<p>在PADO报文中，目的地址是发送PADI报文的客户端MAC地址，Code字段为0x07，Session ID字段为0x0000。</p>
+<p><img src="../images/63ed97decd054874dab3138fDDZLJdTD01.png" alt="image.png"></p>
+</li>
+<li>
+<p>根据网络的拓扑结构, PPPoE Client可能收到多个 PPPoE Server发送的PADO报文, PPPoE Client选择最先收到的PADO报文对应的 PPPoE Server作为自己的 PPPoE Server,并单播发送一个<strong>PADR( PPPoEActive Discovery Request)报文</strong>。</p>
+<p>在PADR报文中，目的地址是选中的服务器的MAC地址，Code字段为0x19，Session ID字段为0x0000。
+<img src="../images/63ed97f29355998f83679bcb4wJpJKVy01.png" alt="image.png"></p>
+</li>
+<li>
+<p>PPPoE Server产生一个唯的会话ID( Session ID),标识和 PPPoE Client的这个会话,通过发送个<strong>PADS( PPPoE Active Discovery Session- confirmation)报文</strong>把会话ID发送给 PPPoE Client。</p>
+<p>PADS报文中，目的地址是PPPoE客户端的MAC地址，Code字段为0x65，Session ID字段是PPPoE服务器为本PPPoE会话产生的Session ID。
+<img src="../images/63ed980a6d4626514166e2aaNQF0Edmc01.png" alt="image.png"></p>
+</li>
+</ul>
+<p><strong>会话建立成功之后通信双方都会知道PPPoE的</strong> <strong>Session_ID以及对方的以太网地址,它们共同确定了唯一的</strong> <strong>PPPOE Session。</strong>
+<img src="../images/63ed981bcd05481396883dfcC8lA6V6p01.png" alt="image.png"></p>
+<h2 id="session阶段">Session阶段</h2>
+<p><img src="../images/63ed98dccd05480442c81c6fPkHuLTJf01.png" alt="image.png"></p>
+<p>PPPoE Session阶段可划分为两部分,一是<strong>PPP协商阶段,<strong>二是</strong>PPP数据传输阶段</strong>。</p>
+<p>PPPoE Session上的PPP协商和普通的PPP协商方式一致,分为<strong>LCP、认证、NCP3个阶段</strong>。</p>
+<p><img src="../images/63ed984e6d462660eeacb175o0XaqXve01.png" alt="image.png"></p>
+<p>(1)<strong>LCP阶段</strong>主要完成建立、配置和检测数据链路连接。</p>
+<p>(2)LCP协商成功后,开始进行<strong>认证</strong>,认证协议类型由LCP协商结果(CHAP或者PAP)决定。</p>
+<p><img src="../images/63ed9872935599bfae098f50jfUq4Nht01.png" alt="image.png">
+(3)认证成功后,PPP进入<strong>NCP阶段</strong>。NCP是一个协议族,用于配置不同的网络层协议,常用的是IP控制协议(IPCP),它主要负责协商用户的IP地址和DNS服务器地址。</p>
+<p>PPPoE Session的PP协商成功后,就可以承载PPP数据报文。</p>
+<p><strong>在 PPPoE Session阶段所有的以太网数据包都是单播发送的。</strong></p>
+<h2 id="terminate阶段">Terminate阶段</h2>
+<p>PPP通信双方可以使用PPP协议自身来结束 PPPoE会话,当无法使用PPP协议结束会话时可以使用<strong>PADT( PPPoE Active Discovery Terminate)报文。</strong></p>
+<p>进入 PPPoE Session阶段后, PPPoE Client和 PPPoE Server都可以通过发送PADT报文的方式来结束PPPoE连接。PADT数据包可以在会话建立以后的任意时刻单播发送。在发送或接收PADT后,就不允许再使用该会话发送PPP流量了。</p>
+<blockquote>
+<p><strong>PPPoE协议报文总结</strong></p>
+</blockquote>
+<ul>
+<li><strong>PADI（PPPoE Active Discovery Initiation）报文</strong>：用户主机发起的PPPoE服务器探测报文，目的MAC地址为广播地址。</li>
+<li>**PADO（PPPoE Active Discovery Offer）报文：**PPPoE服务器收到PADI报文之后的回应报文，目的MAC地址为客户端主机的MAC地址。</li>
+<li><strong>PADR（PPPoE Active Discovery Request）报文</strong>：用户主机收到PPPoE服务器回应的PADO报文后，单播发起的请求报文，目的地址为此用户选定的那个PPPoE服务器的MAC地址。</li>
+<li><strong>PADS（PPPoE Active Discovery Session Configuration）报文</strong>：PPPoE服务器分配一个唯一的会话进程ID,并通过PADS报文发送给主机。</li>
+<li><strong>PADT（PPPoE Active Discovery Terminate）报文</strong>：当用户或者服务器需要终止会话时,可以发送这种PADT报文。</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2023-02-05
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/2023/pppoe%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">PPPOE 测试环境部署</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/2023/nats%E9%80%9A%E9%85%8D%E7%AC%A6%E7%9A%84%E4%BD%BF%E7%94%A8/">
+            <span class="next-text nav-default">nats通配符的使用</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

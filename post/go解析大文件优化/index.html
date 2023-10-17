@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>go 解析大文本文件9种优化方式 - smasterfree&#39;s blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="smasterfree" /><meta name="description" content="背景 一个解析大文件的挑战，前序的blog可以参考这些人的 1 2 3 4 1. https://boyter.org/posts/file-read-challange/ 2. Using Java to Read Really, Really Large Files 3. Processing Large Files in Java 4. Processing Large Files – Java, Go and ‘hitting the wall" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.81.0 with theme even" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/go%E8%A7%A3%E6%9E%90%E5%A4%A7%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.2108b3ca7cb9cc5b418ad4432696b017b9b8e08fe8cfe99653e8db4d6d3088b7.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="go 解析大文本文件9种优化方式" />
+<meta property="og:description" content="背景 一个解析大文件的挑战，前序的blog可以参考这些人的 1 2 3 4 1. https://boyter.org/posts/file-read-challange/ 2. Using Java to Read Really, Really Large Files 3. Processing Large Files in Java 4. Processing Large Files – Java, Go and ‘hitting the wall" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/go%E8%A7%A3%E6%9E%90%E5%A4%A7%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-10T09:53:34&#43;08:00" />
+<meta property="article:modified_time" content="2021-10-10T09:53:34&#43;08:00" />
+
+<meta itemprop="name" content="go 解析大文本文件9种优化方式">
+<meta itemprop="description" content="背景 一个解析大文件的挑战，前序的blog可以参考这些人的 1 2 3 4 1. https://boyter.org/posts/file-read-challange/ 2. Using Java to Read Really, Really Large Files 3. Processing Large Files in Java 4. Processing Large Files – Java, Go and ‘hitting the wall"><meta itemprop="datePublished" content="2021-10-10T09:53:34&#43;08:00" />
+<meta itemprop="dateModified" content="2021-10-10T09:53:34&#43;08:00" />
+<meta itemprop="wordCount" content="3833">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="go 解析大文本文件9种优化方式"/>
+<meta name="twitter:description" content="背景 一个解析大文件的挑战，前序的blog可以参考这些人的 1 2 3 4 1. https://boyter.org/posts/file-read-challange/ 2. Using Java to Read Really, Really Large Files 3. Processing Large Files in Java 4. Processing Large Files – Java, Go and ‘hitting the wall"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">smasterfree</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">smasterfree</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">go 解析大文本文件9种优化方式</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-10-10 </span>
+        
+          <span class="more-meta"> 3833 words </span>
+          <span class="more-meta"> 8 mins read </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#任务">任务</a></li>
+    <li><a href="#revision-0--基础版本">Revision 0  基础版本</a></li>
+    <li><a href="#revision-1--无脑goroutine-版本">Revision 1  无脑goroutine 版本😢</a></li>
+    <li><a href="#revision-2--减少channels-减少goroutine-">Revision 2 – 减少Channels ，减少goroutine ⭐⭐⭐⭐⭐</a></li>
+    <li><a href="#revision-3--减少channel通信">Revision 3 – 减少channel通信⭐⭐⭐⭐</a></li>
+    <li><a href="#revision-4--hang-in-on-a-mutex-不一定有用">Revision 4 – Hang in on a Mutex （不一定有用）😢</a></li>
+    <li><a href="#revision-5--inside-the-loop有用但结构上未必合适">Revision 5 – Inside the Loop（有用，但结构上未必合适）⭐</a></li>
+    <li><a href="#revision-6--reuse-allocated-memory不一定有用">Revision 6 – Reuse Allocated Memory（不一定有用）😢</a></li>
+    <li><a href="#revision-7-regexp-usage">Revision 7: Regexp Usage⭐</a></li>
+    <li><a href="#revision-8-no-regexp">Revision 8: No Regexp⭐</a></li>
+    <li><a href="#revision-9--reduce-the-garbage">Revision 9 – Reduce the Garbage⭐⭐⭐</a></li>
+    <li><a href="#实际测试">实际测试</a></li>
+    <li><a href="#补充">补充</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="背景">背景</h2>
+<p>一个解析大文件的挑战，前序的blog可以参考这些人的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">1. https://boyter.org/posts/file-read-challange/
+2. Using Java to Read Really, Really Large Files
+3. Processing Large Files in Java
+4. Processing Large Files – Java, Go and ‘hitting the wall’
+</code></pre></td></tr></table>
+</div>
+</div><p>文件下载地址 <a href="https://www.fec.gov/files/bulk-downloads/2018/indiv18.zip">https://www.fec.gov/files/bulk-downloads/2018/indiv18.zip</a></p>
+<p>这篇文章主要翻译了 Processing Large Files – Java, Go and ‘hitting the wall’ 这篇博客里面的优化思路。</p>
+<h2 id="任务">任务</h2>
+<ol>
+<li>打印所有行数</li>
+<li>第8列包含名字， 打印 432 和 43243 个名字</li>
+<li>第5列包含日期，计算每月一共有多少捐款</li>
+<li>还是第8列，抽取出名字，计算出最常见的名字（first name），以及一共出现的次数</li>
+</ol>
+<h2 id="revision-0--基础版本">Revision 0  基础版本</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">firstNamePat := regexp.MustCompile(&#34;, \\s*([^, ]+)&#34;)
+names := make([]string, 0)
+firstNames := make([]string, 0)
+dates := make([]string, 0)
+commonName := &#34;&#34;
+commonCount := 0
+</code></pre></td></tr></table>
+</div>
+</div><p>scan 文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="mi">31</span>	<span class="k">for</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Scan</span><span class="p">()</span> <span class="p">{</span>
+<span class="mi">32</span>		<span class="nx">text</span> <span class="o">:=</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Text</span><span class="p">()</span>
+<span class="mi">33</span>
+<span class="mi">34</span>		<span class="c1">// get all the names
+</span><span class="c1"></span><span class="mi">35</span>		<span class="nx">split</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">SplitN</span><span class="p">(</span><span class="nx">text</span><span class="p">,</span> <span class="s">&#34;|&#34;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span> <span class="c1">// 10.95
+</span><span class="c1"></span><span class="mi">36</span>		<span class="nx">name</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">TrimSpace</span><span class="p">(</span><span class="nx">split</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+<span class="mi">37</span>		<span class="nx">names</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+<span class="mi">38</span>
+<span class="mi">39</span>		<span class="c1">// extract first names
+</span><span class="c1"></span><span class="mi">40</span>		<span class="k">if</span> <span class="nx">matches</span> <span class="o">:=</span> <span class="nx">firstNamePat</span><span class="p">.</span><span class="nf">FindAllStringSubmatch</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="nb">len</span><span class="p">(</span><span class="nx">matches</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+<span class="mi">41</span>			<span class="nx">firstNames</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">firstNames</span><span class="p">,</span> <span class="nx">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="mi">42</span>		<span class="p">}</span>
+<span class="mi">43</span>
+<span class="mi">44</span>		<span class="c1">// extract dates
+</span><span class="c1"></span><span class="mi">45</span>		<span class="nx">chars</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">TrimSpace</span><span class="p">(</span><span class="nx">split</span><span class="p">[</span><span class="mi">4</span><span class="p">])[:</span><span class="mi">6</span><span class="p">]</span>
+<span class="mi">46</span>		<span class="nx">date</span> <span class="o">:=</span> <span class="nx">chars</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#34;-&#34;</span> <span class="o">+</span> <span class="nx">chars</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+<span class="mi">47</span>		<span class="nx">dates</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">dates</span><span class="p">,</span> <span class="nx">date</span><span class="p">)</span>
+<span class="mi">48</span>	<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>求解任务</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="mi">50</span>	<span class="c1">// report c2: names at index
+</span><span class="c1"></span><span class="mi">51</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Name: %s at index: %v\n&#34;</span><span class="p">,</span> <span class="nx">names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+<span class="mi">52</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Name: %s at index: %v\n&#34;</span><span class="p">,</span> <span class="nx">names</span><span class="p">[</span><span class="mi">432</span><span class="p">],</span> <span class="mi">432</span><span class="p">)</span>
+<span class="mi">53</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Name: %s at index: %v\n&#34;</span><span class="p">,</span> <span class="nx">names</span><span class="p">[</span><span class="mi">43243</span><span class="p">],</span> <span class="mi">43243</span><span class="p">)</span>
+<span class="mi">54</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Name time: %v\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Since</span><span class="p">(</span><span class="nx">start</span><span class="p">))</span>
+<span class="mi">55</span>
+<span class="mi">56</span>	<span class="c1">// report c1: total number of lines
+</span><span class="c1"></span><span class="mi">57</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Total file line count: %v\n&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">names</span><span class="p">))</span>
+<span class="mi">58</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Line count time: : %v\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Since</span><span class="p">(</span><span class="nx">start</span><span class="p">))</span>
+<span class="mi">59</span>
+<span class="mi">60</span>	<span class="c1">// report c3: donation frequency
+</span><span class="c1"></span><span class="mi">61</span>	<span class="nx">dateMap</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+<span class="mi">62</span>	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">date</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">dates</span> <span class="p">{</span>
+<span class="mi">63</span>		<span class="nx">dateMap</span><span class="p">[</span><span class="nx">date</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="mi">64</span>	<span class="p">}</span>
+<span class="mi">65</span>	<span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">dateMap</span> <span class="p">{</span>
+<span class="mi">66</span>		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Donations per month and year: %v and donation count: %v\n&#34;</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+<span class="mi">67</span>	<span class="p">}</span>
+<span class="mi">68</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Donations time: : %v\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Since</span><span class="p">(</span><span class="nx">start</span><span class="p">))</span>
+<span class="mi">69</span>
+<span class="mi">70</span>	<span class="c1">// report c4: most common firstName
+</span><span class="c1"></span><span class="mi">71</span>	<span class="nx">nameMap</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+<span class="mi">72</span>	<span class="nx">ncount</span> <span class="o">:=</span> <span class="mi">0</span> <span class="c1">// new count
+</span><span class="c1"></span><span class="mi">73</span>	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">name</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">firstNames</span> <span class="p">{</span>
+<span class="mi">74</span>		<span class="nx">ncount</span> <span class="p">=</span> <span class="nx">nameMap</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="mi">75</span>		<span class="nx">nameMap</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="p">=</span> <span class="nx">ncount</span>
+<span class="mi">76</span>		<span class="k">if</span> <span class="nx">ncount</span> <span class="p">&gt;</span> <span class="nx">commonCount</span> <span class="p">{</span>
+<span class="mi">77</span>			<span class="nx">commonName</span> <span class="p">=</span> <span class="nx">name</span>
+<span class="mi">78</span>			<span class="nx">commonCount</span> <span class="p">=</span> <span class="nx">ncount</span>
+<span class="mi">79</span>		<span class="p">}</span>
+<span class="mi">80</span>	<span class="p">}</span>
+<span class="mi">81</span>
+<span class="mi">82</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;The most common first name is: %s and it occurs: %v times.\n&#34;</span><span class="p">,</span> <span class="nx">commonName</span><span class="p">,</span> <span class="nx">commonCount</span><span class="p">)</span>
+<span class="mi">83</span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Most common name time: %v\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Since</span><span class="p">(</span><span class="nx">start</span><span class="p">))</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这个版本耗时 33秒</p>
+<h2 id="revision-1--无脑goroutine-版本">Revision 1  无脑goroutine 版本😢</h2>
+<p>简单的想法：</p>
+<ul>
+<li>从三个通道开始一个 goroutine 读取<code>nameC, lastnameC, datesC</code>以追加列表</li>
+<li>对于每一行，为每一行启动一个 goroutine 并解析 3 个字段以将它们发送到这三个通道之一</li>
+<li>等待所有 goroutine 完成</li>
+<li>根据挑战规则报告（c1-c4）</li>
+</ul>
+<p>每一行生成一个 goroutine，解析塞到结果channel里面去</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="k">for</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Scan</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">text</span> <span class="o">:=</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Text</span><span class="p">()</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">// get all the names
+</span><span class="c1"></span>			<span class="nx">split</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">SplitN</span><span class="p">(</span><span class="nx">text</span><span class="p">,</span> <span class="s">&#34;|&#34;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+			<span class="nx">name</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">TrimSpace</span><span class="p">(</span><span class="nx">split</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+			<span class="nx">namesC</span> <span class="o">&lt;-</span> <span class="nx">name</span>
+
+			<span class="c1">// extract first names
+</span><span class="c1"></span>			<span class="k">if</span> <span class="nx">matches</span> <span class="o">:=</span> <span class="nx">firstNamePat</span><span class="p">.</span><span class="nf">FindAllStringSubmatch</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="nb">len</span><span class="p">(</span><span class="nx">matches</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+				<span class="nx">firstNamesC</span> <span class="o">&lt;-</span> <span class="nx">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+			<span class="p">}</span>
+
+			<span class="c1">// extract dates
+</span><span class="c1"></span>			<span class="nx">chars</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">TrimSpace</span><span class="p">(</span><span class="nx">split</span><span class="p">[</span><span class="mi">4</span><span class="p">])[:</span><span class="mi">6</span><span class="p">]</span>
+			<span class="nx">date</span> <span class="o">:=</span> <span class="nx">chars</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#34;-&#34;</span> <span class="o">+</span> <span class="nx">chars</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+			<span class="nx">datesC</span> <span class="o">&lt;-</span> <span class="nx">date</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>然后有一个中的，select读取汇总，塞到结果list里面去</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">{</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">namesC</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+					<span class="nx">names</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span>
+					<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+				<span class="p">}</span>
+			<span class="k">case</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">firstNamesC</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+					<span class="nx">firstNames</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">firstNames</span><span class="p">,</span> <span class="nx">fn</span><span class="p">)</span>
+					<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+				<span class="p">}</span>
+			<span class="k">case</span> <span class="nx">d</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">datesC</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+					<span class="nx">dates</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">dates</span><span class="p">,</span> <span class="nx">d</span><span class="p">)</span>
+					<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">CPU-0: [read line1][read line2][read line3]
+CPU-1:             [process line1]         [process line3]
+CPU-2:                         [process line2]
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">send name      -&gt; [ nameC      ] --\ 
+send firstName -&gt; [ firstNameC ] --- -&gt; select() one -&gt; [ append one to a list ]
+send date      -&gt; [ datesC     ] --/ 
+</code></pre></td></tr></table>
+</div>
+</div><p>这个版本耗时  12分钟  732秒</p>
+<ol>
+<li>
+<p>性能差的原因，每行一个 goroutine，这个overhead太大了。而且消息传递太多了，开了3个chan，3x18 million = 54 million messages在传递 。</p>
+</li>
+<li>
+<p>第二个问题。通道，至少是容量为 1 的非缓冲通道，在向它们发送消息时会阻塞。Channel<a href="https://golang.org/ref/spec#Channel_types">被阻塞，</a>直到它的接收端读取消息。sending goroutines 需要等待，因为 <em>for - select</em>  处理的goroutine有竞争。</p>
+</li>
+</ol>
+<p>这边作者使用了提个 1M行的小样本进行测试，下面有一堆分析goroutine的，待进一步学习。</p>
+<p>我们在这些 Tracer 日志中看到的是两个 goroutine，一个读取行并启动 goroutine，一个接收消息，然后是一百万行解析 goroutine，每当它们向通道发送消息时，这些 goroutine 就会被分成三部分。当我们在跟踪开始时选择 ~120 毫秒之一时，我们看到的正是这一点。goroutine G1 发出系统调用以读取文件，然后启动行处理 goroutine。然后是一个名为 G6 的 goroutine，它代表 for-select 循环，从这些通道之一中排出消息并将数据附加到列表之一。</p>
+<p>从跟踪日志的中间或末尾挑选一个跟踪器段，我们看到文件读取 goroutine 不再运行，G6 只是在那里挑选任何等待接收消息的 gorutines（G6 在 中等待<a href="https://github.com/golang/go/blob/release-branch.go1.12/src/runtime/select.go#L105"><code>runtime.selectgo()</code></a>）。所有 CPU 内核都饱和了，主要是等待从这些等待中的 goroutine 获取消息。然后总结为我们测量的 12 分钟。（有关 Tracer 的更详细说明，请参阅<a href="https://marcellanz.com/post/file-read-challenge/#b4-gc-tracer-in-detail">附录 B4</a>）</p>
+<p>并且通道必须等待其接收端读取消息，我们还应该发现大多数时候 goroutine 被拆分为三个部分。当我们将消息作为并发运行的 goroutine 发送到三个通道之一时，它们会分裂，因为 Go 正在调度 goroutine 在很可能一个 goroutine 将等待而另一个 goroutine 可能被调度运行的点。</p>
+<h2 id="revision-2--减少channels-减少goroutine-">Revision 2 – 减少Channels ，减少goroutine ⭐⭐⭐⭐⭐</h2>
+<p>减少channel，不要每种关心的数据就搞一个channel。 搞一个新的struct，把数据捏合在一起送到channel里。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">entry</span> <span class="kd">struct</span> <span class="p">{</span>
+		<span class="nx">firstName</span> <span class="kt">string</span>
+		<span class="nx">name</span>      <span class="kt">string</span>
+		<span class="nx">date</span>      <span class="kt">string</span>
+		<span class="nx">wg</span>        <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>每64k一个goroutine</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">wg</span> <span class="o">:=</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span><span class="p">{}</span>
+    
+    <span class="nx">linesChunkLen</span> <span class="o">:=</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span>
+    <span class="nx">lines</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Scan</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">line</span> <span class="o">:=</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Text</span><span class="p">()</span>
+        <span class="nx">lines</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">lines</span><span class="p">,</span> <span class="nx">line</span><span class="p">)</span>
+
+        <span class="c1">// lines 这里到了 64k
+</span><span class="c1"></span>        <span class="c1">//不过这边作者实现有个bug ，永远只处理了 64k * n 倍数的行数。剩下的没处理
+</span><span class="c1"></span>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">lines</span><span class="p">)</span> <span class="o">==</span> <span class="nx">linesChunkLen</span> <span class="p">{</span>
+
+            <span class="c1">//WaitGroup 对象内部有一个计数器，最初从0开始，它有三个方法：Add(),
+</span><span class="c1"></span>            <span class="c1">//Done(), Wait() 用来控制计数器的数量。Add(n) 把计数器设置为n ，
+</span><span class="c1"></span>            <span class="c1">//Done() 每次把计数器-1 ，wait() 会阻塞代码的运行，直到计数器地值减
+</span><span class="c1"></span>            <span class="c1">//为0。
+</span><span class="c1"></span>            <span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">lines</span><span class="p">))</span>
+
+            <span class="nx">process</span> <span class="o">:=</span> <span class="nx">lines</span>
+            <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">text</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">process</span> <span class="p">{</span>
+                    <span class="c1">// process here !
+</span><span class="c1"></span>                    
+                    <span class="nx">entries</span> <span class="o">&lt;-</span> <span class="nx">e</span>
+                <span class="p">}</span>
+            <span class="p">}()</span>
+            <span class="nx">lines</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">linesChunkLen</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>这个版本耗时  18.285秒</p>
+<h2 id="revision-3--减少channel通信">Revision 3 – 减少channel通信⭐⭐⭐⭐</h2>
+<p>方案2 总共需要往chan里面发送18M数据 ，<strong>不过处理18M的数据也太多了</strong>，再次优化，每64k发送一块数据进行处理。</p>
+<p>可以进一步减少chan 通信的开销，对于每 64k 行块，我们将相同数量的条目收集到一个切片中，并通过条目通道发送它们<code>entriesC</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="nx">linesChunkLen</span> <span class="o">:=</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span>
+	<span class="nx">lines</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+	<span class="nx">scanner</span><span class="p">.</span><span class="nf">Scan</span><span class="p">()</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">lines</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">lines</span><span class="p">,</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Text</span><span class="p">())</span>
+		<span class="nx">willScan</span> <span class="o">:=</span> <span class="nx">scanner</span><span class="p">.</span><span class="nf">Scan</span><span class="p">()</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">lines</span><span class="p">)</span> <span class="o">==</span> <span class="nx">linesChunkLen</span> <span class="o">||</span> <span class="p">!</span><span class="nx">willScan</span> <span class="p">{</span>
+			<span class="nx">toProcess</span> <span class="o">:=</span> <span class="nx">lines</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">toProcess</span><span class="p">))</span>
+			<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+				<span class="nx">entries</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="nx">entry</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">toProcess</span><span class="p">))</span>
+				<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">text</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">toProcess</span> <span class="p">{</span>
+					<span class="c1">//process here
+</span><span class="c1"></span>					<span class="nx">entries</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">entries</span><span class="p">,</span> <span class="nx">entry</span><span class="p">)</span>
+				<span class="p">}</span>
+                
+                <span class="c1">//这样就是每64k一个entry
+</span><span class="c1"></span>				<span class="nx">entriesC</span> <span class="o">&lt;-</span> <span class="nx">entries</span>
+			<span class="p">}()</span>
+			<span class="nx">lines</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">linesChunkLen</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="p">!</span><span class="nx">willScan</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>通过这个计划，我们从版本 0 中减少了 60%时间。</p>
+<p>我们又下降了 8 秒或 -42%</p>
+<p>这个版本耗时  10.66 秒</p>
+<h2 id="revision-4--hang-in-on-a-mutex-不一定有用">Revision 4 – Hang in on a Mutex （不一定有用）😢</h2>
+<p>我们仍然将解析行的块构建为条目，但我们不会通过通道共享它们以将它们附加到我们的三个列表中。相反，我们将附加到循环中的列表内联并使用<a href="https://golang.org/pkg/sync/#Mutex"><code>sync.Mutex</code></a>. 这里我们删除了一个资源争用实例。我们没有通过通道发送条目块并在另一端由收集 goroutine 处理，而是通过调用等待，<code>mutex.Lock()</code>直到我们可以进入代码部分将解析的条目附加到三个列表中。</p>
+<p>正如我们在这里看到的，我们不需要一个渠道来分享我们的数据来最终被收集。我们的 goroutine 可以使用它收集的数据在互斥锁上等待，直到互斥锁空闲。然后 goroutine 只是停在内存中，直到它被安排继续。Go 已为<a href="https://github.com/golang/go/blob/release-branch.go1.12/src/sync/mutex.go#L44"><code>sync/mutex.go</code></a>. 我们的处理 goroutine 等待直到它可以将解析的数据附加到这些列表本身，而不是等待在通道上排出数据然后附加到列表中。</p>
+<p>CPU 内核仍然得到很好的使用，因为我们一次运行 6 个 goroutine。在此修订版中，显式通道的代码组合结构消失了。我们没有获得太多，但我们暂时保留此修订更改。</p>
+<p>这个版本耗时  10.31 秒</p>
+<h2 id="revision-5--inside-the-loop有用但结构上未必合适">Revision 5 – Inside the Loop（有用，但结构上未必合适）⭐</h2>
+<p>在这里，在捐赠时间和常用名称时间之间，我们需要大约 2 秒的时间来<em>遍历</em>firstNames 切片并找到最常用的名称。让我们尝试将它们，捐赠频率表和公共名称计数带入我们的解析循环。因此，在我们将行解析为条目后，当附加到列表时，我们更新循环内的日期频率和常用名称计数<code>Lines 68-81</code>。这样，我们不必遍历这两个映射，这样我们应该会获得一些秒数。</p>
+<p>这里发生了什么事？我怀疑我们将解析的数据附加到我们的列表的代码部分，并没有完全饱和运行此代码部分的时间，与其他地方发生的一切有关。我们没有在解析过程中浪费这个时间，然后连续花时间循环映射并计算频率表和最常见的名称，而是将这段代码放在循环中。</p>
+<blockquote>
+<p>人们可能会开始考虑我们在修订版 5 中所做的与可能的未来需求的扩展程度。在未来的挑战中或随着需求的变化，将这段代码放入循环中可能会对它的性能产生负面影响。一个合理的点。但我们在这里也是<em>为了表现</em>，当谈到量化表现时，这些数字不会撒谎。就<em>代码质量</em>而言，我并不是说我在所有情况下都支持这一点，但我们在这里仍然有一些乐趣，对吧？</p>
+</blockquote>
+<h2 id="revision-6--reuse-allocated-memory不一定有用">Revision 6 – Reuse Allocated Memory（不一定有用）😢</h2>
+<p>在我们的代码中，我们分配行切片和条目切片，然后我们收集数据行和解析字段的条目。一遍又一遍地分配这些 64k 大小的切片可能会对我们的性能产生负面影响，对吧？有了 a<code>sync.Pool</code>我们可以重用分配的切片，并且不需要重新分配。除了切片本身的分配之外，每当我们将一个元素附加到一个容量不足的切片时，Go 会将这些切片<a href="https://go.googlesource.com/go/+/refs/tags/go1.12.1/src/runtime/slice.go#76">增长</a>2，容量小于 1024 和 1.25 以上</p>
+<p>到目前为止，我们分配了起始容量为 0<code>linesChunkLen</code>的 line -slices 和 entry-slices。将它们分配到我们在处理 64k 行块期间肯定会增长的大小可能是有益的</p>
+<p>减少了内存，时间减少和优化5相比不大。</p>
+<h2 id="revision-7-regexp-usage">Revision 7: Regexp Usage⭐</h2>
+<p>正则表达式优化</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">non-capturing groups
+</code></pre></td></tr></table>
+</div>
+</div><p>使用regexp.FindString() 替换 firstNamePat.FindAllStringSubmatch</p>
+<p>这个版本耗时 8.155115627s</p>
+<h2 id="revision-8-no-regexp">Revision 8: No Regexp⭐</h2>
+<p>不要使用正则表达式，直接使用string 分割，取var[0]</p>
+<p>这个版本耗时 6.64 s</p>
+<h2 id="revision-9--reduce-the-garbage">Revision 9 – Reduce the Garbage⭐⭐⭐</h2>
+<p>减少垃圾回收</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">names := make([]string, 0)
+firstNames := make([]string, 0)
+dates := make([]string, 0)
+</code></pre></td></tr></table>
+</div>
+</div><p>这些变量都不要存。 存日期不要使用string，优化格式。</p>
+<p>这个版本耗时 3.88s</p>
+<h2 id="实际测试">实际测试</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">0  Most common name time: 34.047600994s
+1  Most common name time: 2m12.035417704s
+2  Most common name time: 24.20121778s   &lt;-
+3  Most common name time: 10.822801266s  &lt;- 
+4  Most common name time: 10.990392216s
+5  Most common name time: 7.682424486s   
+6  Most common name time: 7.601689327s
+7  Most common name time: 8.237632763s
+8  Most common name time: 7.393345424s
+9  Most common name time: 4.620049996s  &lt;-
+
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="补充">补充</h2>
+<blockquote>
+<ol>
+<li>如何判断优化已经到达极限？</li>
+</ol>
+</blockquote>
+<p>不parse，光读取一遍文件，也需要3.56s</p>
+<blockquote>
+<ol start="2">
+<li>更进一步</li>
+</ol>
+</blockquote>
+<p>使用 scanner.Bytes() 替换 scanner.Text() ，光读取一遍可以下降到2.392783786s</p>
+<blockquote>
+<ol start="3">
+<li>核数的影响</li>
+</ol>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">GOMAXPROCS=1 go run ./rev9/readfile9.go itcont.txt
+GOMAXPROCS=2 go run ./rev9/readfile9.go itcont.txt
+GOMAXPROCS=4 go run ./rev9/readfile9.go itcont.txt
+</code></pre></td></tr></table>
+</div>
+</div><p>进行测试</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">smasterfree</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2021-10-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/ovs%E5%AD%A6%E4%B9%A0/ovs-%E5%AD%A6%E4%B9%A0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">ovs学习</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/%E4%BD%BF%E7%94%A8go%E5%AE%9E%E7%8E%B0fake-agent/">
+            <span class="next-text nav-default">使用 fake-agent 模拟大规模计算节点测试</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2015 - 
+    2023
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">smasterfree</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
